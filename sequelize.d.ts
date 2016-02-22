@@ -3142,7 +3142,6 @@ declare module sequelize {
    * A hash of options to describe the scope of the search
    */
   interface FindOptions {
-
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
@@ -3154,7 +3153,12 @@ declare module sequelize {
      * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
      * have in the returned instance
      */
-    attributes?: Array<string | [string, string]> | {exclude: Array<string>};
+    attributes?:
+      Array<string | [string | fn, string]> |
+      {
+        exclude?: Array<string>,
+        include?: Array<string | [string | fn, string]>
+      };
 
     /**
      * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -3247,7 +3251,7 @@ declare module sequelize {
      *
      * TODO: Check?
      */
-    group?: Object;
+    group?: Object | string;
 
     /**
      * A function that gets executed while running the query to log the sql.
