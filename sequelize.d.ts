@@ -1,66 +1,67 @@
-// Type definitions for Sequelize 3.4.1
+// Type definitions for Sequelize 3.x
 // Project: http://sequelizejs.com
 
 import * as Bluebird from 'bluebird';
+import * as _ from 'lodash';
 
 /**
- * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
+ * A slightly modified version of bluebird promises. This means that, on top of the methods below, you can also call all the methods listed on the link below.
+ *
+ * The main difference is that sequelize promises allows you to attach a listener that will be called with the generated SQL, each time a query is run.
+ *
+ * The sequelize promise class works seamlessly with other A+/thenable libraries, with one exception.
+ * If you want to propagate SQL events across then, all calls etc., you must use sequelize promises exclusively.
  */
-declare interface Sequelize extends Sequelize.SequelizeStaticAndInstance, Sequelize.DataTypes {
-  /**
-   * Instantiate sequelize with name of database, username and password
-   *
-   * #### Example usage
-   *
-   * ```javascript
-   * // without password and options
-   * var sequelize = new Sequelize('database', 'username')
-   *
-   * // without options
-   * var sequelize = new Sequelize('database', 'username', 'password')
-   *
-   * // without password / with blank password
-   * var sequelize = new Sequelize('database', 'username', null, {})
-   *
-   * // with password and options
-   * var sequelize = new Sequelize('my_database', 'john', 'doe', {})
-   *
-   * // with uri (see below)
-   * var sequelize = new Sequelize('mysql://localhost:3306/database', {})
-   * ```
-   *
-   * @param database The name of the database
-   * @param username The username which is used to authenticate against the
-   *     database.
-   * @param password The password which is used to authenticate against the
-   *     database.
-   * @param options An object with options.
-   */
-  new (database: string, username: string, password: string, options?: Sequelize.Options): Sequelize.Connection;
-  new (database: string, username: string, options?: Sequelize.Options): Sequelize.Connection;
-
-  /**
-   * Instantiate sequelize with an URI
-   * @name Sequelize
-   * @constructor
-   *
-   * @param uri A full database URI
-   * @param options See above for possible options
-   */
-  new (uri: string, options?: Sequelize.Options): Sequelize.Connection;
+declare class SequelizePromise<T> extends Bluebird<T> {
+  sql(fct: (sql: string) => void): void;
 }
 
-declare module Sequelize {
+declare module sequelize {
   /**
-   * A slightly modified version of bluebird promises. This means that, on top of the methods below, you can also call all the methods listed on the link below.
-   *
-   * The main difference is that sequelize promises allows you to attach a listener that will be called with the generated SQL, each time a query is run.
-   *
-   * The sequelize promise class works seamlessly with other A+/thenable libraries, with one exception.
-If you want to propagate SQL events across then, all calls etc., you must use sequelize promises exclusively.
+   * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
    */
-  class Promise<T> extends Bluebird<T> {
-    sql(fct: (sql: string) => void): void;
+  interface Sequelize extends SequelizeStaticAndInstance, DataTypes {
+    /**
+     * Instantiate sequelize with name of database, username and password
+     *
+     * #### Example usage
+     *
+     * ```javascript
+     * // without password and options
+     * var sequelize = new Sequelize('database', 'username')
+     *
+     * // without options
+     * var sequelize = new Sequelize('database', 'username', 'password')
+     *
+     * // without password / with blank password
+     * var sequelize = new Sequelize('database', 'username', null, {})
+     *
+     * // with password and options
+     * var sequelize = new Sequelize('my_database', 'john', 'doe', {})
+     *
+     * // with uri (see below)
+     * var sequelize = new Sequelize('mysql://localhost:3306/database', {})
+     * ```
+     *
+     * @param database The name of the database
+     * @param username The username which is used to authenticate against the
+     *     database.
+     * @param password The password which is used to authenticate against the
+     *     database.
+     * @param options An object with options.
+     */
+    new (database: string, username: string, password: string, options?: Options): Connection;
+    new (database: string, username: string, options?: Options): Connection;
+
+    /**
+     * Instantiate sequelize with an URI
+     * @name Sequelize
+     * @constructor
+     *
+     * @param uri A full database URI
+     * @param options See above for possible options
+     */
+    new (uri: string, options?: Options): Connection;
   }
 
   //
@@ -104,7 +105,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Get the associated instance.
      * @param options The options to use when getting the association.
      */
-    (options?: BelongsToGetAssociationMixinOptions): Promise<TInstance>
+    (options?: BelongsToGetAssociationMixinOptions): SequelizePromise<TInstance>
   }
 
   /**
@@ -145,7 +146,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociation?: TInstance | TInstancePrimaryKey,
       options?: BelongsToSetAssociationMixinOptions | InstanceSaveOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -181,7 +182,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       values?: TAttributes,
       options?: BelongsToCreateAssociationMixinOptions | CreateOptions | BelongsToSetAssociationMixinOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -218,7 +219,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Get the associated instance.
      * @param options The options to use when getting the association.
      */
-    (options?: HasOneGetAssociationMixinOptions): Promise<TInstance>
+    (options?: HasOneGetAssociationMixinOptions): SequelizePromise<TInstance>
   }
 
   /**
@@ -259,7 +260,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociation?: TInstance | TInstancePrimaryKey,
       options?: HasOneSetAssociationMixinOptions | HasOneGetAssociationMixinOptions | InstanceSaveOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -295,7 +296,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       values?: TAttributes,
       options?: HasOneCreateAssociationMixinOptions | HasOneSetAssociationMixinOptions | CreateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -345,7 +346,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Get everything currently associated with this, using an optional where clause.
      * @param options The options to use when getting the associations.
      */
-    (options?: HasManyGetAssociationsMixinOptions): Promise<TInstance[]>
+    (options?: HasManyGetAssociationsMixinOptions): SequelizePromise<TInstance[]>
   }
 
   /**
@@ -395,7 +396,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociations?: Array<TInstance | TInstancePrimaryKey>,
       options?: HasManySetAssociationsMixinOptions | FindOptions | InstanceUpdateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -444,7 +445,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociations?: Array<TInstance | TInstancePrimaryKey>,
       options?: HasManyAddAssociationsMixinOptions | InstanceUpdateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -493,7 +494,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociation?: TInstance | TInstancePrimaryKey,
       options?: HasManyAddAssociationMixinOptions | InstanceUpdateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -536,7 +537,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       values?: TAttributes,
       options?: HasManyCreateAssociationMixinOptions | CreateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -579,7 +580,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       oldAssociated?: TInstance | TInstancePrimaryKey,
       options?: HasManyRemoveAssociationMixinOptions | InstanceUpdateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -622,7 +623,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       oldAssociateds?: Array<TInstance | TInstancePrimaryKey>,
       options?: HasManyRemoveAssociationsMixinOptions | InstanceUpdateOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -665,7 +666,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       target: TInstance | TInstancePrimaryKey,
       options?: HasManyHasAssociationMixinOptions | HasManyGetAssociationsMixinOptions
-    ): Promise<boolean>
+    ): SequelizePromise<boolean>
   }
 
   /**
@@ -708,7 +709,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       targets: Array<TInstance | TInstancePrimaryKey>,
       options?: HasManyHasAssociationsMixinOptions | HasManyGetAssociationsMixinOptions
-    ): Promise<boolean>
+    ): SequelizePromise<boolean>
   }
 
   /**
@@ -758,7 +759,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Count everything currently associated with this, using an optional where clause.
      * @param options The options to use when counting the associations.
      */
-    (options?: HasManyCountAssociationsMixinOptions): Promise<number>
+    (options?: HasManyCountAssociationsMixinOptions): SequelizePromise<number>
   }
 
   /**
@@ -808,7 +809,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Get everything currently associated with this, using an optional where clause.
      * @param options The options to use when getting the associations.
      */
-    (options?: BelongsToManyGetAssociationsMixinOptions): Promise<TInstance[]>
+    (options?: BelongsToManyGetAssociationsMixinOptions): SequelizePromise<TInstance[]>
   }
 
   /**
@@ -858,7 +859,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociations?: Array<TInstance | TInstancePrimaryKey>,
       options?: BelongsToManySetAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -907,7 +908,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociations?: Array<TInstance | TInstancePrimaryKey>,
       options?: BelongsToManyAddAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -956,7 +957,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       newAssociation?: TInstance | TInstancePrimaryKey,
       options?: BelongsToManyAddAssociationMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -999,7 +1000,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       values?: TAttributes,
       options?: BelongsToManyCreateAssociationMixinOptions | CreateOptions | TJoinTableAttributes
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -1042,7 +1043,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       oldAssociated?: TInstance | TInstancePrimaryKey,
       options?: BelongsToManyRemoveAssociationMixinOptions | InstanceDestroyOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -1085,7 +1086,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       oldAssociateds?: Array<TInstance | TInstancePrimaryKey>,
       options?: BelongsToManyRemoveAssociationsMixinOptions | InstanceDestroyOptions
-    ): Promise<void>
+    ): SequelizePromise<void>
   }
 
   /**
@@ -1128,7 +1129,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       target: TInstance | TInstancePrimaryKey,
       options?: BelongsToManyHasAssociationMixinOptions | BelongsToManyGetAssociationsMixinOptions
-    ): Promise<boolean>
+    ): SequelizePromise<boolean>
   }
 
   /**
@@ -1171,7 +1172,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     (
       targets: Array<TInstance | TInstancePrimaryKey>,
       options?: BelongsToManyHasAssociationsMixinOptions | BelongsToManyGetAssociationsMixinOptions
-    ): Promise<boolean>
+    ): SequelizePromise<boolean>
   }
 
   /**
@@ -1221,7 +1222,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Count everything currently associated with this, using an optional where clause.
      * @param options The options to use when counting the associations.
      */
-    (options?: BelongsToManyCountAssociationsMixinOptions): Promise<number>
+    (options?: BelongsToManyCountAssociationsMixinOptions): SequelizePromise<number>
   }
 
   /**
@@ -2836,7 +2837,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * called with an instance of `Sequelize.ValidationError`. This error will have a property for each of the
      * fields for which validation failed, with the error message for that field.
      */
-    save(options?: InstanceSaveOptions): Promise<TInstance>;
+    save(options?: InstanceSaveOptions): SequelizePromise<TInstance>;
 
     /**
      * Refresh the current instance in-place, i.e. update the object with current data from the DB and return
@@ -2844,7 +2845,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * return a new instance. With this method, all references to the Instance are updated with the new data
      * and no new objects are created.
      */
-    reload(options?: FindOptions): Promise<TInstance>;
+    reload(options?: FindOptions): SequelizePromise<TInstance>;
 
     /**
      * Validate the attribute of this instance according to validation rules set in the model definition.
@@ -2854,26 +2855,26 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *
      * @param options.skip An array of strings. All properties that are in this array will not be validated
      */
-    validate(options?: { skip?: Array<string> }): Promise<ValidationError>;
+    validate(options?: { skip?: Array<string> }): SequelizePromise<ValidationError>;
 
     /**
      * This is the same as calling `set` and then calling `save`.
      */
-    update(key: string, value: any, options?: InstanceUpdateOptions): Promise<TInstance>;
-    update(keys: Object, options?: InstanceUpdateOptions): Promise<TInstance>;
-    updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<TInstance>;
-    updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<TInstance>;
+    update(key: string, value: any, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
+    update(keys: Object, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
+    updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
+    updateAttributes(keys: Object, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
 
     /**
      * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
      * either be completely deleted, or have its deletedAt timestamp set to the current time.
      */
-    destroy(options?: InstanceDestroyOptions): Promise<void>;
+    destroy(options?: InstanceDestroyOptions): SequelizePromise<void>;
 
     /**
      * Restore the row corresponding to this instance. Only available for paranoid models.
      */
-    restore(options?: InstanceRestoreOptions): Promise<void>;
+    restore(options?: InstanceRestoreOptions): SequelizePromise<void>;
 
     /**
      * Increment the value of one or more columns. This is done in the database, which means it does not use
@@ -2896,7 +2897,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *               If and object is provided, each column is incremented by the value given.
      */
     increment(fields: string | Array<string> | Object,
-      options?: InstanceIncrementDecrementOptions): Promise<TInstance>;
+      options?: InstanceIncrementDecrementOptions): SequelizePromise<TInstance>;
 
     /**
      * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2919,7 +2920,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *               If and object is provided, each column is decremented by the value given
      */
     decrement(fields: string | Array<string> | Object,
-      options?: InstanceIncrementDecrementOptions): Promise<TInstance>;
+      options?: InstanceIncrementDecrementOptions): SequelizePromise<TInstance>;
 
     /**
      * Check whether all values of this and `other` Instance are the same
@@ -3626,14 +3627,14 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * Sync this Model to the DB, that is create the table. Upon success, the callback will be called with the
      * model instance (this)
      */
-    sync(options?: SyncOptions): Promise<Model<TInstance, TAttributes>>;
+    sync(options?: SyncOptions): SequelizePromise<Model<TInstance, TAttributes>>;
 
     /**
      * Drop the table represented by this Model
      *
      * @param options
      */
-    drop(options?: DropOptions): Promise<void>;
+    drop(options?: DropOptions): SequelizePromise<void>;
 
     /**
      * Apply a schema to this model. For postgres, this will actually place the schema in front of the table
@@ -3769,22 +3770,22 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *
      * @see    {Sequelize#query}
      */
-    findAll(options?: FindOptions): Promise<Array<TInstance>>;
-    all(optionz?: FindOptions): Promise<Array<TInstance>>;
+    findAll(options?: FindOptions): SequelizePromise<Array<TInstance>>;
+    all(optionz?: FindOptions): SequelizePromise<Array<TInstance>>;
 
     /**
      * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
      * always be called with a single instance.
      */
-    findById(identifier?: number | string, options?: FindOptions): Promise<TInstance>;
-    findByPrimary(identifier?: number | string, options?: FindOptions): Promise<TInstance>;
+    findById(identifier?: number | string, options?: FindOptions): SequelizePromise<TInstance>;
+    findByPrimary(identifier?: number | string, options?: FindOptions): SequelizePromise<TInstance>;
 
     /**
      * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
      * instance.
      */
-    findOne(options?: FindOptions): Promise<TInstance>;
-    find(optionz?: FindOptions): Promise<TInstance>;
+    findOne(options?: FindOptions): SequelizePromise<TInstance>;
+    find(optionz?: FindOptions): SequelizePromise<TInstance>;
 
     /**
      * Run an aggregation method on the specified field
@@ -3795,14 +3796,14 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
      *     which case the complete data result is returned.
      */
-    aggregate(field: string, aggregateFunction: Function, options?: AggregateOptions): Promise<Object>;
+    aggregate(field: string, aggregateFunction: Function, options?: AggregateOptions): SequelizePromise<Object>;
 
     /**
      * Count the number of records matching the provided where clause.
      *
      * If you provide an `include` option, the number of matching associations will be counted instead.
      */
-    count(options?: CountOptions): Promise<number>;
+    count(options?: CountOptions): SequelizePromise<number>;
 
     /**
      * Find all the rows matching your query, within a specified offset / limit, and get the total number of
@@ -3839,23 +3840,23 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * without
      * profiles will be counted
      */
-    findAndCount(options?: FindOptions): Promise<{ rows: Array<TInstance>, count: number }>;
-    findAndCountAll(options?: FindOptions): Promise<{ rows: Array<TInstance>, count: number }>;
+    findAndCount(options?: FindOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
+    findAndCountAll(options?: FindOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
 
     /**
      * Find the maximum value of field
      */
-    max(field: string, options?: AggregateOptions): Promise<any>;
+    max(field: string, options?: AggregateOptions): SequelizePromise<any>;
 
     /**
      * Find the minimum value of field
      */
-    min(field: string, options?: AggregateOptions): Promise<any>;
+    min(field: string, options?: AggregateOptions): SequelizePromise<any>;
 
     /**
      * Find the sum of field
      */
-    sum(field: string, options?: AggregateOptions): Promise<number>;
+    sum(field: string, options?: AggregateOptions): SequelizePromise<number>;
 
     /**
      * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
@@ -3870,14 +3871,14 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     /**
      * Builds a new model instance and calls save on it.
      */
-    create(values?: TAttributes, options?: CreateOptions): Promise<TInstance>;
+    create(values?: TAttributes, options?: CreateOptions): SequelizePromise<TInstance>;
 
     /**
      * Find a row that matches the query, or build (but don't save) the row if none is found.
      * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
      */
-    findOrInitialize(options: FindOrInitializeOptions<TAttributes>): Promise<TInstance>;
-    findOrBuild(options: FindOrInitializeOptions<TAttributes>): Promise<TInstance>;
+    findOrInitialize(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
+    findOrBuild(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
 
     /**
      * Find a row that matches the query, or build and save the row if none is found
@@ -3890,7 +3891,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
      * will be created instead, and any unique constraint violation will be handled internally.
      */
-    findOrCreate(options: FindOrInitializeOptions<TAttributes>): Promise<TInstance>;
+    findOrCreate(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
 
     /**
      * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -3911,8 +3912,8 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
      * whether the row was inserted or not.
      */
-    upsert(values: TAttributes, options?: UpsertOptions): Promise<boolean>;
-    insertOrUpdate(values: TAttributes, options?: UpsertOptions): Promise<boolean>;
+    upsert(values: TAttributes, options?: UpsertOptions): SequelizePromise<boolean>;
+    insertOrUpdate(values: TAttributes, options?: UpsertOptions): SequelizePromise<boolean>;
 
     /**
      * Create and insert multiple instances in bulk.
@@ -3925,37 +3926,37 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *
      * @param records List of objects (key/value pairs) to create instances from
      */
-    bulkCreate(records: Array<TAttributes>, options?: BulkCreateOptions): Promise<Array<TInstance>>;
+    bulkCreate(records: Array<TAttributes>, options?: BulkCreateOptions): SequelizePromise<Array<TInstance>>;
 
     /**
      * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
      */
-    truncate(options?: TruncateOptions): Promise<void>;
+    truncate(options?: TruncateOptions): SequelizePromise<void>;
 
     /**
      * Delete multiple instances, or set their deletedAt timestamp to the current time if `paranoid` is enabled.
      *
      * @return Promise<number> The number of destroyed rows
      */
-    destroy(options?: DestroyOptions): Promise<number>;
+    destroy(options?: DestroyOptions): SequelizePromise<number>;
 
     /**
      * Restore multiple instances if `paranoid` is enabled.
      */
-    restore(options?: RestoreOptions): Promise<void>;
+    restore(options?: RestoreOptions): SequelizePromise<void>;
 
     /**
      * Update multiple instances that match the where options. The promise returns an array with one or two
      * elements. The first element is always the number of affected rows, while the second element is the actual
      * affected rows (only supported in postgres with `options.returning` true.)
      */
-    update(values: TAttributes, options: UpdateOptions): Promise<[number, Array<TInstance>]>;
+    update(values: TAttributes, options: UpdateOptions): SequelizePromise<[number, Array<TInstance>]>;
 
     /**
      * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
      * their types.
      */
-    describe(): Promise<Object>;
+    describe(): SequelizePromise<Object>;
 
     /**
      * Unscope the model
@@ -4009,31 +4010,31 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *
      * @param schema The schema to query. Applies only to Postgres.
      */
-    createSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>;
+    createSchema(schema?: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Drops the specified schema (table).
      *
      * @param schema The schema to query. Applies only to Postgres.
      */
-    dropSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>;
+    dropSchema(schema?: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Drops all tables.
      */
-    dropAllSchemas(options?: QueryInterfaceOptions): Promise<void>;
+    dropAllSchemas(options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Queries all table names in the database.
      *
      * @param options
      */
-    showAllSchemas(options?: QueryOptions): Promise<Object>;
+    showAllSchemas(options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Return database version
      */
-    databaseVersion(options?: QueryInterfaceOptions): Promise<string>;
+    databaseVersion(options?: QueryInterfaceOptions): SequelizePromise<string>;
 
     /**
      * Creates a table with specified attributes.
@@ -4043,7 +4044,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param options       Query options.
      */
     createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes,
-      options?: QueryOptions): Promise<void>;
+      options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Drops the specified table.
@@ -4051,148 +4052,148 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param tableName Table name.
      * @param options   Query options, particularly "force".
      */
-    dropTable(tableName: string, options?: QueryOptions): Promise<void>;
+    dropTable(tableName: string, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Drops all tables.
      *
      * @param options
      */
-    dropAllTables(options?: QueryOptions): Promise<void>;
+    dropAllTables(options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Drops all defined enums
      *
      * @param options
      */
-    dropAllEnums(options?: QueryOptions): Promise<void>;
+    dropAllEnums(options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Renames a table
      */
-    renameTable(before: string, after: string, options?: QueryInterfaceOptions): Promise<void>;
+    renameTable(before: string, after: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Returns all tables
      */
-    showAllTables(options?: QueryOptions): Promise<Array<string>>;
+    showAllTables(options?: QueryOptions): SequelizePromise<Array<string>>;
 
     /**
      * Describe a table
      */
     describeTable(tableName: string | { schema?: string, tableName?: string },
-      options?: string | { schema?: string, schemaDelimeter?: string, logging?: boolean | Function }): Promise<Object>;
+      options?: string | { schema?: string, schemaDelimeter?: string, logging?: boolean | Function }): SequelizePromise<Object>;
 
     /**
      * Adds a new column to a table
      */
     addColumn(table: string, key: string, attribute: DefineAttributeColumnOptions | DataTypeAbstract,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Removes a column from a table
      */
-    removeColumn(table: string, attribute: string, options?: QueryInterfaceOptions): Promise<void>;
+    removeColumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Changes a column
      */
     changeColumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
       dataTypeOrOptions?: string | DataTypeAbstract | DefineAttributeColumnOptions,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Renames a column
      */
     renameColumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
       attrNameAfter: string,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Adds a new index to a table
      */
     addIndex(tableName: string | Object, attributes: Array<string>, options?: QueryOptions,
-      rawTablename?: string): Promise<void>;
+      rawTablename?: string): SequelizePromise<void>;
 
     /**
      * Shows the index of a table
      */
-    showIndex(tableName: string | Object, options?: QueryOptions): Promise<Object>;
+    showIndex(tableName: string | Object, options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Put a name to an index
      */
-    nameIndexes(indexes: Array<string>, rawTablename: string): Promise<void>;
+    nameIndexes(indexes: Array<string>, rawTablename: string): SequelizePromise<void>;
 
     /**
      * Returns all foreign key constraints of a table
      */
-    getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): Promise<Object>;
+    getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): SequelizePromise<Object>;
 
     /**
      * Removes an index of a table
      */
     removeIndex(tableName: string, indexNameOrAttributes: Array<string> | string,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Inserts a new record
      */
     insert(instance: Instance<any, any>, tableName: string, values: Object,
-      options?: QueryOptions): Promise<Object>;
+      options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Inserts or Updates a record in the database
      */
     upsert(tableName: string, values: Object, updateValues: Object, model: Model<any, any>,
-      options?: QueryOptions): Promise<Object>;
+      options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Inserts multiple records at once
      */
     bulkInsert(tableName: string, records: Array<Object>, options?: QueryOptions,
-      attributes?: Array<string> | string): Promise<Object>;
+      attributes?: Array<string> | string): SequelizePromise<Object>;
 
     /**
      * Updates a row
      */
     update(instance: Instance<any, any>, tableName: string, values: Object, identifier: Object,
-      options?: QueryOptions): Promise<Object>;
+      options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Updates multiple rows at once
      */
     bulkUpdate(tableName: string, values: Object, identifier: Object, options?: QueryOptions,
-      attributes?: Array<string> | string): Promise<Object>;
+      attributes?: Array<string> | string): SequelizePromise<Object>;
 
     /**
      * Deletes a row
      */
     delete(instance: Instance<any, any>, tableName: string, identifier: Object,
-      options?: QueryOptions): Promise<Object>;
+      options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Deletes multiple rows at once
      */
     bulkDelete(tableName: string, identifier: Object, options?: QueryOptions,
-      model?: Model<any, any>): Promise<Object>;
+      model?: Model<any, any>): SequelizePromise<Object>;
 
     /**
      * Returns selected rows
      */
-    select(model: Model<any, any>, tableName: string, options?: QueryOptions): Promise<Array<Object>>;
+    select(model: Model<any, any>, tableName: string, options?: QueryOptions): SequelizePromise<Array<Object>>;
 
     /**
      * Increments a row value
      */
     increment(instance: Instance<any, any>, tableName: string, values: Object, identifier: Object,
-      options?: QueryOptions): Promise<Object>;
+      options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Selects raw without parsing the string into an object
      */
     rawSelect(tableName: string, options: QueryOptions, attributeSelector: string | Array<string>,
-      model?: Model<any, any>): Promise<Array<string>>;
+      model?: Model<any, any>): SequelizePromise<Array<string>>;
 
     /**
      * Postgres only. Creates a trigger on specified table to call the specified function with supplied
@@ -4200,36 +4201,36 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      */
     createTrigger(tableName: string, triggerName: string, timingType: string, fireOnArray: Array<any>,
       functionName: string, functionParams: Array<any>, optionsArray: Array<string>,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Postgres only. Drops the specified trigger.
      */
-    dropTrigger(tableName: string, triggerName: string, options?: QueryInterfaceOptions): Promise<void>;
+    dropTrigger(tableName: string, triggerName: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Postgres only. Renames a trigger
      */
     renameTrigger(tableName: string, oldTriggerName: string, newTriggerName: string,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Postgres only. Create a function
      */
     createFunction(functionName: string, params: Array<any>, returnType: string, language: string,
-      body: string, options?: QueryOptions): Promise<void>;
+      body: string, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Postgres only. Drops a function
      */
     dropFunction(functionName: string, params: Array<any>,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Postgres only. Rename a function
      */
     renameFunction(oldFunctionName: string, params: Array<any>, newFunctionName: string,
-      options?: QueryInterfaceOptions): Promise<void>;
+      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Escape an identifier (e.g. a table or attribute name). If force is true, the identifier will be quoted
@@ -4256,32 +4257,32 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     /**
      * Set option for autocommit of a transaction
      */
-    setAutocommit(transaction: Transaction, value: boolean, options?: QueryOptions): Promise<void>;
+    setAutocommit(transaction: Transaction, value: boolean, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Set the isolation level of a transaction
      */
-    setIsolationLevel(transaction: Transaction, value: string, options?: QueryOptions): Promise<void>;
+    setIsolationLevel(transaction: Transaction, value: string, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Begin a new transaction
      */
-    startTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>;
+    startTransaction(transaction: Transaction, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Defer constraints
      */
-    deferConstraints(transaction: Transaction, options?: QueryOptions): Promise<void>;
+    deferConstraints(transaction: Transaction, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Commit an already started transaction
      */
-    commitTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>;
+    commitTransaction(transaction: Transaction, options?: QueryOptions): SequelizePromise<void>;
 
     /**
      * Rollback ( revert ) a transaction that has'nt been commited
      */
-    rollbackTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>;
+    rollbackTransaction(transaction: Transaction, options?: QueryOptions): SequelizePromise<void>;
 
   }
 
@@ -5225,7 +5226,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     /**
      * A modified version of bluebird promises, that allows listening for sql events
      */
-    Promise: typeof Promise;
+    Promise: typeof SequelizePromise;
 
     /**
      * Available query types for use with `sequelize.query`
@@ -5489,7 +5490,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param sql
      * @param options Query options
      */
-    query(sql: string | { query: string, values: Array<any> }, options?: QueryOptions): Promise<any>;
+    query(sql: string | { query: string, values: Array<any> }, options?: QueryOptions): SequelizePromise<any>;
 
     /**
      * Execute a query which would set an environment or user variable. The variables are set per connection,
@@ -5500,7 +5501,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param variables Object with multiple variables.
      * @param options Query options.
      */
-    set(variables: Object, options: QueryOptionsTransactionRequired): Promise<any>;
+    set(variables: Object, options: QueryOptionsTransactionRequired): SequelizePromise<any>;
 
     /**
      * Escape value.
@@ -5520,7 +5521,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param options Options supplied
      * @param options.logging A function that logs sql queries, or false for no logging
      */
-    createSchema(schema: string, options: { logging?: boolean | Function }): Promise<any>;
+    createSchema(schema: string, options: { logging?: boolean | Function }): SequelizePromise<any>;
 
     /**
      * Show all defined schemas
@@ -5532,7 +5533,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param options Options supplied
      * @param options.logging A function that logs sql queries, or false for no logging
      */
-    showAllSchemas(options: { logging?: boolean | Function }): Promise<any>;
+    showAllSchemas(options: { logging?: boolean | Function }): SequelizePromise<any>;
 
     /**
      * Drop a single schema
@@ -5545,7 +5546,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param options Options supplied
      * @param options.logging A function that logs sql queries, or false for no logging
      */
-    dropSchema(schema: string, options: { logging?: boolean | Function }): Promise<any>;
+    dropSchema(schema: string, options: { logging?: boolean | Function }): SequelizePromise<any>;
 
     /**
      * Drop all schemas
@@ -5557,14 +5558,14 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param options Options supplied
      * @param options.logging A function that logs sql queries, or false for no logging
      */
-    dropAllSchemas(options: { logging?: boolean | Function }): Promise<any>;
+    dropAllSchemas(options: { logging?: boolean | Function }): SequelizePromise<any>;
 
     /**
      * Sync all defined models to the DB.
      *
      * @param options Sync Options
      */
-    sync(options?: SyncOptions): Promise<any>;
+    sync(options?: SyncOptions): SequelizePromise<any>;
 
     /**
      * Truncate all tables defined through the sequelize models. This is done
@@ -5574,7 +5575,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param {Boolean|function} [options.transaction]
      * @param {Boolean|function} [options.logging] A function that logs sql queries, or false for no logging
      */
-    truncate(options?: DestroyOptions): Promise<any>;
+    truncate(options?: DestroyOptions): SequelizePromise<any>;
 
     /**
      * Drop all tables defined through this sequelize instance. This is done by calling Model.drop on each model
@@ -5582,15 +5583,15 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      *
      * @param options The options passed to each call to Model.drop
      */
-    drop(options?: DropOptions): Promise<any>;
+    drop(options?: DropOptions): SequelizePromise<any>;
 
     /**
      * Test the connection by trying to authenticate
      *
      * @param options Query Options for authentication
      */
-    authenticate(options?: QueryOptions): Promise<void>;
-    validate(options?: QueryOptions): Promise<ValidationError>;
+    authenticate(options?: QueryOptions): SequelizePromise<void>;
+    validate(options?: QueryOptions): SequelizePromise<ValidationError>;
 
     /**
      * Start a transaction. When using transactions, you should pass the transaction in the options argument
@@ -5638,9 +5639,9 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      * @param autoCallback Callback for the transaction
      */
     transaction(options: TransactionOptions,
-      autoCallback: (t: Transaction) => Promise<any>): Promise<any>;
-    transaction(autoCallback: (t: Transaction) => Promise<any>): Promise<any>;
-    transaction(): Promise<Transaction>;
+      autoCallback: (t: Transaction) => SequelizePromise<any>): SequelizePromise<any>;
+    transaction(autoCallback: (t: Transaction) => SequelizePromise<any>): SequelizePromise<any>;
+    transaction(): SequelizePromise<Transaction>;
 
     /**
      * Close all connections used by this sequelize instance, and free all references so the instance can be
@@ -5654,7 +5655,7 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     /**
      * Returns the database version
      */
-    databaseVersion(): Promise<string>;
+    databaseVersion(): SequelizePromise<string>;
 
   }
 
@@ -5710,12 +5711,12 @@ If you want to propagate SQL events across then, all calls etc., you must use se
     /**
      * Commit the transaction
      */
-    commit(): Promise<void>;
+    commit(): SequelizePromise<void>;
 
     /**
      * Rollback (abort) the transaction
      */
-    rollback(): Promise<void>;
+    rollback(): SequelizePromise<void>;
 
   }
 
@@ -5981,7 +5982,6 @@ If you want to propagate SQL events across then, all calls etc., you must use se
   }
 
   interface SequelizeLoDash extends _.LoDashStatic {
-
     camelizeIf(str: string, condition: boolean): string;
     underscoredIf(str: string, condition: boolean): string;
     /**
@@ -5992,11 +5992,9 @@ If you want to propagate SQL events across then, all calls etc., you must use se
      */
     compactLite<T>(arr: Array<T>): Array<T>;
     matchesDots(dots: string | Array<string>, value: Object): (item: Object) => boolean;
-
   }
 
   interface Utils {
-
     _: SequelizeLoDash;
 
     /**
@@ -6048,9 +6046,9 @@ If you want to propagate SQL events across then, all calls etc., you must use se
 
     validateParameter(value: Object, expectation: Object, options?: Object): boolean;
     formatReferences(obj: Object): Object;
-    Promise: typeof Promise;
+    Promise: typeof SequelizePromise;
   }
 }
 
-declare var sequelize: Sequelize;
+declare var sequelize: sequelize.Sequelize;
 export = sequelize;
