@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "files": [
+    "sequelize.d.ts",
+    "typings/main.d.ts"
+  ]
+}

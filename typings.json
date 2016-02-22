@@ -1,0 +1,11 @@
+{
+  "name": "sequelize",
+  "main": "sequelize.d.ts",
+  "devDependencies": {
+    "sequelize": "file:sequelize.d.ts"
+  },
+  "ambientDependencies": {
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#7b7aa2027a8fb6219a8bcf1b6bb12bcd0ff9539d",
+    "validator": "github:DefinitelyTyped/DefinitelyTyped/validator/validator.d.ts#25ef75ce61530b82d5b4e7664c109e1ee3bc0c34"
+  }
+}
