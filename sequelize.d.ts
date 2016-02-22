@@ -3183,6 +3183,11 @@ declare module sequelize {
     order?: string | col | literal | Array<string | number | Model<any, any> | { model: Model<any, any>, as?: string }> | Array<string | col | literal | Array<string | number | Model<any, any> | { model: Model<any, any>, as?: string }>>;
 
     /**
+     * GROUP BY in sql
+     */
+    group?: GroupOption;
+
+    /**
      * Limit the results
      */
     limit?: number;
@@ -3247,11 +3252,9 @@ declare module sequelize {
     attributes?: Array<string | [string, string]>;
 
     /**
-     * For creating complex counts. Will return multiple rows as needed.
-     *
-     * TODO: Check?
+     * GROUP BY in sql
      */
-    group?: Object | string;
+    group?: GroupOption;
 
     /**
      * A function that gets executed while running the query to log the sql.
@@ -5853,6 +5856,8 @@ declare module sequelize {
   //
   //  Utils
   // ~~~~~~~
+
+  type GroupOption = string | fn | col | (string | fn | col)[];
 
   interface fn {
     clone: fnStatic;
