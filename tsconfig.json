@@ -4,6 +4,12 @@
     "moduleResolution": "node"
   },
   "files": [
+    "lib/data-types.d.ts",
+    "lib/sql-string.d.ts",
+    "lib/utils/parameter-validator.d.ts",
+    "lib/utils.d.ts",
+    "lib/promise.d.ts",
+    "interfaces.d.ts",
     "sequelize.d.ts",
     "typings/main.d.ts"
   ]
