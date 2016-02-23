@@ -10,7 +10,7 @@
     "lib/utils.d.ts",
     "lib/promise.d.ts",
     "interfaces.d.ts",
-    "sequelize.d.ts",
+    "index.d.ts",
     "typings/main.d.ts"
   ]
 }

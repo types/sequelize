@@ -1,8 +1,8 @@
 {
   "name": "sequelize",
-  "main": "sequelize.d.ts",
+  "main": "index.d.ts",
   "devDependencies": {
-    "sequelize": "file:sequelize.d.ts"
+    "sequelize": "file:index.d.ts"
   },
   "ambientDependencies": {
     "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#7b7aa2027a8fb6219a8bcf1b6bb12bcd0ff9539d",
