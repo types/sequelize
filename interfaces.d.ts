@@ -4105,7 +4105,7 @@ export interface DefineAttributeColumnOptions extends ColumnOptions {
   /**
    * A string or a data type
    */
-  type: string | ABSTRACT;
+  type: string | ABSTRACT | typeof ABSTRACT;
 
   /**
    * If true, the column will get a unique constraint. If a string is provided, the column will be part of a
