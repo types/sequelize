@@ -8,6 +8,7 @@ declare module sequelize {
   type Promise = typeof interfaces.Promise;
   type Sequelize = interfaces.Static;
   type Connection = interfaces.Connection;
+  type Model<TInstance, TAttributes> = interfaces.Model<TInstance, TAttributes>;
 }
 
 declare var sequelize: sequelize.Sequelize;
