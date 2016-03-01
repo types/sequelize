@@ -4937,6 +4937,7 @@ export interface Options {
 }
 
 import Utils = require('./lib/utils');
+import {Validator} from './lib/utils/validator-extras';
 
 /**
  * Sequelize methods that are available both for the static and the instance class of Sequelize
@@ -5386,33 +5387,6 @@ export interface Connection extends SequelizeStaticAndInstance, Hooks<any> {
    * Returns the database version
    */
   databaseVersion(): SequelizePromise<string>;
-
-}
-
-//
-//  Validator
-// ~~~~~~~~~~~
-
-/**
- * Validator Interface
- */
-export interface Validator extends IValidatorStatic {
-
-  notEmpty(str: string): boolean;
-  len(str: string, min: number, max: number): boolean;
-  isUrl(str: string): boolean;
-  isIPv6(str: string): boolean
-  isIPv4(str: string): boolean
-  notIn(str: string, values: Array<string>): boolean;
-  regex(str: string, pattern: string, modifiers: string): boolean;
-  notRegex(str: string, pattern: string, modifiers: string): boolean;
-  isDecimal(str: string): boolean;
-  min(str: string, val: number): boolean;
-  max(str: string, val: number): boolean;
-  not(str: string, pattern: string, modifiers: string): boolean;
-  contains(str: string, element: Array<string>): boolean;
-  notContains(str: string, element: Array<string>): boolean;
-  is(str: string, pattern: string, modifiers: string): boolean;
 
 }
 

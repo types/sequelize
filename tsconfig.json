@@ -7,6 +7,7 @@
     "lib/data-types.d.ts",
     "lib/sql-string.d.ts",
     "lib/utils/parameter-validator.d.ts",
+    "lib/utils/validator-extras.d.ts",
     "lib/utils.d.ts",
     "lib/promise.d.ts",
     "interfaces.d.ts",
