@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 import SequelizePromise = require('./lib/promise');
 import {DataTypes, ABSTRACT} from './lib/data-types';
 
@@ -4938,6 +4936,8 @@ export interface Options {
 
 }
 
+import Utils = require('./lib/utils');
+
 /**
  * Sequelize methods that are available both for the static and the instance class of Sequelize
  */
@@ -4948,7 +4948,7 @@ export interface SequelizeStaticAndInstance extends Errors {
    * might want to use `Sequelize.Utils._`, which is a reference to the lodash library, if you don't already
    * have it imported in your project.
    */
-  Utils: Utils;
+  Utils: typeof Utils;
 
   /**
    * A modified version of bluebird promises, that allows listening for sql events
@@ -5711,72 +5711,4 @@ export interface whereStatic {
    */
   new (attr: Object, comparator: string, logic: string | Object): where;
   new (attr: Object, logic: string | Object): where;
-}
-
-export interface SequelizeLoDash extends _.LoDashStatic {
-  camelizeIf(str: string, condition: boolean): string;
-  underscoredIf(str: string, condition: boolean): string;
-  /**
-   * * Returns an array with some falsy values removed. The values null, "", undefined and NaN are considered
-   * falsey.
-   *
-   * @param arr Array to compact.
-   */
-  compactLite<T>(arr: Array<T>): Array<T>;
-  matchesDots(dots: string | Array<string>, value: Object): (item: Object) => boolean;
-}
-
-export interface Utils {
-  _: SequelizeLoDash;
-
-  /**
-   * Same concept as _.merge, but don't overwrite properties that have already been assigned
-   */
-  mergeDefaults: typeof _.merge;
-
-  lowercaseFirst(str: string): string;
-  uppercaseFirst(str: string): string;
-  spliceStr(str: string, index: number, count: number, add: string): string;
-  camelize(str: string): string;
-  format(arr: Array<any>, dialect?: string): string;
-  formatNamedParameters(sql: string, parameters: any, dialect?: string): string;
-  cloneDeep<T extends Object>(obj: T, fn?: (value: T) => any): T;
-  mapOptionFieldNames<T extends Object>(options: T, Model: Model<any, any>): T;
-  mapValueFieldNames(dataValues: Object, fields: Array<string>, Model: Model<any, any>): Object;
-  argsArePrimaryKeys(args: Array<any>, primaryKeys: Object): boolean;
-  canTreatArrayAsAnd(arr: Array<any>): boolean;
-  combineTableNames(tableName1: string, tableName2: string): string;
-  singularize(s: string): string;
-  pluralize(s: string): string;
-  removeCommentsFromFunctionString(s: string): string;
-  toDefaultValue(value: ABSTRACT): any;
-  toDefaultValue(value: () => ABSTRACT): any;
-
-  /**
-   * Determine if the default value provided exists and can be described
-   * in a db schema using the DEFAULT directive.
-   */
-  defaultValueSchemable(value: any): boolean;
-
-  removeNullValuesFromHash(hash: Object, omitNull?: boolean, options?: Object): any;
-  inherit(subClass: Object, superClass: Object): Object;
-  stack(): string;
-  sliceArgs(args: Array<any>, begin?: number): Array<any>;
-  now(dialect: string): Date;
-  tick(f: Function): void;
-  addTicks(s: string, tickChar?: string): string;
-  removeTicks(s: string, tickChar?: string): string;
-
-  fn: fnStatic;
-  col: colStatic;
-  cast: castStatic;
-  literal: literalStatic;
-  and: andStatic;
-  or: orStatic;
-  json: jsonStatic;
-  where: whereStatic;
-
-  validateParameter(value: Object, expectation: Object, options?: Object): boolean;
-  formatReferences(obj: Object): Object;
-  Promise: typeof SequelizePromise;
 }

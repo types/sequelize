@@ -1,19 +1,32 @@
-import * as LoDash from 'lodash';
+// import * as LoDash from 'lodash';
+//
+// export interface SequelizeLoDash extends LoDash.LoDashStatic {
+//   camelizeIf(str: string, condition: boolean): string;
+//   underscoredIf(str: string, condition: boolean): string;
+//   /**
+//    * * Returns an array with some falsy values removed. The values null, "", undefined and NaN are considered
+//    * falsey.
+//    *
+//    * @param arr Array to compact.
+//    */
+//   compactLite<T>(arr: Array<T>): Array<T>;
+//   matchesDots(dots: string | Array<string>, value: Object): (item: Object) => boolean;
+// }
+// export const _: SequelizeLoDash;
+
+// import inflection = require('inflection');
+// export const inflection: typeof inflection;
 
 import parameterValidator = require('./utils/parameter-validator');
-// import inflection = require('inflection');
 
 export type Primitive = 'string'|'number'|'boolean';
-
-// export const inflection: typeof inflection;
-export const _: typeof LoDash;
 
 export function camelizeIf(string: string, condition?: boolean): string;
 export function underscoredIf(string: string, condition?: boolean): string;
 export function isPrimitive(val: any): val is Primitive;
 
 /** Same concept as _.merge, but don't overwrite properties that have already been assigned */
-export function  mergeDefaults(a: any, b: any): any;
+export function mergeDefaults(a: any, b: any): any;
 export function lowercaseFirst(s: string): string;
 export function uppercaseFirst(s: string): string;
 export function spliceStr(str: string, index: number, count: number, add: string): string;
