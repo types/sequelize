@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+- '4.1'
+script:
+- npm i -g typings typescript
+- tsc -p .
+- typings install
+- tsc -p test
