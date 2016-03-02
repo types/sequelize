@@ -10,7 +10,6 @@
     "lib/utils/validator-extras.d.ts",
     "lib/utils.d.ts",
     "lib/promise.d.ts",
-    "interfaces.d.ts",
     "index.d.ts",
     "typings/main.d.ts"
   ]
