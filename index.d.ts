@@ -2860,6 +2860,13 @@ declare module sequelize {
 
   }
 
+  export type OrderItem =
+    string | fn | col | literal |
+    [string | col | fn | literal, string] |
+    [Model<any, any> | {model: Model<any, any>, as: string}, string, string] |
+    [Model<any, any>, Model<any, any>, string, string];
+  export type Order = OrderItem | OrderItem[];
+
   /**
    * Options that are passed to any model creating a SELECT query
    *
@@ -2904,7 +2911,7 @@ declare module sequelize {
      * first element is the column / function to order by, the second is the direction. For example:
      * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
      */
-    order?: string | col | literal | Array<string | number | Model<any, any> | { model: Model<any, any>, as?: string }> | Array<string | col | literal | Array<string | number | Model<any, any> | { model: Model<any, any>, as?: string }>>;
+    order?: Order;
 
     /**
      * GROUP BY in sql
