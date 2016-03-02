@@ -4193,7 +4193,7 @@ export interface DefineAttributes {
   /**
    * The description of a database column
    */
-  [name: string]: string | ABSTRACT | DefineAttributeColumnOptions;
+  [name: string]: string | ABSTRACT | typeof ABSTRACT | DefineAttributeColumnOptions;
 
 }
 
