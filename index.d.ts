@@ -4,13 +4,14 @@
 // import * as DataTypes from './lib/data-types';
 
 import SequelizePromise = require('./lib/promise');
-import {DataTypes, ABSTRACT} from './lib/data-types';
+import {DataTypes as SequelizeDataTypes, ABSTRACT} from './lib/data-types';
 
 import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
 
 declare module sequelize {
-  type Promise<T> = SequelizePromise<T>;
+  type Promise = typeof SequelizePromise;
+  type DataTypes = SequelizeDataTypes;
 
   /**
    * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
