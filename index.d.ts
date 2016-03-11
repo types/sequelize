@@ -10,7 +10,7 @@ import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
 
 declare module sequelize {
-  type Promise = typeof SequelizePromise;
+  type Promise<T> = SequelizePromise<T>;
   type DataTypes = SequelizeDataTypes;
 
   /**
