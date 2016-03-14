@@ -3324,23 +3324,17 @@ declare module sequelize {
    * Options used for Model.aggregate
    */
   export interface AggregateOptions extends QueryOptions {
-
-    /**
-     * A hash of search attributes.
-     */
+    /** A hash of search attributes. */
     where?: WhereOptions;
 
     /**
      * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
      * otherwise defaults to float.
      */
-    dataType?: ABSTRACT | string;
+    dataType?: typeof ABSTRACT | ABSTRACT | string;
 
-    /**
-     * Applies DISTINCT to the field being aggregated over
-     */
+    /** Applies DISTINCT to the field being aggregated over */
     distinct?: boolean;
-
   }
 
   /**
@@ -3535,7 +3529,8 @@ declare module sequelize {
      * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
      *     which case the complete data result is returned.
      */
-    aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): SequelizePromise<Object>;
+    aggregate<T>(field: string, aggregateFunction: string, options?: AggregateOptions): SequelizePromise<T>;
+    aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): SequelizePromise<number>;
 
     /**
      * Count the number of records matching the provided where clause.
