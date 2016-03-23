@@ -353,14 +353,14 @@ export class UUIDV4 extends ABSTRACT {}
  *   password: {
  *     type: DataTypes.VIRTUAL,
  *     set: function (val) {
- *        this.setDataValue('password', val); // Remember to set the data value, otherwise it won't be validated
- *        this.setDataValue('password_hash', this.salt + val);
- *      },
- *      validate: {
- *         isLongEnough: function (val) {
- *           if (val.length < 7) {
- *             throw new Error("Please choose a longer password")
- *          }
+ *       this.setDataValue('password', val); // Remember to set the data value, otherwise it won't be validated
+ *       this.setDataValue('password_hash', this.salt + val);
+ *     },
+ *     validate: {
+ *       isLongEnough: function (val) {
+ *         if (val.length < 7) {
+ *           throw new Error("Please choose a longer password")
+ *         }
  *       }
  *     }
  *   }
@@ -385,10 +385,10 @@ export class UUIDV4 extends ABSTRACT {}
  * @property VIRTUAL
  * @alias NONE
  */
-export class VIRTUAL<T, F> extends ABSTRACT {
-  constructor(ReturnType: new () => T, fields: F);
+export class VIRTUAL<T> extends ABSTRACT {
+  constructor(ReturnType: new () => T, fields?: string[]);
   returnType: new () => T;
-  fields: F
+  fields: string[];
 }
 
 /**
@@ -396,14 +396,14 @@ export class VIRTUAL<T, F> extends ABSTRACT {
  *
  * @property ENUM
  */
-export class ENUM extends ABSTRACT{
+export class ENUM<T extends string> extends ABSTRACT {
   constructor(...values: string[]);
-  constructor(options: ENUM_Options);
-  values: string[];
-  options: ENUM_Options;
+  constructor(options: ENUM_Options<T>);
+  values: T[];
+  options: ENUM_Options<T>;
 }
-export interface ENUM_Options {
-  values: string[];
+export interface ENUM_Options<T extends string> {
+  values: T[];
 }
 
 /**
