@@ -2895,7 +2895,7 @@ declare module sequelize {
   export type OrderItem =
     string | fn | col | literal |
     [string | col | fn | literal, string] |
-    [Model<any, any> | {model: Model<any, any>, as: string}, string, string] |
+    [Model<any, any> | { model: Model<any, any>, as: string }, string, string] |
     [Model<any, any>, Model<any, any>, string, string];
   export type Order = OrderItem | OrderItem[];
 
@@ -2917,11 +2917,11 @@ declare module sequelize {
      * have in the returned instance
      */
     attributes?:
-      Array<string | [string | fn, string]> |
-      {
-        exclude?: Array<string>,
-        include?: Array<string | [string | fn, string]>
-      };
+    Array<string | [string | fn, string]> |
+    {
+      exclude?: Array<string>,
+      include?: Array<string | [string | fn, string]>
+    };
 
     /**
      * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -3362,7 +3362,7 @@ declare module sequelize {
      * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
      * otherwise defaults to float.
      */
-    dataType?: typeof ABSTRACT | ABSTRACT | string;
+    dataType?: typeof LibDataTypes.ABSTRACT | ABSTRACT | string;
 
     /** Applies DISTINCT to the field being aggregated over */
     distinct?: boolean;
@@ -4143,7 +4143,7 @@ declare module sequelize {
     /**
      * A string or a data type
      */
-    type: string | ABSTRACT | typeof ABSTRACT;
+    type: string | ABSTRACT | typeof LibDataTypes.ABSTRACT;
 
     /**
      * If true, the column will get a unique constraint. If a string is provided, the column will be part of a
@@ -4233,7 +4233,7 @@ declare module sequelize {
     /**
      * The description of a database column
      */
-    [name: string]: string | ABSTRACT | typeof ABSTRACT | DefineAttributeColumnOptions;
+    [name: string]: string | ABSTRACT | typeof LibDataTypes.ABSTRACT | DefineAttributeColumnOptions;
 
   }
 
