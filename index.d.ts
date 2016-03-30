@@ -4,19 +4,50 @@
 // import * as DataTypes from './lib/data-types';
 
 import SequelizePromise = require('./lib/promise');
-import {DataTypes as SequelizeDataTypes, ABSTRACT} from './lib/data-types';
+import * as LibDataTypes from  './lib/data-types';
 
 import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
 
 declare module sequelize {
   type Promise<T> = SequelizePromise<T>;
-  type DataTypes = SequelizeDataTypes;
+  type DataTypes = LibDataTypes.DataTypes;
+
+  type ABSTRACT = LibDataTypes.ABSTRACT;
+  type STRING = LibDataTypes.STRING;
+  type CHAR = LibDataTypes.CHAR;
+  type TEXT = LibDataTypes.TEXT;
+  type NUMBER = LibDataTypes.NUMBER;
+  type INTEGER = LibDataTypes.INTEGER;
+  type BIGINT = LibDataTypes.BIGINT;
+  type FLOAT = LibDataTypes.FLOAT;
+  type REAL = LibDataTypes.REAL;
+  type DOUBLE = LibDataTypes.DOUBLE;
+  type DECIMAL = LibDataTypes.DECIMAL;
+  type BOOLEAN = LibDataTypes.BOOLEAN;
+  type TIME = LibDataTypes.TIME;
+  type DATE = LibDataTypes.DATE;
+  type DATEONLY = LibDataTypes.DATEONLY;
+  type HSTORE = LibDataTypes.HSTORE;
+  type JSON = LibDataTypes.JSON;
+  type JSONB = LibDataTypes.JSONB;
+  type NOW = LibDataTypes.NOW;
+  type BLOB = LibDataTypes.BLOB;
+  type RANGE = LibDataTypes.RANGE;
+  type UUID = LibDataTypes.UUID;
+  type UUIDV1 = LibDataTypes.UUIDV1;
+  type UUIDV4 = LibDataTypes.UUIDV4;
+  type VIRTUAL = LibDataTypes.VIRTUAL;
+  type ENUM = LibDataTypes.ENUM;
+  type ARRAY = LibDataTypes.ARRAY;
+  type GEOMETRY = LibDataTypes.GEOMETRY;
+  type GEOGRAPHY = LibDataTypes.GEOGRAPHY;
+  type DOUBLE_PRECISION = LibDataTypes.DOUBLE;
 
   /**
    * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
    */
-  export interface Static extends SequelizeStaticAndInstance, DataTypes {
+  export interface Static extends SequelizeStaticAndInstance, LibDataTypes.DataTypes {
     /**
      * Instantiate sequelize with name of database, username and password
      *
