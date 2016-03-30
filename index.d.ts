@@ -33,13 +33,13 @@ declare module sequelize {
   type JSONB = LibDataTypes.JSONB;
   type NOW = LibDataTypes.NOW;
   type BLOB = LibDataTypes.BLOB;
-  type RANGE = LibDataTypes.RANGE;
+  type RANGE<T> = LibDataTypes.RANGE<T>;
   type UUID = LibDataTypes.UUID;
   type UUIDV1 = LibDataTypes.UUIDV1;
   type UUIDV4 = LibDataTypes.UUIDV4;
-  type VIRTUAL = LibDataTypes.VIRTUAL;
-  type ENUM = LibDataTypes.ENUM;
-  type ARRAY = LibDataTypes.ARRAY;
+  type VIRTUAL<T> = LibDataTypes.VIRTUAL<T>;
+  type ENUM<T extends string> = LibDataTypes.ENUM<T>;
+  type ARRAY<T extends new () => ABSTRACT> = LibDataTypes.ARRAY<T>;
   type GEOMETRY = LibDataTypes.GEOMETRY;
   type GEOGRAPHY = LibDataTypes.GEOGRAPHY;
   type DOUBLE_PRECISION = LibDataTypes.DOUBLE;
