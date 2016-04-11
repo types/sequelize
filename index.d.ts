@@ -3112,7 +3112,6 @@ declare module sequelize {
    * Options for Model.upsert method
    */
   export interface UpsertOptions {
-
     /**
      * Run validations before the row is inserted
      */
@@ -3124,10 +3123,24 @@ declare module sequelize {
     fields?: Array<string>;
 
     /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
+
+    /**
      * A function that gets executed while running the query to log the sql.
      */
     logging?: boolean | Function;
 
+    /**
+     * An optional parameter to specify the schema search_path (Postgres only)
+     */
+    searchPath?: string;
+
+    /**
+     * Print query execution time in milliseconds when logging SQL.
+     */
+    benchmark?: boolean;
   }
 
   /**
