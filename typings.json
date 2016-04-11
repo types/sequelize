@@ -8,6 +8,6 @@
     "validator": "github:DefinitelyTyped/DefinitelyTyped/validator/validator.d.ts#25ef75ce61530b82d5b4e7664c109e1ee3bc0c34"
   },
   "dependencies": {
-    "bluebird": "github:louy/typed-bluebird"
+    "bluebird": "registry:npm/bluebird#3.3.4+20160406213700"
   }
 }
