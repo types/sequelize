@@ -1,0 +1,26 @@
+{
+  "name": "typed-sequelize",
+  "version": false,
+  "private": true,
+  "description": "Typescript Typings for Sequelize",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^1.8.10",
+    "typings": "^0.7.12"
+  },
+  "scripts": {
+    "postinstall": "typings install",
+    "build": "tsc -p .",
+    "test": "tsc -p test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/louy/typed-sequelize.git"
+  },
+  "author": "Louay Alakkad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/louy/typed-sequelize/issues"
+  },
+  "homepage": "https://github.com/louy/typed-sequelize#readme"
+}

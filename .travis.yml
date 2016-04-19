@@ -2,7 +2,5 @@ language: node_js
 node_js:
 - '4.1'
 script:
-- npm i -g typings typescript
-- typings install
-- tsc -p .
-- tsc -p test
+- npm run build
+- npm test
