@@ -1,9 +1,17 @@
 {
   "compilerOptions": {
-    "module" : "commonjs"
+    "module": "commonjs"
   },
+  "filesGlob": [
+    "../dist/main.d.ts",
+    "./**/*.ts"
+  ],
   "files": [
     "../dist/main.d.ts",
-    "test.ts"
-  ]
+    "./promise.ts",
+    "./test.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
 }
