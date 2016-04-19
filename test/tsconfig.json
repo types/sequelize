@@ -3,7 +3,7 @@
     "module" : "commonjs"
   },
   "files": [
-    "test.ts",
-    "../typings/main.d.ts"
+    "../dist/main.d.ts",
+    "test.ts"
   ]
 }

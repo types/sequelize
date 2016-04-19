@@ -1,9 +1,6 @@
 {
   "name": "sequelize",
   "main": "index.d.ts",
-  "devDependencies": {
-    "sequelize": "file:index.d.ts"
-  },
   "ambientDependencies": {
     "validator": "github:DefinitelyTyped/DefinitelyTyped/validator/validator.d.ts#25ef75ce61530b82d5b4e7664c109e1ee3bc0c34"
   },
