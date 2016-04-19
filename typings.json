@@ -3,6 +3,6 @@
   "main": "index.d.ts",
   "dependencies": {
     "bluebird": "registry:npm/bluebird#3.3.4+20160411163813",
-    "validator": "github:typed-typings/npm-validator#ac54245c62cfc865f7dc5fff78b44bf8fa8c2d05"
+    "validator": "registry:npm/validator#5.4.1+20160419180246"
   }
 }
