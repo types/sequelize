@@ -3,15 +3,20 @@
     "module": "commonjs",
     "moduleResolution": "node"
   },
+  "filesGlob": [
+    "typings/main.d.ts",
+    "lib/**/*.d.ts",
+    "./*.d.ts"
+  ],
   "files": [
+    "typings/main.d.ts",
     "lib/data-types.d.ts",
+    "lib/promise.d.ts",
     "lib/sql-string.d.ts",
+    "lib/utils.d.ts",
     "lib/utils/parameter-validator.d.ts",
     "lib/utils/validator-extras.d.ts",
-    "lib/utils.d.ts",
-    "lib/promise.d.ts",
-    "index.d.ts",
-    "typings/main.d.ts"
+    "./index.d.ts"
   ],
   "formatCodeOptions": {
     "indentSize": 2,
@@ -26,5 +31,8 @@
     "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
     "placeOpenBraceOnNewLineForFunctions": false,
     "placeOpenBraceOnNewLineForControlBlocks": false
+  },
+  "atom": {
+    "rewriteTsconfig": true
   }
 }

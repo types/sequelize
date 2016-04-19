@@ -1,4 +1,4 @@
-import _validator = require('validator');
+import {ValidatorStatic} from 'validator';
 
 //
 //  Validator
@@ -22,7 +22,7 @@ export interface Extensions {
 }
 export const extensions: Extensions;
 
-export interface Validator extends IValidatorStatic, Extensions {
+export interface Validator extends ValidatorStatic, Extensions {
   contains(str: string, elem: Array<string>): boolean;
 }
 export const validator: Validator;

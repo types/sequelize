@@ -1,4 +1,4 @@
-import * as Sequelize from '../index';
+import * as Sequelize from 'sequelize';
 
 new Sequelize('str');
 
