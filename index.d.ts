@@ -3562,7 +3562,7 @@ declare module sequelize {
      * instance.
      */
     findOne(options?: FindOptions): SequelizePromise<TInstance>;
-    find(optionz?: FindOptions): SequelizePromise<TInstance[]>;
+    find(optionz?: FindOptions): SequelizePromise<TInstance>;
 
     /**
      * Run an aggregation method on the specified field
