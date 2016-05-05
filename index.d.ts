@@ -5419,10 +5419,9 @@ declare module sequelize {
      * @param options Transaction Options
      * @param autoCallback Callback for the transaction
      */
-    transaction(options: TransactionOptions,
-      autoCallback: (t: Transaction) => SequelizePromise<any>): SequelizePromise<any>;
+    transaction(options: TransactionOptions, autoCallback: (t: Transaction) => SequelizePromise<any>): SequelizePromise<any>;
     transaction(autoCallback: (t: Transaction) => SequelizePromise<any>): SequelizePromise<any>;
-    transaction(): SequelizePromise<Transaction>;
+    transaction(options?: TransactionOptions): SequelizePromise<Transaction>;
 
     /**
      * Close all connections used by this sequelize instance, and free all references so the instance can be
