@@ -4,7 +4,7 @@
 // import * as DataTypes from './lib/data-types';
 
 import SequelizePromise = require('./lib/promise');
-import * as LibDataTypes from  './lib/data-types';
+import * as LibDataTypes from './lib/data-types';
 
 import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
@@ -341,6 +341,11 @@ declare module sequelize {
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -386,6 +391,11 @@ declare module sequelize {
      * Run validation for the join model.
      */
     validate?: boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -436,6 +446,11 @@ declare module sequelize {
      * Run validation for the join model.
      */
     validate?: boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -614,7 +629,12 @@ declare module sequelize {
    * The options for the removeAssociations mixin of the hasMany association.
    * @see HasManyRemoveAssociationsMixin
    */
-  export interface HasManyRemoveAssociationsMixinOptions { }
+  export interface HasManyRemoveAssociationsMixinOptions {
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
+  }
 
   /**
    * The removeAssociations mixin applied to models with hasMany.
@@ -700,7 +720,12 @@ declare module sequelize {
    * The options for the hasAssociations mixin of the hasMany association.
    * @see HasManyHasAssociationsMixin
    */
-  export interface HasManyHasAssociationsMixinOptions { }
+  export interface HasManyHasAssociationsMixinOptions {
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
+  }
 
   /**
    * The removeAssociations mixin applied to models with hasMany.
@@ -754,6 +779,11 @@ declare module sequelize {
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -804,6 +834,11 @@ declare module sequelize {
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -849,6 +884,11 @@ declare module sequelize {
      * Run validation for the join model.
      */
     validate?: boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -899,6 +939,11 @@ declare module sequelize {
      * Run validation for the join model.
      */
     validate?: boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
@@ -1077,7 +1122,12 @@ declare module sequelize {
    * The options for the removeAssociations mixin of the belongsToMany association.
    * @see BelongsToManyRemoveAssociationsMixin
    */
-  export interface BelongsToManyRemoveAssociationsMixinOptions { }
+  export interface BelongsToManyRemoveAssociationsMixinOptions {
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
+  }
 
   /**
    * The removeAssociations mixin applied to models with belongsToMany.
@@ -1163,7 +1213,12 @@ declare module sequelize {
    * The options for the hasAssociations mixin of the belongsToMany association.
    * @see BelongsToManyHasAssociationsMixin
    */
-  export interface BelongsToManyHasAssociationsMixinOptions { }
+  export interface BelongsToManyHasAssociationsMixinOptions {
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
+  }
 
   /**
    * The removeAssociations mixin applied to models with belongsToMany.
@@ -1217,6 +1272,11 @@ declare module sequelize {
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean;
+
+    /**
+     * Transaction to run query under
+     */
+    transaction?: Transaction;
   }
 
   /**
