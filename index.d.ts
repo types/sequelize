@@ -1518,6 +1518,14 @@ declare module sequelize {
     unique?: boolean;
 
   }
+  
+  export interface Association {}
+  
+  // TODO: add properties
+  export interface BelongsToMany extends Association {}
+  export interface BelongsTo extends Association {}
+  export interface HasMany extends Association {}
+  export interface HasOne extends Association {}
 
   /**
    * Creating assocations in sequelize is done by calling one of the belongsTo / hasOne / hasMany functions on a
@@ -1631,7 +1639,7 @@ declare module sequelize {
      * @param target The model that will be associated with hasOne relationship
      * @param options Options for the association
      */
-    hasOne(target: Model<any, any>, options?: AssociationOptionsHasOne): void;
+    hasOne(target: Model<any, any>, options?: AssociationOptionsHasOne): HasOne;
 
     /**
      * Creates an association between this (the source) and the provided target. The foreign key is added on the
@@ -1642,7 +1650,7 @@ declare module sequelize {
      * @param target The model that will be associated with hasOne relationship
      * @param options Options for the association
      */
-    belongsTo(target: Model<any, any>, options?: AssociationOptionsBelongsTo): void;
+    belongsTo(target: Model<any, any>, options?: AssociationOptionsBelongsTo): BelongsTo;
 
     /**
      * Create an association that is either 1:m or n:m.
@@ -1696,7 +1704,7 @@ declare module sequelize {
      * @param target The model that will be associated with hasOne relationship
      * @param options Options for the association
      */
-    hasMany(target: Model<any, any>, options?: AssociationOptionsHasMany): void;
+    hasMany(target: Model<any, any>, options?: AssociationOptionsHasMany): HasMany;
 
     /**
      * Create an N:M association with a join table
@@ -1746,7 +1754,7 @@ declare module sequelize {
      * @param options Options for the association
      *
      */
-    belongsToMany(target: Model<any, any>, options: AssociationOptionsBelongsToMany): void;
+    belongsToMany(target: Model<any, any>, options: AssociationOptionsBelongsToMany): BelongsToMany;
 
   }
 
