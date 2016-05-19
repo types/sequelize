@@ -1,53 +1,22 @@
 // Type definitions for Sequelize 3.x
 // Project: http://sequelizejs.com
 
-// import * as DataTypes from './lib/data-types';
-
 import SequelizePromise = require('./lib/promise');
-import * as LibDataTypes from './lib/data-types';
+import {DataType, DataTypes as LibDataTypes} from './lib/data-types';
 
 import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
 
 declare module sequelize {
-  type Promise<T> = SequelizePromise<T>;
-  type DataTypes = LibDataTypes.DataTypes;
 
-  type ABSTRACT = LibDataTypes.ABSTRACT;
-  type STRING = LibDataTypes.STRING;
-  type CHAR = LibDataTypes.CHAR;
-  type TEXT = LibDataTypes.TEXT;
-  type NUMBER = LibDataTypes.NUMBER;
-  type INTEGER = LibDataTypes.INTEGER;
-  type BIGINT = LibDataTypes.BIGINT;
-  type FLOAT = LibDataTypes.FLOAT;
-  type REAL = LibDataTypes.REAL;
-  type DOUBLE = LibDataTypes.DOUBLE;
-  type DECIMAL = LibDataTypes.DECIMAL;
-  type BOOLEAN = LibDataTypes.BOOLEAN;
-  type TIME = LibDataTypes.TIME;
-  type DATE = LibDataTypes.DATE;
-  type DATEONLY = LibDataTypes.DATEONLY;
-  type HSTORE = LibDataTypes.HSTORE;
-  type JSON = LibDataTypes.JSON;
-  type JSONB = LibDataTypes.JSONB;
-  type NOW = LibDataTypes.NOW;
-  type BLOB = LibDataTypes.BLOB;
-  type RANGE<T> = LibDataTypes.RANGE<T>;
-  type UUID = LibDataTypes.UUID;
-  type UUIDV1 = LibDataTypes.UUIDV1;
-  type UUIDV4 = LibDataTypes.UUIDV4;
-  type VIRTUAL<T> = LibDataTypes.VIRTUAL<T>;
-  type ENUM<T extends string> = LibDataTypes.ENUM<T>;
-  type ARRAY<T extends new () => ABSTRACT> = LibDataTypes.ARRAY<T>;
-  type GEOMETRY = LibDataTypes.GEOMETRY;
-  type GEOGRAPHY = LibDataTypes.GEOGRAPHY;
-  type DOUBLE_PRECISION = LibDataTypes.DOUBLE;
+  export type Promise<T> = SequelizePromise<T>;
+  export type DataTypes = LibDataTypes;
 
   /**
    * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
    */
-  export interface Static extends SequelizeStaticAndInstance, LibDataTypes.DataTypes {
+  export interface Static extends SequelizeStaticAndInstance, DataTypes {
+
     /**
      * Instantiate sequelize with name of database, username and password
      *
@@ -1423,7 +1392,7 @@ declare module sequelize {
     /**
      * A string or a data type to represent the identifier in the table
      */
-    keyType?: ABSTRACT;
+    keyType?: DataType;
 
   }
 
@@ -1443,7 +1412,7 @@ declare module sequelize {
     /**
      * A string or a data type to represent the identifier in the table
      */
-    keyType?: ABSTRACT;
+    keyType?: DataType;
 
   }
 
@@ -1457,7 +1426,7 @@ declare module sequelize {
     /**
      * A string or a data type to represent the identifier in the table
      */
-    keyType?: ABSTRACT;
+    keyType?: DataType;
 
   }
 
@@ -1518,9 +1487,9 @@ declare module sequelize {
     unique?: boolean;
 
   }
-  
+
   export interface Association {}
-  
+
   // TODO: add properties
   export interface BelongsToMany extends Association {}
   export interface BelongsTo extends Association {}
@@ -3443,7 +3412,7 @@ declare module sequelize {
      * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
      * otherwise defaults to float.
      */
-    dataType?: typeof LibDataTypes.ABSTRACT | ABSTRACT | string;
+    dataType?: DataType;
 
     /** Applies DISTINCT to the field being aggregated over */
     distinct?: boolean;
@@ -3933,7 +3902,7 @@ declare module sequelize {
     /**
      * Adds a new column to a table
      */
-    addColumn(table: string, key: string, attribute: DefineAttributeColumnOptions | ABSTRACT,
+    addColumn(table: string, key: string, attribute: DefineAttributeColumnOptions | DataType,
       options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
@@ -3945,7 +3914,7 @@ declare module sequelize {
      * Changes a column
      */
     changeColumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
-      dataTypeOrOptions?: string | ABSTRACT | DefineAttributeColumnOptions,
+      dataTypeOrOptions?: DataType | DefineAttributeColumnOptions,
       options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
@@ -4224,7 +4193,7 @@ declare module sequelize {
     /**
      * A string or a data type
      */
-    type: string | ABSTRACT | typeof LibDataTypes.ABSTRACT;
+    type: DataType;
 
     /**
      * If true, the column will get a unique constraint. If a string is provided, the column will be part of a
@@ -4314,7 +4283,7 @@ declare module sequelize {
     /**
      * The description of a database column
      */
-    [name: string]: string | ABSTRACT | typeof LibDataTypes.ABSTRACT | DefineAttributeColumnOptions;
+    [name: string]: DataType | DefineAttributeColumnOptions;
 
   }
 
