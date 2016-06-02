@@ -2073,7 +2073,10 @@ declare module sequelize {
     beforeFindAfterOptions?: (options: FindOptions, fn?: Function) => any;
     afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
       fn?: Function) => any;
-
+    beforeSync?: (options: SyncOptions) => any;
+    afterSync?: (options: SyncOptions) => any;
+    beforeBulkSync?: (options: SyncOptions) => any;
+    afterBulkSync?: (options: SyncOptions) => any;
   }
 
   /**
@@ -2368,6 +2371,42 @@ declare module sequelize {
      */
     afterInit(name: string, fn: (sequelize: Connection) => void): void;
     afterInit(fn: (sequelize: Connection) => void): void;
+
+    /**
+     * A hook that is run before sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name beforeBulkSync
+     */
+    beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name afterBulkSync
+     */
+    afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run before Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name beforeSync
+     */
+    beforeSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name afterSync
+     */
+    afterSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterSync(fn: (options: SyncOptions) => any): void;
 
   }
 
@@ -3424,7 +3463,7 @@ declare module sequelize {
    * already created models can be loaded using `sequelize.import`
    */
   export interface Model<TInstance, TAttributes> extends Hooks<TInstance>, Associations {
-    
+
     /** The name of the database table */
     tableName: string;
 
