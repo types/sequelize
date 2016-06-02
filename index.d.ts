@@ -3424,6 +3424,9 @@ declare module sequelize {
    * already created models can be loaded using `sequelize.import`
    */
   export interface Model<TInstance, TAttributes> extends Hooks<TInstance>, Associations {
+    
+    /** The name of the database table */
+    tableName: string;
 
     /**
      * The Instance class
