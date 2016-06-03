@@ -2,7 +2,7 @@
   "name": "sequelize",
   "main": "index.d.ts",
   "dependencies": {
-    "bluebird": "registry:npm/bluebird#3.3.4+20160411163813",
-    "validator": "registry:npm/validator#5.4.1+20160419180246"
+    "bluebird": "registry:npm/bluebird#3.3.4+20160531224558",
+    "validator": "registry:npm/validator#4.5.1+20160429171724"
   }
 }

@@ -5,12 +5,12 @@
     "moduleResolution": "node"
   },
   "filesGlob": [
-    "typings/main.d.ts",
+    "typings/index.d.ts",
     "lib/**/*.d.ts",
     "./*.d.ts"
   ],
   "files": [
-    "typings/main.d.ts",
+    "typings/index.d.ts",
     "lib/data-types.d.ts",
     "lib/promise.d.ts",
     "lib/sql-string.d.ts",

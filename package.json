@@ -6,11 +6,11 @@
   "dependencies": {},
   "devDependencies": {
     "typescript": "^1.8.10",
-    "typings": "^0.7.12"
+    "typings": "^1.0.4"
   },
   "scripts": {
-    "postinstall": "typings install",
-    "build": "tsc -p . && typings bundle -o dist",
+    "postinstall": "typings install && typings prune",
+    "build": "tsc -p . && typings bundle -o dist/index.d.ts",
     "test": "tsc -p test",
     "build+test": "npm run build && npm test"
   },
