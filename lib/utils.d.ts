@@ -36,17 +36,17 @@ export function formatNamedParameters(sql: string, parameters: any, dialect: str
 export function cloneDeep<T>(obj: T, fn?: Function): T;
 
 /** Expand and normalize finder options */
-export function mapFinderOptions(options, Model): any;
+export function mapFinderOptions(options: any, Model: any): any;
 
 /* Used to map field names in attributes and where conditions */
-export function mapOptionFieldNames(options, Model): any;
+export function mapOptionFieldNames(options: any, Model: any): any;
 
-export function mapWhereFieldNames(attributes, Model): any;
+export function mapWhereFieldNames(attributes: any, Model: any): any;
 /** Used to map field names in values */
-export function mapValueFieldNames(dataValues, fields, Model): any;
+export function mapValueFieldNames(dataValues: any, fields: any, Model: any): any;
 
 export function isColString(value: string): boolean;
-export function argsArePrimaryKeys(args, primaryKeys): boolean;
+export function argsArePrimaryKeys(args: any, primaryKeys: any): boolean;
 export function canTreatArrayAsAnd(arr: any[]): boolean;
 export function combineTableNames(tableName1: string, tableName2: string): string;
 
@@ -66,10 +66,10 @@ export function toDefaultValue(value: any): any;
  */
 export function defaultValueSchemable(value: any): boolean;
 
-export function defaultValueSchemable(hash, omitNull, options): any;
-export function inherit(SubClass, SuperClass): any;
+export function defaultValueSchemable(hash: any, omitNull: any, options: any): any;
+export function inherit(SubClass: any, SuperClass: any): any;
 export function stack(): string;
-export function sliceArgs(args, begin): any[];
+export function sliceArgs(args: any, begin: any): any[];
 export function now(dialect: string): Date;
 export function tick(func: Function): void;
 
@@ -84,34 +84,34 @@ export function removeTicks(s: string, tickChar?: string): string;
  * Please do not use these functions directly, use Sequelize.fn and Sequelize.col instead.
  */
 export class fn {
-  constructor(fn, args);
+  constructor(fn: any, args: any);
   _isSequelizeMethod: boolean;
 
   clone(): this;
 }
 export class col {
-  constructor(col);
+  constructor(col: any);
   _isSequelizeMethod: boolean;
 }
 export class cast {
-  constructor(val, type?: string);
+  constructor(val: any, type?: string);
   _isSequelizeMethod: boolean;
 }
 export class literal {
-  constructor(val);
+  constructor(val: any);
   _isSequelizeMethod: boolean;
 }
 export class json {
-  constructor(conditionsOrPath, value);
+  constructor(conditionsOrPath: any, value: any);
   _isSequelizeMethod: boolean;
 }
 export class where {
-  constructor(attribute, comparator, logic?);
+  constructor(attribute: any, comparator: any, logic?: any);
   _isSequelizeMethod: boolean;
 }
 
 export const validateParameter: typeof parameterValidator;
-export function formatReferences(obj): any;
+export function formatReferences(obj: any): any;
 
 import Promise = require('./promise');
 export {Promise};
