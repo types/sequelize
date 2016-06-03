@@ -2052,28 +2052,31 @@ declare module sequelize {
 
     beforeValidate?: (instance: TInstance, options: Object, fn?: Function) => any;
     afterValidate?: (instance: TInstance, options: Object, fn?: Function) => any;
-    beforeCreate?: (attributes: TInstance, options: Object, fn?: Function) => any;
-    afterCreate?: (attributes: TInstance, options: Object, fn?: Function) => any;
-    beforeDestroy?: (instance: TInstance, options: Object, fn?: Function) => any;
-    beforeDelete?: (instance: TInstance, options: Object, fn?: Function) => any;
-    afterDestroy?: (instance: TInstance, options: Object, fn?: Function) => any;
-    afterDelete?: (instance: TInstance, options: Object, fn?: Function) => any;
-    beforeUpdate?: (instance: TInstance, options: Object, fn?: Function) => any;
-    afterUpdate?: (instance: TInstance, options: Object, fn?: Function) => any;
-    beforeBulkCreate?: (instances: Array<TInstance>, options: Object, fn?: Function) => any;
-    afterBulkCreate?: (instances: Array<TInstance>, options: Object, fn?: Function) => any;
-    beforeBulkDestroy?: (options: Object, fn?: Function) => any;
-    beforeBulkDelete?: (options: Object, fn?: Function) => any;
-    afterBulkDestroy?: (options: Object, fn?: Function) => any;
-    afterBulkDelete?: (options: Object, fn?: Function) => any;
-    beforeBulkUpdate?: (options: Object, fn?: Function) => any;
-    afterBulkUpdate?: (options: Object, fn?: Function) => any;
-    beforeFind?: (options: Object, fn?: Function) => any;
-    beforeFindAfterExpandIncludeAll?: (options: Object, fn?: Function) => any;
-    beforeFindAfterOptions?: (options: Object, fn?: Function) => any;
-    afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: Object,
+    beforeCreate?: (attributes: TInstance, options: CreateOptions, fn?: Function) => any;
+    afterCreate?: (attributes: TInstance, options: CreateOptions, fn?: Function) => any;
+    beforeDestroy?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
+    beforeDelete?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
+    afterDestroy?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
+    afterDelete?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
+    beforeUpdate?: (instance: TInstance, options: InstanceUpdateOptions, fn?: Function) => any;
+    afterUpdate?: (instance: TInstance, options: InstanceUpdateOptions, fn?: Function) => any;
+    beforeBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => any;
+    afterBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => any;
+    beforeBulkDestroy?: (options: DestroyOptions, fn?: Function) => any;
+    beforeBulkDelete?: (options: DestroyOptions, fn?: Function) => any;
+    afterBulkDestroy?: (options: DestroyOptions, fn?: Function) => any;
+    afterBulkDelete?: (options: DestroyOptions, fn?: Function) => any;
+    beforeBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
+    afterBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
+    beforeFind?: (options: FindOptions, fn?: Function) => any;
+    beforeFindAfterExpandIncludeAll?: (options: FindOptions, fn?: Function) => any;
+    beforeFindAfterOptions?: (options: FindOptions, fn?: Function) => any;
+    afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
       fn?: Function) => any;
-
+    beforeSync?: (options: SyncOptions) => any;
+    afterSync?: (options: SyncOptions) => any;
+    beforeBulkSync?: (options: SyncOptions) => any;
+    afterBulkSync?: (options: SyncOptions) => any;
   }
 
   /**
@@ -2169,8 +2172,8 @@ declare module sequelize {
      * @param fn A callback function that is called with attributes, options
      */
     beforeCreate(name: string,
-      fn: (attributes: TInstance, options: Object, fn?: Function) => void): void;
-    beforeCreate(fn: (attributes: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
+    beforeCreate(fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after creating a single instance
@@ -2179,8 +2182,8 @@ declare module sequelize {
      * @param fn A callback function that is called with attributes, options
      */
     afterCreate(name: string,
-      fn: (attributes: TInstance, options: Object, fn?: Function) => void): void;
-    afterCreate(fn: (attributes: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
+    afterCreate(fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before destroying a single instance
@@ -2190,11 +2193,11 @@ declare module sequelize {
      * @alias beforeDelete
      */
     beforeDestroy(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    beforeDestroy(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
+    beforeDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
     beforeDelete(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    beforeDelete(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
+    beforeDelete(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after destroying a single instance
@@ -2204,10 +2207,10 @@ declare module sequelize {
      * @alias afterDelete
      */
     afterDestroy(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    afterDestroy(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    afterDelete(name: string, fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    afterDelete(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
+    afterDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
+    afterDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
+    afterDelete(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before updating a single instance
@@ -2216,8 +2219,8 @@ declare module sequelize {
      * @param fn A callback function that is called with instance, options
      */
     beforeUpdate(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    beforeUpdate(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
+      fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
+    beforeUpdate(fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after updating a single instance
@@ -2225,8 +2228,8 @@ declare module sequelize {
      * @param name
      * @param fn A callback function that is called with instance, options
      */
-    afterUpdate(name: string, fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    afterUpdate(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
+    afterUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
+    afterUpdate(fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before creating instances in bulk
@@ -2235,8 +2238,8 @@ declare module sequelize {
      * @param fn A callback function that is called with instances, options
      */
     beforeBulkCreate(name: string,
-      fn: (instances: Array<TInstance>, options: Object, fn?: Function) => void): void;
-    beforeBulkCreate(fn: (instances: Array<TInstance>, options: Object, fn?: Function) => void): void;
+      fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
+    beforeBulkCreate(fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after creating instances in bulk
@@ -2246,8 +2249,8 @@ declare module sequelize {
      * @name afterBulkCreate
      */
     afterBulkCreate(name: string,
-      fn: (instances: Array<TInstance>, options: Object, fn?: Function) => void): void;
-    afterBulkCreate(fn: (instances: Array<TInstance>, options: Object, fn?: Function) => void): void;
+      fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
+    afterBulkCreate(fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before destroying instances in bulk
@@ -2257,10 +2260,10 @@ declare module sequelize {
      *
      * @alias beforeBulkDelete
      */
-    beforeBulkDestroy(name: string, fn: (options: Object, fn?: Function) => void): void;
-    beforeBulkDestroy(fn: (options: Object, fn?: Function) => void): void;
-    beforeBulkDelete(name: string, fn: (options: Object, fn?: Function) => void): void;
-    beforeBulkDelete(fn: (options: Object, fn?: Function) => void): void;
+    beforeBulkDestroy(name: string, fn: (options: BulkCreateOptions, fn?: Function) => void): void;
+    beforeBulkDestroy(fn: (options: BulkCreateOptions, fn?: Function) => void): void;
+    beforeBulkDelete(name: string, fn: (options: BulkCreateOptions, fn?: Function) => void): void;
+    beforeBulkDelete(fn: (options: BulkCreateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after destroying instances in bulk
@@ -2270,10 +2273,10 @@ declare module sequelize {
      *
      * @alias afterBulkDelete
      */
-    afterBulkDestroy(name: string, fn: (options: Object, fn?: Function) => void): void;
-    afterBulkDestroy(fn: (options: Object, fn?: Function) => void): void;
-    afterBulkDelete(name: string, fn: (options: Object, fn?: Function) => void): void;
-    afterBulkDelete(fn: (options: Object, fn?: Function) => void): void;
+    afterBulkDestroy(name: string, fn: (options: DestroyOptions, fn?: Function) => void): void;
+    afterBulkDestroy(fn: (options: DestroyOptions, fn?: Function) => void): void;
+    afterBulkDelete(name: string, fn: (options: DestroyOptions, fn?: Function) => void): void;
+    afterBulkDelete(fn: (options: DestroyOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after updating instances in bulk
@@ -2281,8 +2284,8 @@ declare module sequelize {
      * @param name
      * @param fn   A callback function that is called with options
      */
-    beforeBulkUpdate(name: string, fn: (options: Object, fn?: Function) => void): void;
-    beforeBulkUpdate(fn: (options: Object, fn?: Function) => void): void;
+    beforeBulkUpdate(name: string, fn: (options: UpdateOptions, fn?: Function) => void): void;
+    beforeBulkUpdate(fn: (options: UpdateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after updating instances in bulk
@@ -2290,8 +2293,8 @@ declare module sequelize {
      * @param name
      * @param fn   A callback function that is called with options
      */
-    afterBulkUpdate(name: string, fn: (options: Object, fn?: Function) => void): void;
-    afterBulkUpdate(fn: (options: Object, fn?: Function) => void): void;
+    afterBulkUpdate(name: string, fn: (options: UpdateOptions, fn?: Function) => void): void;
+    afterBulkUpdate(fn: (options: UpdateOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before a find (select) query
@@ -2299,8 +2302,8 @@ declare module sequelize {
      * @param name
      * @param fn   A callback function that is called with options
      */
-    beforeFind(name: string, fn: (options: Object, fn?: Function) => void): void;
-    beforeFind(fn: (options: Object, fn?: Function) => void): void;
+    beforeFind(name: string, fn: (options: FindOptions, fn?: Function) => void): void;
+    beforeFind(fn: (options: FindOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
@@ -2309,8 +2312,8 @@ declare module sequelize {
      * @param fn   A callback function that is called with options
      */
     beforeFindAfterExpandIncludeAll(name: string,
-      fn: (options: Object, fn?: Function) => void): void;
-    beforeFindAfterExpandIncludeAll(fn: (options: Object, fn?: Function) => void): void;
+      fn: (options: FindOptions, fn?: Function) => void): void;
+    beforeFindAfterExpandIncludeAll(fn: (options: FindOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run before a find (select) query, after all option parsing is complete
@@ -2318,8 +2321,8 @@ declare module sequelize {
      * @param name
      * @param fn   A callback function that is called with options
      */
-    beforeFindAfterOptions(name: string, fn: (options: Object, fn?: Function) => void): void;
-    beforeFindAfterOptions(fn: (options: Object, fn?: Function) => void): void;
+    beforeFindAfterOptions(name: string, fn: (options: FindOptions, fn?: Function) => void): void;
+    beforeFindAfterOptions(fn: (options: FindOptions, fn?: Function) => void): void;
 
     /**
      * A hook that is run after a find (select) query
@@ -2328,9 +2331,9 @@ declare module sequelize {
      * @param fn   A callback function that is called with instance(s), options
      */
     afterFind(name: string,
-      fn: (instancesOrInstance: Array<TInstance> | TInstance, options: Object,
+      fn: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
         fn?: Function) => void): void;
-    afterFind(fn: (instancesOrInstance: Array<TInstance> | TInstance, options: Object,
+    afterFind(fn: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
       fn?: Function) => void): void;
 
     /**
@@ -2339,8 +2342,8 @@ declare module sequelize {
      * @param name
      * @param fn   A callback function that is called with attributes, options
      */
-    beforeDefine(name: string, fn: (attributes: DefineAttributes, options: Object) => void): void;
-    beforeDefine(fn: (attributes: DefineAttributes, options: Object) => void): void;
+    beforeDefine(name: string, fn: (attributes: DefineAttributes, options: DefineOptions<any>) => void): void;
+    beforeDefine(fn: (attributes: DefineAttributes, options: DefineOptions<any>) => void): void;
 
     /**
      * A hook that is run after a define call
@@ -2368,6 +2371,42 @@ declare module sequelize {
      */
     afterInit(name: string, fn: (sequelize: Connection) => void): void;
     afterInit(fn: (sequelize: Connection) => void): void;
+
+    /**
+     * A hook that is run before sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name beforeBulkSync
+     */
+    beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name afterBulkSync
+     */
+    afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run before Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name beforeSync
+     */
+    beforeSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name afterSync
+     */
+    afterSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterSync(fn: (options: SyncOptions) => any): void;
 
   }
 
@@ -3424,7 +3463,7 @@ declare module sequelize {
    * already created models can be loaded using `sequelize.import`
    */
   export interface Model<TInstance, TAttributes> extends Hooks<TInstance>, Associations {
-    
+
     /** The name of the database table */
     tableName: string;
 
