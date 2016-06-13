@@ -1931,6 +1931,9 @@ declare module sequelize {
 
   export interface ForeignKeyConstraintError extends DatabaseError {
 
+    /** The name of the foreign key constraint */
+    index: string;
+    
     /**
      * Thrown when a foreign key constraint is violated in the database
      */
