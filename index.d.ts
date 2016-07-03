@@ -2976,7 +2976,7 @@ declare module sequelize {
     [string | col | fn | literal, string] |
     [Model<any, any> | { model: Model<any, any>, as: string }, string, string] |
     [Model<any, any>, Model<any, any>, string, string];
-  export type Order = OrderItem | OrderItem[];
+  export type Order = string | fn | col | literal | OrderItem[];
 
   /**
    * Options that are passed to any model creating a SELECT query
