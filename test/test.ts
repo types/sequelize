@@ -12,9 +12,9 @@ var dt: Sequelize.DataTypes;
 
 var i: typeof Sequelize.Instance;
 
-const Something = sequelize.define();
-const User = sequelize.define();
-const Company = sequelize.define();
+const Something = sequelize.define('', {});
+const User = sequelize.define('', {});
+const Company = sequelize.define('', {});
 
 Something.findOne({
   order: [
