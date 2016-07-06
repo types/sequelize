@@ -1488,9 +1488,12 @@ declare module sequelize {
 
   }
 
-  export interface Association {}
+  export interface Association {
+    source: Model<any, any>;
+    target: Model<any, any>;
+    identifier: string;
+  }
 
-  // TODO: add properties
   export interface BelongsToMany extends Association {}
   export interface BelongsTo extends Association {}
   export interface HasMany extends Association {}
@@ -1933,7 +1936,7 @@ declare module sequelize {
 
     /** The name of the foreign key constraint */
     index: string;
-    
+
     /**
      * Thrown when a foreign key constraint is violated in the database
      */
@@ -2913,15 +2916,6 @@ declare module sequelize {
   }
 
   /**
-   * Association Object for Include Options
-   */
-  export interface IncludeAssociation {
-    source: Model<any, any>;
-    target: Model<any, any>;
-    identifier: string;
-  }
-
-  /**
    * Complex include options
    */
   export interface IncludeOptions {
@@ -2940,7 +2934,7 @@ declare module sequelize {
     /**
      * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
      */
-    association?: IncludeAssociation;
+    association?: Association;
 
     /**
      * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
@@ -2967,7 +2961,7 @@ declare module sequelize {
     /**
      * Load further nested related models
      */
-    include?: Array<Model<any, any> | IncludeOptions>;
+    include?: Array<Model<any, any> | Association | IncludeOptions>;
 
   }
 
@@ -3014,7 +3008,7 @@ declare module sequelize {
      * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
      * the as attribute when eager loading Y).
      */
-    include?: Array<Model<any, any> | IncludeOptions>;
+    include?: Array<Model<any, any> | Association | IncludeOptions>;
 
     /**
      * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
@@ -3081,7 +3075,7 @@ declare module sequelize {
     /**
      * Include options. See `find` for details
      */
-    include?: Array<Model<any, any> | IncludeOptions>;
+    include?: Array<Model<any, any> | Association | IncludeOptions>;
 
     /**
      * Apply COUNT(DISTINCT(col))
@@ -3126,7 +3120,7 @@ declare module sequelize {
      *
      * TODO: See set
      */
-    include?: Array<Model<any, any> | IncludeOptions>;
+    include?: Array<Model<any, any> | Association | IncludeOptions>;
 
   }
 
