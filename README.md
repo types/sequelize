@@ -22,13 +22,13 @@ interface Thing { // interface used to create/update an instance
   id?: number;
   name?: string;
 }
-interface ThingInstance extends Sequelize.Instance<Thing, ThingInstance> { // an instance
+interface ThingInstance extends Sequelize.Instance<ThingInstance, Thing> { // an instance
   id: number;
   
   // you should add all instance methods here
   doSomething(): any;
 }
-const Thing = sequelize.define<Thing, ThingInstance>('thing', {
+const Thing = sequelize.define<ThingInstance, Thing>('thing', {
   name: Sequelize.STRING,
 }, {
   instanceMethods: {
