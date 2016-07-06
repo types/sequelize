@@ -3565,7 +3565,7 @@ declare module sequelize {
      * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
      *     model will clear the previous scope.
      */
-    scope(options?: string | Array<string> | ScopeOptions | WhereOptions): this;
+    scope(options?: string | Array<string> | ScopeOptions | WhereOptions): Model<TInstance, TAttributes>;
 
     /**
      * Search for multiple instances.
