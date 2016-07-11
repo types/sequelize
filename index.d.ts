@@ -169,7 +169,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
    * @see Instance
    */
-  export interface BelongsToCreateAssociationMixin<TAttributes> {
+  export interface BelongsToCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -178,7 +178,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: BelongsToCreateAssociationMixinOptions | CreateOptions | BelongsToSetAssociationMixinOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -283,7 +283,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
    * @see Instance
    */
-  export interface HasOneCreateAssociationMixin<TAttributes> {
+  export interface HasOneCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -292,7 +292,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: HasOneCreateAssociationMixinOptions | HasOneSetAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -539,7 +539,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
    * @see Instance
    */
-  export interface HasManyCreateAssociationMixin<TAttributes> {
+  export interface HasManyCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -548,7 +548,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: HasManyCreateAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -1032,7 +1032,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
    * @see Instance
    */
-  export interface BelongsToManyCreateAssociationMixin<TAttributes, TJoinTableAttributes> {
+  export interface BelongsToManyCreateAssociationMixin<TAttributes, TInstance, TJoinTableAttributes> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -1041,7 +1041,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: BelongsToManyCreateAssociationMixinOptions | CreateOptions | TJoinTableAttributes
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -3182,6 +3182,23 @@ declare module sequelize {
   }
 
   /**
+   * Options for Model.findCreateFind method
+   */
+  export interface FindCreateFindOptions<TAttributes> {
+
+    /**
+     * A hash of search attributes.
+     */
+    where: string | WhereOptions;
+
+    /**
+     * Default values to use if building a new instance
+     */
+    defaults?: TAttributes;
+
+  }
+
+  /**
    * Options for Model.upsert method
    */
   export interface UpsertOptions {
@@ -3731,8 +3748,8 @@ declare module sequelize {
      * Find a row that matches the query, or build (but don't save) the row if none is found.
      * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
      */
-    findOrInitialize(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
-    findOrBuild(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
+    findOrInitialize(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
+    findOrBuild(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
 
     /**
      * Find a row that matches the query, or build and save the row if none is found
@@ -3745,7 +3762,9 @@ declare module sequelize {
      * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
      * will be created instead, and any unique constraint violation will be handled internally.
      */
-    findOrCreate(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<TInstance>;
+    findOrCreate(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
+
+    findCreateFind(options: FindCreateFindOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
 
     /**
      * Insert or update a single row. An update will be executed if a row which matches the supplied values on
