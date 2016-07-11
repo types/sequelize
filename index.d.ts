@@ -169,7 +169,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
    * @see Instance
    */
-  export interface BelongsToCreateAssociationMixin<TAttributes> {
+  export interface BelongsToCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -178,7 +178,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: BelongsToCreateAssociationMixinOptions | CreateOptions | BelongsToSetAssociationMixinOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -283,7 +283,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
    * @see Instance
    */
-  export interface HasOneCreateAssociationMixin<TAttributes> {
+  export interface HasOneCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -292,7 +292,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: HasOneCreateAssociationMixinOptions | HasOneSetAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -539,7 +539,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
    * @see Instance
    */
-  export interface HasManyCreateAssociationMixin<TAttributes> {
+  export interface HasManyCreateAssociationMixin<TAttributes, TInstance> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -548,7 +548,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: HasManyCreateAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
@@ -1032,7 +1032,7 @@ declare module sequelize {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
    * @see Instance
    */
-  export interface BelongsToManyCreateAssociationMixin<TAttributes, TJoinTableAttributes> {
+  export interface BelongsToManyCreateAssociationMixin<TAttributes, TInstance, TJoinTableAttributes> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
@@ -1041,7 +1041,7 @@ declare module sequelize {
     (
       values?: TAttributes,
       options?: BelongsToManyCreateAssociationMixinOptions | CreateOptions | TJoinTableAttributes
-    ): SequelizePromise<void>
+    ): SequelizePromise<TInstance>
   }
 
   /**
