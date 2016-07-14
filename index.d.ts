@@ -2911,7 +2911,7 @@ declare module sequelize {
     /**
      * A list of attributes to select from the join model for belongsToMany relations
      */
-    attributes?: Array<string>;
+    attributes?: FindAttributeOptions;
 
   }
 
@@ -2945,7 +2945,7 @@ declare module sequelize {
     /**
      * A list of attributes to select from the child model
      */
-    attributes?: Array<string>;
+    attributes?: FindAttributeOptions;
 
     /**
      * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
@@ -2972,6 +2972,13 @@ declare module sequelize {
     [Model<any, any>, Model<any, any>, string, string];
   export type Order = string | fn | col | literal | OrderItem[];
 
+  export type FindAttributeOptions = 
+    Array<string | [string | fn, string]> |
+    {
+      exclude?: Array<string>,
+      include?: Array<string | [string | fn, string]>
+    };
+
   /**
    * Options that are passed to any model creating a SELECT query
    *
@@ -2989,12 +2996,7 @@ declare module sequelize {
      * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
      * have in the returned instance
      */
-    attributes?:
-    Array<string | [string | fn, string]> |
-    {
-      exclude?: Array<string>,
-      include?: Array<string | [string | fn, string]>
-    };
+    attributes?: FindAttributeOptions;
 
     /**
      * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -3085,7 +3087,7 @@ declare module sequelize {
     /**
      * Used in conjustion with `group`
      */
-    attributes?: Array<string | [string, string]>;
+    attributes?: FindAttributeOptions;
 
     /**
      * GROUP BY in sql
