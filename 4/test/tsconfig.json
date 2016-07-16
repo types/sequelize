@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6"
+  },
+  "filesGlob": [
+    "../dist/index.d.ts",
+    "./**/*.ts"
+  ],
+  "files": [
+    "../dist/index.d.ts",
+    "connection.ts",
+    "define.ts",
+    "errors.ts",
+    "models/User.ts",
+    "models/UserGroup.ts",
+    "promise.ts",
+    "usage.ts"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
+}
