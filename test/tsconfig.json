@@ -8,6 +8,7 @@
   ],
   "files": [
     "../dist/index.d.ts",
+    "./cast.ts",
     "./promise.ts",
     "./test.ts"
   ],
