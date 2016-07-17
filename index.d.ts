@@ -2975,8 +2975,9 @@ declare module sequelize {
   export type FindAttributeOptions = 
     Array<string | [string | fn, string]> |
     {
-      exclude?: Array<string>,
-      include?: Array<string | [string | fn, string]>
+      exclude: Array<string>;
+    } | {
+      include: Array<string | [string | fn, string]>;
     };
 
   /**
