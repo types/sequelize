@@ -52,3 +52,12 @@ Something.findOne({
 Something.findOne({
   order: sequelize.literal('convert(user_name using gbk)')
 })
+
+interface Thing {
+  id?: number;
+}
+
+interface ThingInstance extends Sequelize.Instance<ThingInstance, Thing> {
+  id: number;
+}
+const Thing: Sequelize.Model<ThingInstance, Thing> = sequelize.define<ThingInstance, Thing>('thing', {});
