@@ -1,4 +1,6 @@
 # Typed Sequelize
+
+[![Join the chat at https://gitter.im/louy/typed-sequelize](https://badges.gitter.im/louy/typed-sequelize.svg)](https://gitter.im/louy/typed-sequelize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/louy/typed-sequelize.svg?branch=master)](https://travis-ci.org/louy/typed-sequelize)
 
 Typescript Typings for [Sequelize](http://sequelizejs.com).
