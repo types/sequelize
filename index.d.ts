@@ -3287,6 +3287,20 @@ declare module sequelize {
      */
     logging?: boolean | Function;
 
+    /**
+     * Append RETURNING * to get back auto generated values (Postgres only)
+     */
+    returning?: boolean;
+
+    /**
+     * An optional parameter to specify the schema search_path (Postgres only)
+     */
+    searchPath?: string;
+
+    /**
+     * Print query execution time in milliseconds when logging SQL.
+     */
+    benchmark?: boolean;
   }
 
   /**
