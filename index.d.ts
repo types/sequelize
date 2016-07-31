@@ -3875,6 +3875,23 @@ declare module sequelize {
     logging?: boolean | Function;
 
   }
+  
+  
+  export interface QueryInterfaceIndexOptions {
+    indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
+    
+    /** The name of the index. Default is __ */
+    indexName?: string;
+    
+    /** For FULLTEXT columns set your parser */
+    parser?: string;
+    
+    /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
+    indexType?: string;
+    
+    /** A function that receives the sql query, e.g. console.log */
+    logging?: Function;
+  }
 
   /**
    * The interface that Sequelize uses to talk to all databases.
@@ -4003,8 +4020,16 @@ declare module sequelize {
     /**
      * Adds a new index to a table
      */
-    addIndex(tableName: string | Object, attributes: Array<string>, options?: QueryOptions,
+    addIndex(tableName: string | Object, attributes: string[], options?: QueryInterfaceIndexOptions,
       rawTablename?: string): SequelizePromise<void>;
+
+    /**
+     * Removes an index of a table
+     */
+    removeIndex(tableName: string, indexName: string,
+      options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
+    removeIndex(tableName: string, attributes: string[],
+      options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
 
     /**
      * Shows the index of a table
@@ -4020,12 +4045,6 @@ declare module sequelize {
      * Returns all foreign key constraints of a table
      */
     getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): SequelizePromise<Object>;
-
-    /**
-     * Removes an index of a table
-     */
-    removeIndex(tableName: string, indexNameOrAttributes: Array<string> | string,
-      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Inserts a new record
