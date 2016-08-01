@@ -3878,7 +3878,12 @@ declare module sequelize {
   }
 
   export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
+    cascade?: boolean;
     force?: boolean;
+  }
+
+  export interface QueryInterfaceDropAllTablesOptions extends QueryInterfaceOptions {
+    skip?: string[];
   }
 
   export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
@@ -3931,7 +3936,7 @@ declare module sequelize {
     /**
      * Drops all tables.
      */
-    dropAllSchemas(options?: QueryInterfaceOptions): SequelizePromise<void>;
+    dropAllSchemas(options?: QueryInterfaceDropAllTablesOptions): SequelizePromise<void>;
 
     /**
      * Queries all table names in the database.
@@ -4021,7 +4026,9 @@ declare module sequelize {
     /**
      * Adds a new index to a table
      */
-    addIndex(tableName: string | Object, attributes: string[], options?: QueryInterfaceIndexOptions,
+    addIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions,
+      rawTablename?: string): SequelizePromise<void>;
+    addIndex(tableName: string, options: QueryInterfaceIndexOptions & { fields: string[] },
       rawTablename?: string): SequelizePromise<void>;
 
     /**
