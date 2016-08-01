@@ -2972,7 +2972,7 @@ declare module sequelize {
     [Model<any, any>, Model<any, any>, string, string];
   export type Order = string | fn | col | literal | OrderItem[];
 
-  export type FindAttributeOptions = 
+  export type FindAttributeOptions =
     Array<string | [string | fn, string]> |
     {
       exclude: Array<string>;
@@ -3868,29 +3868,30 @@ declare module sequelize {
    * interface type for options in a method is separated here as another interface.
    */
   export interface QueryInterfaceOptions {
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-  }
-  
-  
-  export interface QueryInterfaceIndexOptions {
-    indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
-    
-    /** The name of the index. Default is __ */
-    indexName?: string;
-    
-    /** For FULLTEXT columns set your parser */
-    parser?: string;
-    
-    /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
-    indexType?: string;
-    
     /** A function that receives the sql query, e.g. console.log */
     logging?: Function;
+  }
+
+  export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
+    engine?: string;
+    charset?: string;
+  }
+
+  export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
+    force?: boolean;
+  }
+
+  export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
+    indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
+
+    /** The name of the index. Default is __ */
+    indexName?: string;
+
+    /** For FULLTEXT columns set your parser */
+    parser?: string;
+
+    /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
+    indexType?: string;
   }
 
   /**
@@ -3949,10 +3950,10 @@ declare module sequelize {
      *
      * @param tableName     Name of table to create
      * @param attributes    Hash of attributes, key is attribute name, value is data type
-     * @param options       Query options.
+     * @param options       Table options.
      */
     createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes,
-      options?: QueryOptions): SequelizePromise<void>;
+      options?: QueryInterfaceCreateTableOptions): SequelizePromise<void>;
 
     /**
      * Drops the specified table.
@@ -3960,14 +3961,14 @@ declare module sequelize {
      * @param tableName Table name.
      * @param options   Query options, particularly "force".
      */
-    dropTable(tableName: string, options?: QueryOptions): SequelizePromise<void>;
+    dropTable(tableName: string, options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
     /**
      * Drops all tables.
      *
      * @param options
      */
-    dropAllTables(options?: QueryOptions): SequelizePromise<void>;
+    dropAllTables(options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
     /**
      * Drops all defined enums
