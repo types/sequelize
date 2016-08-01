@@ -2972,7 +2972,7 @@ declare module sequelize {
     [Model<any, any>, Model<any, any>, string, string];
   export type Order = string | fn | col | literal | OrderItem[];
 
-  export type FindAttributeOptions = 
+  export type FindAttributeOptions =
     Array<string | [string | fn, string]> |
     {
       exclude: Array<string>;
@@ -3868,12 +3868,35 @@ declare module sequelize {
    * interface type for options in a method is separated here as another interface.
    */
   export interface QueryInterfaceOptions {
+    /** A function that receives the sql query, e.g. console.log */
+    logging?: Function;
+  }
 
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
+  export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
+    engine?: string;
+    charset?: string;
+  }
 
+  export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
+    cascade?: boolean;
+    force?: boolean;
+  }
+
+  export interface QueryInterfaceDropAllTablesOptions extends QueryInterfaceOptions {
+    skip?: string[];
+  }
+
+  export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
+    indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
+
+    /** The name of the index. Default is __ */
+    indexName?: string;
+
+    /** For FULLTEXT columns set your parser */
+    parser?: string;
+
+    /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
+    indexType?: string;
   }
 
   /**
@@ -3913,7 +3936,7 @@ declare module sequelize {
     /**
      * Drops all tables.
      */
-    dropAllSchemas(options?: QueryInterfaceOptions): SequelizePromise<void>;
+    dropAllSchemas(options?: QueryInterfaceDropAllTablesOptions): SequelizePromise<void>;
 
     /**
      * Queries all table names in the database.
@@ -3932,10 +3955,10 @@ declare module sequelize {
      *
      * @param tableName     Name of table to create
      * @param attributes    Hash of attributes, key is attribute name, value is data type
-     * @param options       Query options.
+     * @param options       Table options.
      */
     createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes,
-      options?: QueryOptions): SequelizePromise<void>;
+      options?: QueryInterfaceCreateTableOptions): SequelizePromise<void>;
 
     /**
      * Drops the specified table.
@@ -3943,14 +3966,14 @@ declare module sequelize {
      * @param tableName Table name.
      * @param options   Query options, particularly "force".
      */
-    dropTable(tableName: string, options?: QueryOptions): SequelizePromise<void>;
+    dropTable(tableName: string, options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
     /**
      * Drops all tables.
      *
      * @param options
      */
-    dropAllTables(options?: QueryOptions): SequelizePromise<void>;
+    dropAllTables(options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
     /**
      * Drops all defined enums
@@ -4003,8 +4026,18 @@ declare module sequelize {
     /**
      * Adds a new index to a table
      */
-    addIndex(tableName: string | Object, attributes: Array<string>, options?: QueryOptions,
+    addIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions,
       rawTablename?: string): SequelizePromise<void>;
+    addIndex(tableName: string, options: QueryInterfaceIndexOptions & { fields: string[] },
+      rawTablename?: string): SequelizePromise<void>;
+
+    /**
+     * Removes an index of a table
+     */
+    removeIndex(tableName: string, indexName: string,
+      options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
+    removeIndex(tableName: string, attributes: string[],
+      options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
 
     /**
      * Shows the index of a table
@@ -4020,12 +4053,6 @@ declare module sequelize {
      * Returns all foreign key constraints of a table
      */
     getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): SequelizePromise<Object>;
-
-    /**
-     * Removes an index of a table
-     */
-    removeIndex(tableName: string, indexNameOrAttributes: Array<string> | string,
-      options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Inserts a new record
