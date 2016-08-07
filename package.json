@@ -9,10 +9,13 @@
     "typings": "^1.0.4"
   },
   "scripts": {
-    "postinstall": "typings install && typings prune",
-    "build": "tsc -p . && typings bundle -o dist/index.d.ts",
-    "test": "tsc -p test",
-    "build+test": "npm run build && npm test"
+    "postinstall": "cd 3 && typings install && typings prune",
+    "build-v3": "cd 3 && tsc -p . && typings bundle -o dist/index.d.ts",
+    "test-v3": "cd 3 && tsc -p test",
+    "build+test-v3": "npm run build-v3 && npm test-v3",
+    "build": "npm run build-v3",
+    "test": "npm run test-v3",
+    "build+test": "npm run build+test-v3"
   },
   "repository": {
     "type": "git",
