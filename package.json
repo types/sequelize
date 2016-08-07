@@ -6,7 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "typescript": "^1.8.10",
-    "typings": "^1.0.4"
+    "typings": "^1.3.2"
   },
   "scripts": {
     "postinstall": "cd 3 && typings install && typings prune",
