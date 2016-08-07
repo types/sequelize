@@ -10,9 +10,12 @@
   },
   "scripts": {
     "postinstall": "cd 3 && typings install && typings prune",
-    "build": "cd 3 && tsc -p . && typings bundle -o dist/index.d.ts",
-    "test": "cd 3 && tsc -p test",
-    "build+test": "npm run build && npm test"
+    "build-v3": "cd 3 && tsc -p . && typings bundle -o dist/index.d.ts",
+    "test-v3": "cd 3 && tsc -p test",
+    "build+test-v3": "npm run build-v3 && npm test-v3",
+    "build": "npm run build-v3",
+    "test": "npm run test-v3",
+    "build+test": "npm run build+test-v3"
   },
   "repository": {
     "type": "git",
