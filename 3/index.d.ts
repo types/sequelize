@@ -5429,7 +5429,7 @@ declare module sequelize {
      *
      * @param value Value that needs to be escaped
      */
-    escape(value: string): string;
+    escape(value?: string | number | Date): string;
 
     /**
      * Create a new database schema.
