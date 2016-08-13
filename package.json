@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "tslint": "^3.14.0",
+    "typedoc": "^0.4.4",
     "typescript": "^1.8.10",
     "typings": "^1.3.2"
   },
@@ -20,7 +21,10 @@
     "build": "npm run build-v3 && npm run build-v4",
     "test": "npm run test-v3 && npm run build-v4",
     "build+test": "npm run build+test-v3 && npm run build+test-v4",
-    "lint": "tslint -c tslint.json 3/**/*.ts 4/**/*.ts"
+    "lint": "tslint -c tslint.json 3/**/*.ts 4/**/*.ts",
+    "typedoc-v3": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme 3/docs_index.md --name \"TypeScript definitions for Sequelize v3\" --mode file --out typedoc/v3 3/index.d.ts 3/lib/data-types.d.ts 3/typings/index.d.ts",
+    "typedoc-v4": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme 4/docs_index.md --name \"TypeScript definitions for Sequelize v4\" --mode modules --out typedoc/v4 4/lib/sequelize.d.ts 4/lib/model.d.ts 4/lib/transaction.d.ts 4/lib/errors.d.ts 4/lib/data-types.d.ts 4/lib/query-interface.d.ts 4/lib/deferrable.d.ts 4/lib/associations/base.d.ts 4/lib/associations/belongs-to-many.d.ts 4/lib/associations/belongs-to.d.ts 4/lib/associations/has-many.d.ts 4/lib/associations/has-one.d.ts 4/typings/index.d.ts",
+    "typedoc": "npm run typedoc-v3 && npm run typedoc-v4"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,13 @@
 language: node_js
 node_js:
-- '4.1'
+ - '4.1'
 script:
-- npm run build
-- npm test
+ - npm run build
+ - npm test
+before_deploy:
+ - npm run typedoc
+deploy:
+  provider: surge
+  project: ./typedoc/
+  domain: typed-bignumber.surge.sh
+  skip_cleanup: true

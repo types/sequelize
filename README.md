@@ -3,7 +3,5 @@
 
 Typescript Typings for [Sequelize](http://sequelizejs.com).
 
-## Versions
-
-- [3](3/)
-- [4](4/)
+## [API Documentation v3](http://typed-sequelize.surge.sh/v3)
+## [API Documentation v4](http://typed-sequelize.surge.sh/v3)
