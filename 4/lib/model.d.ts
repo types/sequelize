@@ -534,14 +534,7 @@ export interface TruncateOptions {
   /**
    * A function that gets executed while running the query to log the sql.
    */
-  logging?: boolean | Function;
-
-}
-
-/**
- * Options used for Model.destroy
- */
-export interface DestroyOptions extends TruncateOptions {
+  logging?: boolean | ((sql: string) => any);
 
   /**
    * Filter the destroy
@@ -568,6 +561,18 @@ export interface DestroyOptions extends TruncateOptions {
    * Delete instead of setting deletedAt to current timestamp (only applicable if `paranoid` is enabled)
    */
   force?: boolean;
+
+  /**
+   * Only used in conjunction with `truncate`.
+   * Automatically restart sequences owned by columns of the truncated table
+   */
+  restartIdentity: boolean;
+}
+
+/**
+ * Options used for Model.destroy
+ */
+export interface DestroyOptions extends TruncateOptions {
 
   /**
    * If set to true, dialects that support it will use TRUNCATE instead of DELETE FROM. If a table is
