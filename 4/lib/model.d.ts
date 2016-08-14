@@ -72,19 +72,25 @@ export interface ScopeOptions {
 
 }
 
-/** The type accepted by every `where` option */
-export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where;
+/**
+ * The type accepted by every `where` option
+ *
+ * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
+ */
+export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where | Array<string | number>;
 
-export interface WhereSubqueryOperators {
-  /**
-   * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
-   *
-   * _PG only_
-   */
-  $any?: Array<string | number>;
+/**
+ * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+ *
+ * _PG only_
+ */
+export interface AnyOperator {
+  $any: Array<string | number>;
+}
 
-  /** Undocumented? */
-  $all?: Array<string | number>;
+/** Undocumented? */
+export interface AllOperator {
+  $all: Array<string | number>;
 }
 
 /**
@@ -92,7 +98,14 @@ export interface WhereSubqueryOperators {
  *
  * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
  */
-export interface WhereOperators extends WhereSubqueryOperators {
+export interface WhereOperators {
+
+  /**
+   * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+   *
+   * _PG only_
+   */
+  $any?: Array<string | number>;
 
   /** Example: `$gte: 6,` becomes `>= 6` */
   $gte?: number | string | Date;
@@ -123,14 +136,14 @@ export interface WhereOperators extends WhereSubqueryOperators {
    *  - `$like: '%hat',` becomes `LIKE '%hat'`
    *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
    */
-  $like?: string | WhereSubqueryOperators;
+  $like?: string | AnyOperator | AllOperator;
 
   /**
    * Examples:
    *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
    *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
    */
-  $notLike?: string | WhereSubqueryOperators;
+  $notLike?: string | AnyOperator | AllOperator;
 
   /**
    * case insensitive PG only
@@ -139,7 +152,7 @@ export interface WhereOperators extends WhereSubqueryOperators {
    *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
    *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
    */
-  $ilike?: string | WhereSubqueryOperators;
+  $ilike?: string | AnyOperator | AllOperator;
 
   /**
    * case insensitive PG only
@@ -148,7 +161,7 @@ export interface WhereOperators extends WhereSubqueryOperators {
    *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
    *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
    */
-  $iLike?: string | WhereSubqueryOperators;
+  $iLike?: string | AnyOperator | AllOperator;
 
   /**
    * PG array overlap operator
@@ -181,7 +194,7 @@ export interface WhereOperators extends WhereSubqueryOperators {
    *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
    *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
    */
-  $notILike?: string | WhereSubqueryOperators;
+  $notILike?: string | AnyOperator | AllOperator;
 
   /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
   $notBetween?: [number, number];

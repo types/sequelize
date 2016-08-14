@@ -2835,8 +2835,11 @@ declare module sequelize {
 
   }
 
-  /** The type accepted by every `where` option */
-  export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | where;
+  /**
+   * The type accepted by every `where` option
+   * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
+   */
+  export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | where | Array<string | number>;
 
   export interface WhereSubqueryOperators {
     /**
