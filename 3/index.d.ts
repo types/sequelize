@@ -2448,7 +2448,7 @@ declare module sequelize {
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions | Array<col | and | or | string>;
+    where?: WhereOptions;
 
   }
 
