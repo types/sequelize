@@ -1573,6 +1573,16 @@ export interface ModelOptions {
 
 }
 
+/**
+ * Options passed to [[Model.init]]
+ */
+export interface InitOptions extends ModelOptions {
+  /**
+   * The sequelize connection. Required ATM.
+   */
+  sequelize: Sequelize;
+}
+
 export abstract class Model {
 
   /** The name of the database table */
@@ -1589,7 +1599,7 @@ export abstract class Model {
   sequelize: Sequelize;
 
 
-  static init(attributes: ModelAttributes, options: ModelOptions, modelManager: ModelManager): void;
+  static init(attributes: ModelAttributes, options: InitOptions, modelManager: ModelManager): void;
 
   /**
    * Remove attribute from model definition
