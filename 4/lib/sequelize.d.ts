@@ -3,7 +3,7 @@ import {DataType} from './data-types';
 import {Literal, Json, Where, Col, Cast, Fn} from './utils';
 import {Transaction, TransactionOptions} from './transaction';
 import {QueryInterface, QueryOptions} from './query-interface';
-import {DataTypes} from './data-types';
+import * as DataTypes from './data-types';
 import {Promise} from './promise';
 import {ModelManager} from './model-manager';
 import {
@@ -1067,7 +1067,7 @@ export class Sequelize {
    */
   import<T extends typeof Model>(
     path: string,
-    defineFunction?: (sequelize: Sequelize, dataTypes: DataTypes) => T
+    defineFunction?: (sequelize: Sequelize, dataTypes: typeof DataTypes) => T
   ): T;
 
   /**
@@ -1267,7 +1267,8 @@ export * from './associations/index';
 export * from './errors';
 export {BaseError as Error} from './errors';
 export {useInflection} from './utils';
-export {Deferrable} from './deferrable';
+import * as Deferrable from './deferrable';
+export {Deferrable};
 export {Promise} from './promise';
 export {Validator} from './utils/validator-extras';
 
