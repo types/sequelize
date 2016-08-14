@@ -150,4 +150,4 @@ export class InvalidConnectionError extends ConnectionError { }
 /**
  * Thrown when a connection to a database times out
  */
-export interface ConnectionTimedOutError extends ConnectionError { }
+export class ConnectionTimedOutError extends ConnectionError { }
