@@ -9,5 +9,5 @@ before_deploy:
 deploy:
   provider: surge
   project: ./typedoc/
-  domain: typed-bignumber.surge.sh
+  domain: typed-sequelize.surge.sh
   skip_cleanup: true
