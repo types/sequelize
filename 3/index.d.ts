@@ -2499,7 +2499,7 @@ declare module sequelize {
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions | Array<col | and | or | string> | where;
+    where?: WhereOptions;
 
   }
 
@@ -2836,19 +2836,135 @@ declare module sequelize {
   }
 
   /**
-   * Where Complex nested query
+   * The type accepted by every `where` option
+   * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
    */
-  export interface WhereNested {
-    $and: Array<WhereOptions | WhereLogic>;
-    $or: Array<WhereOptions | WhereLogic>;
+  export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | where | Array<string | number>;
+
+  export interface WhereSubqueryOperators {
+    /**
+     * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+     *
+     * _PG only_
+     */
+    $any?: Array<string | number>;
+
+    /** Undocumented? */
+    $all?: Array<string | number>;
   }
 
   /**
-   * Nested where Postgre Statement
+   * Operators that can be used in WhereOptions
+   *
+   * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
    */
-  export interface WherePGStatement {
-    $any: Array<string | number>;
-    $all: Array<string | number>;
+  export interface WhereOperators extends WhereSubqueryOperators {
+
+    /** Example: `$gte: 6,` becomes `>= 6` */
+    $gte?: number | string | Date;
+
+    /** Example: `$lt: 10,` becomes `< 10` */
+    $lt?: number | string | Date;
+
+    /** Example: `$lte: 10,` becomes `<= 10` */
+    $lte?: number | string | Date;
+
+    /** Example: `$ne: 20,` becomes `!= 20` */
+    $ne?: string | number | WhereOperators;
+
+    /** Example: `$not: true,` becomes `IS NOT TRUE` */
+    $not?: boolean | string | number | WhereOperators;
+
+    /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
+    $between?: [number, number];
+
+    /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
+    $in?: Array<string | number> | literal;
+
+    /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
+    $notIn?: Array<string | number> | literal;
+
+    /**
+     * Examples:
+     *  - `$like: '%hat',` becomes `LIKE '%hat'`
+     *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
+     */
+    $like?: string | WhereSubqueryOperators;
+
+    /**
+     * Examples:
+     *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
+     *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
+     */
+    $notLike?: string | WhereSubqueryOperators;
+
+    /**
+     * case insensitive PG only
+     *
+     * Examples:
+     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+     */
+    $ilike?: string | WhereSubqueryOperators;
+
+    /**
+     * case insensitive PG only
+     *
+     * Examples:
+     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+     */
+    $iLike?: string | WhereSubqueryOperators;
+
+    /**
+     * PG array overlap operator
+     *
+     * Example: `$overlap: [1, 2]` becomes `&& [1, 2]`
+     */
+    $overlap?: [number, number];
+
+    /**
+     * PG array contains operator
+     *
+     * Example: `$contains: [1, 2]` becomes `@> [1, 2]`
+     */
+    $contains?: any[];
+
+    /**
+     * PG array contained by operator
+     *
+     * Example: `$contained: [1, 2]` becomes `<@ [1, 2]`
+     */
+    $contained?: any[];
+
+    /** Example: `$gt: 6,` becomes `> 6` */
+    $gt?: number | string | Date;
+
+    /**
+     * PG only
+     *
+     * Examples:
+     *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
+     *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
+     */
+    $notILike?: string | WhereSubqueryOperators;
+
+    /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
+    $notBetween?: [number, number];
+
+    /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+    $and?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
+
+    /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+    $or?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
+  }
+
+  export interface OrOperator {
+    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  }
+
+  export interface AndOperator {
+    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
   }
 
   /**
@@ -2860,42 +2976,36 @@ declare module sequelize {
   }
 
   /**
-   * Logic of where statement
+   * Used for the right hand side of WhereAttributeHash.
+   * WhereAttributeHash is in there for JSON columns.
    */
-  export interface WhereLogic {
-    $ne: string | number | WhereLogic;
-    $in: Array<string | number> | literal;
-    $not: boolean | string | number | WhereOptions;
-    $notIn: Array<string | number> | literal;
-    $gte: number | string | Date;
-    $gt: number | string | Date;
-    $lte: number | string | Date;
-    $lt: number | string | Date;
-    $like: string | WherePGStatement;
-    $iLike: string | WherePGStatement;
-    $ilike: string | WherePGStatement;
-    $notLike: string | WherePGStatement;
-    $notILike: string | WherePGStatement;
-    $between: [number, number];
-    '..': [number, number];
-    $notBetween: [number, number];
-    '!..': [number, number];
-    $overlap: [number, number];
-    '&&': [number, number];
-    $contains: any;
-    '@>': any;
-    $contained: any;
-    '<@': any;
-  }
+  export type WhereValue =
+    string // literal value
+    | number // literal value
+    | WhereOperators
+    | WhereAttributeHash // for JSON columns
+    | col // reference another column
+    | AndOperator
+    | OrOperator
+    | WhereGeometryOptions
+    | Array<string | number>; // implicit $or
 
   /**
-   * A hash of attributes to describe your search. See above for examples.
-   *
-   * We did put Object in the end, because there where query might be a JSON Blob. It cripples a bit the
-   * typesafety, but there is no way to pass the tests if we just remove it.
+   * A hash of attributes to describe your search.
    */
-  export interface WhereOptions {
-    [field: string]: string | number | WhereLogic | WhereOptions | col | and | or | WhereGeometryOptions | Array<string | number> | Object;
+  export interface WhereAttributeHash {
+    /**
+     * Possible key values:
+     * - A simple attribute name
+     * - A nested key for JSON columns
+     *
+     *       {
+     *         "meta.audio.length": {
+     *           $gt: 20
+     *         }
+     *       }
+     */
+    [field: string]: WhereValue;
   }
 
   /**
@@ -2990,7 +3100,7 @@ declare module sequelize {
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions | Array<col | and | or | string> | where;
+    where?: WhereOptions;
 
     /**
      * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
@@ -3074,7 +3184,7 @@ declare module sequelize {
     /**
      * A hash of search attributes.
      */
-    where?: WhereOptions | Array<string>;
+    where?: WhereOptions;
 
     /**
      * Include options. See `find` for details
@@ -3166,7 +3276,7 @@ declare module sequelize {
     /**
      * A hash of search attributes.
      */
-    where: string | WhereOptions;
+    where: WhereOptions;
 
     /**
      * Default values to use if building a new instance
@@ -3193,7 +3303,7 @@ declare module sequelize {
     /**
      * A hash of search attributes.
      */
-    where: string | WhereOptions;
+    where: WhereOptions;
 
     /**
      * Default values to use if building a new instance
@@ -3356,7 +3466,7 @@ declare module sequelize {
      * Only used in conjunction with `truncate`.
      * Automatically restart sequences owned by columns of the truncated table
      */
-    restartIdentity: boolean;
+    restartIdentity?: boolean;
   }
 
   /**
@@ -5231,14 +5341,14 @@ declare module sequelize {
      *
      * @param args Each argument will be joined by AND
      */
-    and(...args: Array<string | Object>): and;
+    and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
 
     /**
      * An OR query
      *
      * @param args Each argument will be joined by OR
      */
-    or(...args: Array<string | Object>): or;
+    or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
 
     /**
      * Creates an object representing nested where conditions for postgres's json data-type.
@@ -5803,33 +5913,6 @@ declare module sequelize {
      * @param val
      */
     new (val: any): literal;
-  }
-
-  export interface and {
-    args: Array<any>;
-  }
-
-  export interface andStatic {
-    /**
-     * An AND query
-     *
-     * @param args Each argument will be joined by AND
-     */
-    new (...args: Array<string | Object>): and;
-  }
-
-  export interface or {
-    args: Array<any>;
-  }
-
-  export interface orStatic {
-    /**
-     * An OR query
-     * @see {Model#find}
-     *
-     * @param args Each argument will be joined by OR
-     */
-    new (...args: Array<String | Object>): or;
   }
 
   export interface json {

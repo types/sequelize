@@ -1,6 +1,6 @@
 
 import {Promise} from './promise';
-import {Col, Fn, Literal, Where, And, Or} from './utils';
+import {Col, Fn, Literal, Where} from './utils';
 import {SyncOptions} from './sequelize';
 import {QueryOptions} from './query-interface';
 import {Transaction} from './transaction';
@@ -73,19 +73,141 @@ export interface ScopeOptions {
 }
 
 /**
- * Where Complex nested query
+ * The type accepted by every `where` option
+ *
+ * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
  */
-export interface WhereNested {
-  $and: Array<WhereAttributeHash | WhereLogic>;
-  $or: Array<WhereAttributeHash | WhereLogic>;
+export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where | Array<string | number>;
+
+/**
+ * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+ *
+ * _PG only_
+ */
+export interface AnyOperator {
+  $any: Array<string | number>;
+}
+
+/** Undocumented? */
+export interface AllOperator {
+  $all: Array<string | number>;
 }
 
 /**
- * Nested where Postgre Statement
+ * Operators that can be used in WhereOptions
+ *
+ * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
  */
-export interface WherePGStatement {
-  $any: Array<string | number>;
-  $all: Array<string | number>;
+export interface WhereOperators {
+
+  /**
+   * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+   *
+   * _PG only_
+   */
+  $any?: Array<string | number>;
+
+  /** Example: `$gte: 6,` becomes `>= 6` */
+  $gte?: number | string | Date;
+
+  /** Example: `$lt: 10,` becomes `< 10` */
+  $lt?: number | string | Date;
+
+  /** Example: `$lte: 10,` becomes `<= 10` */
+  $lte?: number | string | Date;
+
+  /** Example: `$ne: 20,` becomes `!= 20` */
+  $ne?: string | number | WhereOperators;
+
+  /** Example: `$not: true,` becomes `IS NOT TRUE` */
+  $not?: boolean | string | number | WhereOperators;
+
+  /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
+  $between?: [number, number];
+
+  /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
+  $in?: Array<string | number> | Literal;
+
+  /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
+  $notIn?: Array<string | number> | Literal;
+
+  /**
+   * Examples:
+   *  - `$like: '%hat',` becomes `LIKE '%hat'`
+   *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
+   */
+  $like?: string | AnyOperator | AllOperator;
+
+  /**
+   * Examples:
+   *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
+   *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
+   */
+  $notLike?: string | AnyOperator | AllOperator;
+
+  /**
+   * case insensitive PG only
+   *
+   * Examples:
+   *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+   *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+   */
+  $ilike?: string | AnyOperator | AllOperator;
+
+  /**
+   * case insensitive PG only
+   *
+   * Examples:
+   *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+   *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+   */
+  $iLike?: string | AnyOperator | AllOperator;
+
+  /**
+   * PG array overlap operator
+   *
+   * Example: `$overlap: [1, 2]` becomes `&& [1, 2]`
+   */
+  $overlap?: [number, number];
+
+  /**
+   * PG array contains operator
+   *
+   * Example: `$contains: [1, 2]` becomes `@> [1, 2]`
+   */
+  $contains?: any[];
+
+  /**
+   * PG array contained by operator
+   *
+   * Example: `$contained: [1, 2]` becomes `<@ [1, 2]`
+   */
+  $contained?: any[];
+
+  /** Example: `$gt: 6,` becomes `> 6` */
+  $gt?: number | string | Date;
+
+  /**
+   * PG only
+   *
+   * Examples:
+   *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
+   *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
+   */
+  $notILike?: string | AnyOperator | AllOperator;
+
+  /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
+  $notBetween?: [number, number];
+}
+
+/** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+export interface OrOperator {
+  $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+}
+
+/** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+export interface AndOperator {
+  $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
 }
 
 /**
@@ -97,44 +219,37 @@ export interface WhereGeometryOptions {
 }
 
 /**
- * Logic of where statement
+ * Used for the right hand side of WhereAttributeHash.
+ * WhereAttributeHash is in there for JSON columns.
  */
-export interface WhereLogic {
-  $ne: string | number | WhereLogic;
-  $in: Array<string | number> | Literal;
-  $not: boolean | string | number | WhereAttributeHash;
-  $notIn: Array<string | number> | Literal;
-  $gte: number | string | Date;
-  $gt: number | string | Date;
-  $lte: number | string | Date;
-  $lt: number | string | Date;
-  $like: string | WherePGStatement;
-  $iLike: string | WherePGStatement;
-  $ilike: string | WherePGStatement;
-  $notLike: string | WherePGStatement;
-  $notILike: string | WherePGStatement;
-  $between: [number, number];
-  '..': [number, number];
-  $notBetween: [number, number];
-  '!..': [number, number];
-  $overlap: [number, number];
-  '&&': [number, number];
-  $contains: any;
-  '@>': any;
-  $contained: any;
-  '<@': any;
-}
+export type WhereValue =
+  string // literal value
+  | number // literal value
+  | WhereOperators
+  | WhereAttributeHash // for JSON columns
+  | Col // reference another column
+  | OrOperator
+  | AndOperator
+  | WhereGeometryOptions
+  | Array<string | number>; // implicit $or
 
 /**
- * A hash of attributes to describe your search. See above for examples.
- *
- * We did put Object in the end, because there where query might be a JSON Blob. It cripples a bit the
- * typesafety, but there is no way to pass the tests if we just remove it.
+ * A hash of attributes to describe your search.
  */
 export interface WhereAttributeHash {
-  [field: string]: string | number | WhereLogic | WhereAttributeHash | Col | And | Or | WhereGeometryOptions | Array<string | number> | Object;
+  /**
+   * Possible key values:
+   * - A simple attribute name
+   * - A nested key for JSON columns
+   *
+   *       {
+   *         "meta.audio.length": {
+   *           $gt: 20
+   *         }
+   *       }
+   */
+  [field: string]: WhereValue;
 }
-
 /**
  * Through options for Include Options
  */
@@ -219,8 +334,6 @@ export type FindAttributeOptions =
     exclude?: Array<string>;
     include: Array<string | [string | Fn, string]>;
   };
-
-export type WhereOptions = WhereAttributeHash | Array<Col | And | Or | string> | Where;
 
 /**
  * Options that are passed to any model creating a SELECT query
