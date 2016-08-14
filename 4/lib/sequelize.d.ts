@@ -1,5 +1,4 @@
 
-import {DataType} from './data-types';
 import {Literal, Json, Where, Col, Cast, Fn} from './utils';
 import {Transaction, TransactionOptions} from './transaction';
 import {QueryInterface, QueryOptions} from './query-interface';
