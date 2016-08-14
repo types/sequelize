@@ -4,7 +4,7 @@ _Start typing to search_
 ## API
 <ul class="tsd-index-list" style="list-style: none">
   <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_sequelize_d_.sequelize.html">Sequelize</a></li>
-  <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classses/_lib_model_d_.model.html">Model</a></li>
+  <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_model_d_.model.html">Model</a></li>
   <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_transaction_d_.transaction.html">Transaction</a></li>
   <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_query_interface_d_.queryinterface.html">QueryInterface</a></li>
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_data_types_d_.html">DataTypes</a></li>
