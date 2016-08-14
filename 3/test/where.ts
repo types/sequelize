@@ -36,16 +36,21 @@ operators = {
   $like: { $any: ['cat', 'hat'] } // LIKE ANY ARRAY['cat', 'hat'] - also works for iLike and notLike
 };
 
-// Combinations
+where = Sequelize.and();
+
+where = Sequelize.or();
+
+where = {$and: []};
 
 where = {
-  rank: {
-    $or: {
-      $lt: 1000,
-      $eq: null
-    }
-  }
+  rank: Sequelize.and({$lt: 1000}, {$eq: null})
 };
+
+where = {
+  rank: Sequelize.or({$lt: 1000}, {$eq: null})
+};
+
+// Combinations
 // rank < 1000 OR rank IS NULL
 
 where = {

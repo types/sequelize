@@ -109,16 +109,6 @@ export class Where {
   constructor(attr: Object, logic: string | Object);
 }
 
-export class And {
-  args: any[];
-  constructor(...args: Array<string | Object>);
-}
-
-export class Or {
-  args: any[];
-  constructor(...args: Array<string | Object>);
-}
-
 export const validateParameter: typeof parameterValidator;
 export function formatReferences(obj: any): any;
 

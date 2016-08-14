@@ -1,6 +1,6 @@
 
 import {DataType} from './data-types';
-import {And, Or, Literal, Json, Where, Col, Cast, Fn} from './utils';
+import {Literal, Json, Where, Col, Cast, Fn} from './utils';
 import {Transaction, TransactionOptions} from './transaction';
 import {QueryInterface, QueryOptions} from './query-interface';
 import {DataTypes} from './data-types';
@@ -16,7 +16,11 @@ import {
   InstanceDestroyOptions,
   UpdateOptions,
   BulkCreateOptions,
-  FindOptions
+  FindOptions,
+  WhereAttributeHash,
+  WhereOperators,
+  AndOperator,
+  OrOperator
 } from './model';
 
 
@@ -305,14 +309,14 @@ export class Sequelize {
    *
    * @param args Each argument will be joined by AND
    */
-  static and(...args: Array<string | Object>): And;
+  static and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
 
   /**
    * An OR query
    *
    * @param args Each argument will be joined by OR
    */
-  static or(...args: Array<string | Object>): Or;
+  static or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
 
   /**
    * Creates an object representing nested where conditions for postgres's json data-type.

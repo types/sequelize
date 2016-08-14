@@ -1,5 +1,5 @@
 
-import {Model, Sequelize, WhereOptions, WhereOperators} from 'sequelize';
+import {Model, Sequelize, WhereOptions, WhereOperators, AndOperator, OrOperator} from 'sequelize';
 
 class MyModel extends Model { }
 
@@ -9,9 +9,15 @@ let where: WhereOptions;
 
 // Operators
 
+let and: AndOperator = {
+  $and: { a: 5 }                  // AND (a = 5)
+};
+
+let or: OrOperator = {
+  $or: [{ a: 5 }, { a: 6 }]       // (a = 5 OR a = 6)
+};
+
 let operators: WhereOperators = {
-  $and: { a: 5 },                 // AND (a = 5)
-  $or: [{ a: 5 }, { a: 6 }],      // (a = 5 OR a = 6)
   $gt: 6,                         // > 6
   $gte: 6,                        // >= 6
   $lt: 10,                        // < 10
@@ -37,6 +43,23 @@ operators = {
 };
 
 // Combinations
+
+Model.find({ where: or });
+Model.find({ where: and });
+
+where = Sequelize.and();
+
+where = Sequelize.or();
+
+where = { $and: [] };
+
+where = {
+  rank: Sequelize.and({ $lt: 1000 }, { $eq: null })
+};
+
+where = {
+  rank: Sequelize.or({ $lt: 1000 }, { $eq: null })
+};
 
 where = {
   rank: {

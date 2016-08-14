@@ -2836,7 +2836,7 @@ declare module sequelize {
   }
 
   /** The type accepted by every `where` option */
-  export type WhereOptions = WhereAttributeHash | where;
+  export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | where;
 
   export interface WhereSubqueryOperators {
     /**
@@ -2956,6 +2956,14 @@ declare module sequelize {
     $or?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
   }
 
+  export interface OrOperator {
+    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  }
+
+  export interface AndOperator {
+    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  }
+
   /**
    * Where Geometry Options
    */
@@ -2974,8 +2982,8 @@ declare module sequelize {
     | WhereOperators
     | WhereAttributeHash // for JSON columns
     | col // reference another column
-    | and // ?
-    | or // ?
+    | AndOperator
+    | OrOperator
     | WhereGeometryOptions
     | Array<string | number>; // implicit $or
 
@@ -5330,14 +5338,14 @@ declare module sequelize {
      *
      * @param args Each argument will be joined by AND
      */
-    and(...args: Array<WhereOperators | WhereAttributeHash | where>): and;
+    and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
 
     /**
      * An OR query
      *
      * @param args Each argument will be joined by OR
      */
-    or(...args: Array<WhereOperators | WhereAttributeHash | where>): or;
+    or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
 
     /**
      * Creates an object representing nested where conditions for postgres's json data-type.
@@ -5902,33 +5910,6 @@ declare module sequelize {
      * @param val
      */
     new (val: any): literal;
-  }
-
-  export interface and {
-    $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
-  }
-
-  export interface andStatic {
-    /**
-     * An AND query
-     *
-     * @param args Each argument will be joined by AND
-     */
-    new (...args: Array<string | Object>): and;
-  }
-
-  export interface or {
-    $or?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
-  }
-
-  export interface orStatic {
-    /**
-     * An OR query
-     * @see {Model#find}
-     *
-     * @param args Each argument will be joined by OR
-     */
-    new (...args: Array<String | Object>): or;
   }
 
   export interface json {

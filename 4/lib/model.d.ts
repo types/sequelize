@@ -1,6 +1,6 @@
 
 import {Promise} from './promise';
-import {Col, Fn, Literal, Where, And, Or} from './utils';
+import {Col, Fn, Literal, Where} from './utils';
 import {SyncOptions} from './sequelize';
 import {QueryOptions} from './query-interface';
 import {Transaction} from './transaction';
@@ -73,7 +73,7 @@ export interface ScopeOptions {
 }
 
 /** The type accepted by every `where` option */
-export type WhereOptions = WhereAttributeHash | Where;
+export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where;
 
 export interface WhereSubqueryOperators {
   /**
@@ -185,12 +185,16 @@ export interface WhereOperators extends WhereSubqueryOperators {
 
   /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
   $notBetween?: [number, number];
+}
 
-  /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
-  $and?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | Where>;
+/** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+export interface OrOperator {
+  $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+}
 
-  /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
-  $or?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | Where>;
+/** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+export interface AndOperator {
+  $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
 }
 
 /**
@@ -211,8 +215,8 @@ export type WhereValue =
   | WhereOperators
   | WhereAttributeHash // for JSON columns
   | Col // reference another column
-  | And // ?
-  | Or // ?
+  | OrOperator
+  | AndOperator
   | WhereGeometryOptions
   | Array<string | number>; // implicit $or
 
