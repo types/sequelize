@@ -11,7 +11,8 @@
     "./cast.ts",
     "./promise.ts",
     "./query-interface.ts",
-    "./test.ts"
+    "./test.ts",
+    "./where.ts"
   ],
   "atom": {
     "rewriteTsconfig": true

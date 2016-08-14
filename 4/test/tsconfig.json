@@ -15,7 +15,8 @@
     "models/User.ts",
     "models/UserGroup.ts",
     "promise.ts",
-    "usage.ts"
+    "usage.ts",
+    "where.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
