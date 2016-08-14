@@ -566,7 +566,7 @@ export interface TruncateOptions {
    * Only used in conjunction with `truncate`.
    * Automatically restart sequences owned by columns of the truncated table
    */
-  restartIdentity: boolean;
+  restartIdentity?: boolean;
 }
 
 /**
