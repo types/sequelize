@@ -1,5 +1,4 @@
 
-import {DataType} from './data-types';
 import {Literal, Json, Where, Col, Cast, Fn} from './utils';
 import {Transaction, TransactionOptions} from './transaction';
 import {QueryInterface, QueryOptions} from './query-interface';
@@ -1259,10 +1258,10 @@ export class Sequelize {
 
 }
 
+export {DataTypes};
 export * from './model';
 export * from './transaction';
 export * from './model';
-export * from './data-types';
 export * from './associations/index';
 export * from './errors';
 export {BaseError as Error} from './errors';

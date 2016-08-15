@@ -1,5 +1,5 @@
 
-import {STRING, Model} from 'sequelize';
+import {DataTypes, Model} from 'sequelize';
 import {sequelize} from './connection';
 
 // I really wouldn't recommend this, but if you want you can still use define() and interfaces
@@ -18,7 +18,7 @@ type User = {
   customStaticMethod(): any;
 } & typeof Model;
 
-const User: User = sequelize.define<User>('User', {firstName: STRING}, {tableName: 'users'});
+const User: User = sequelize.define<User>('User', {firstName: DataTypes.STRING}, {tableName: 'users'});
 
 async function test() {
 
