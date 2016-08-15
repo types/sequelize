@@ -1258,10 +1258,10 @@ export class Sequelize {
 
 }
 
+export {DataTypes};
 export * from './model';
 export * from './transaction';
 export * from './model';
-export * from './data-types';
 export * from './associations/index';
 export * from './errors';
 export {BaseError as Error} from './errors';

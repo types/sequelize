@@ -2,7 +2,7 @@
 import {
   Model,
   FindOptions,
-  STRING,
+  DataTypes,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BelongsToCreateAssociationMixin
@@ -27,10 +27,10 @@ export class User extends Model {
 }
 
 User.init({
-  username: STRING,
-  firstName: STRING,
-  lastName: STRING
-}, {}, sequelize.modelManager);
+  username: DataTypes.STRING,
+  firstName: DataTypes.STRING,
+  lastName: DataTypes.STRING
+}, { sequelize });
 
 // Hooks
 User.afterFind((users: User[], options: FindOptions) => {
