@@ -1,7 +1,7 @@
 import {sequelize} from '../connection';
 import {
   Model,
-  STRING,
+  DataTypes,
   HasManyAddAssociationMixin,
   HasManyCountAssociationsMixin,
   HasManyGetAssociationsMixin,
@@ -24,6 +24,7 @@ export class UserGroup extends Model {
   setUsers: HasManySetAssociationsMixin<User, number>;
   addUser: HasManyAddAssociationMixin<User, number>;
   addUsers: HasManyAddAssociationsMixin<User, number>;
+  createUser: HasManyCreateAssociationMixin<User, number>;
   countUsers: HasManyCountAssociationsMixin;
   hasUser: HasManyHasAssociationMixin<User, number>;
   removeUser: HasManyRemoveAssociationMixin<User, number>;
@@ -32,7 +33,7 @@ export class UserGroup extends Model {
 
 // attach all the metadata to the model
 // instead of this, you could also use decorators
-UserGroup.init({name: STRING}, {}, sequelize.modelManager);
+UserGroup.init({ name: DataTypes.STRING }, { sequelize });
 
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
