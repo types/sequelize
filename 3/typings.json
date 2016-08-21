@@ -1,6 +1,7 @@
 {
   "name": "sequelize",
   "main": "index.d.ts",
+  "version": "3.24.1",
   "dependencies": {
     "bluebird": "registry:npm/bluebird#3.3.4+20160802085254",
     "validator": "registry:npm/validator#4.5.1+20160723033700"

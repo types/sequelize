@@ -1598,8 +1598,49 @@ export abstract class Model {
    */
   sequelize: Sequelize;
 
-
-  static init(attributes: ModelAttributes, options: InitOptions, modelManager: ModelManager): void;
+  /**
+   * Initialize a model, representing a table in the DB, with attributes and options.
+   *
+   * The table columns are define by the hash that is given as the second argument. Each attribute of the hash represents a column. A short table definition might look like this:
+   *
+   * ```js
+   * Project.init({
+   *   columnA: {
+   *     type: Sequelize.BOOLEAN,
+   *     validate: {
+   *       is: ['[a-z]','i'],        // will only allow letters
+   *       max: 23,                  // only allow values <= 23
+   *       isIn: {
+   *         args: [['en', 'zh']],
+   *         msg: "Must be English or Chinese"
+   *       }
+   *     },
+   *     field: 'column_a'
+   *     // Other attributes here
+   *   },
+   *   columnB: Sequelize.STRING,
+   *   columnC: 'MY VERY OWN COLUMN TYPE'
+   * }, {sequelize})
+   *
+   * sequelize.models.modelName // The model will now be available in models under the class name
+   * ```
+   *
+   * As shown above, column definitions can be either strings, a reference to one of the datatypes that are predefined on the Sequelize constructor, or an object that allows you to specify both the type of the column, and other attributes such as default values, foreign key constraints and custom setters and getters.
+   *
+   * For a list of possible data types, see http://docs.sequelizejs.com/en/latest/docs/models-definition/#data-types
+   *
+   * For more about getters and setters, see http://docs.sequelizejs.com/en/latest/docs/models-definition/#getters-setters
+   *
+   * For more about instance and class methods, see http://docs.sequelizejs.com/en/latest/docs/models-definition/#expansion-of-models
+   *
+   * For more about validation, see http://docs.sequelizejs.com/en/latest/docs/models-definition/#validations
+   *
+   * @param attributes
+   *  An object, where each attribute is a column of the table. Each column can be either a DataType, a
+   *  string or a type-description object, with the properties described below:
+   * @param options These options are merged with the default define options provided to the Sequelize constructor
+   */
+  static init(attributes: ModelAttributes, options: InitOptions): void;
 
   /**
    * Remove attribute from model definition
