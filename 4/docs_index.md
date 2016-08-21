@@ -28,7 +28,7 @@ _User.ts_
 import {
   Model,
   FindOptions,
-  STRING,
+  DataTypes,
   BelongsTo,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -58,13 +58,14 @@ export class User extends Model {
 }
 
 User.init({
-  username: STRING,
-  firstName: STRING,
-  lastName: STRING
-}, {}, sequelize.modelManager);
+  username: DataTypes.STRING,
+  firstName: DataTypes.STRING,
+  lastName: DataTypes.STRING
+}, {sequelize});
 
 // associate
-// it is important to import _after_ the model above is already exported so the circular reference works.
+// it is important to import _after_ the model above is already exported
+// so the circular dependency works.
 import {UserGroup} from './UserGroup';
 User.belongsTo(UserGroup, {as: 'group', foreignKey: 'groupId'});
 ```
