@@ -4,10 +4,10 @@ _Start typing to search_
 ## API
 <ul class="tsd-index-list" style="list-style: none">
   <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.connection.html">Sequelize</a></li>
-  <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.model.html">Model</a></li>
-  <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.instance.html">Instance</a></li>
-  <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.hooks.html">Hooks</a></li>
-  <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.hooks.html">Associations</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.model.html">Model</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.instance.html">Instance</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hooks.html">Hooks</a></li>
+  <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.associations.html">Associations</a></li>
   <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.transaction.html">Transaction</a></li>
   <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/datatypes.html">DataTypes</a></li>
   <li class="tsd-kind-interface"><a class="tsd-kind-icon" href="interfaces/sequelize.errors.html">Errors</a></li>
