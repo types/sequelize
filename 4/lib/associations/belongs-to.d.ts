@@ -71,7 +71,7 @@ export interface BelongsToGetAssociationMixin<TModel> {
  * The options for the setAssociation mixin of the belongsTo association.
  * @see BelongsToSetAssociationMixin
  */
-export interface BelongsToSetAssociationMixinOptions {
+export interface BelongsToSetAssociationMixinOptions extends SaveOptions {
   /**
    * Skip saving this after setting the foreign key if false.
    */
@@ -102,14 +102,14 @@ export interface BelongsToSetAssociationMixin<TModel, TPrimaryKey> {
    * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
    * @param options the options passed to `this.save`.
    */
-  (newAssociation?: TModel | TPrimaryKey, options?: BelongsToSetAssociationMixinOptions | SaveOptions): Promise<void>
+  (newAssociation?: TModel | TPrimaryKey, options?: BelongsToSetAssociationMixinOptions): Promise<void>
 }
 
 /**
  * The options for the createAssociation mixin of the belongsTo association.
  * @see BelongsToCreateAssociationMixin
  */
-export interface BelongsToCreateAssociationMixinOptions { }
+export interface BelongsToCreateAssociationMixinOptions extends CreateOptions, BelongsToSetAssociationMixinOptions { }
 
 /**
  * The createAssociation mixin applied to models with belongsTo.
@@ -136,8 +136,8 @@ export interface BelongsToCreateAssociationMixin<TModel> {
    * @param options The options passed to `target.create` and `setAssociation`.
    */
   (
-    values?: Object,
-    options?: BelongsToCreateAssociationMixinOptions | CreateOptions | BelongsToSetAssociationMixinOptions
+    values?: { [attribute: string]: any },
+    options?: BelongsToCreateAssociationMixinOptions
   ): Promise<TModel>
 }
 

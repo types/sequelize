@@ -80,18 +80,7 @@ export class HasMany extends Association {
    * The options for the setAssociations mixin of the hasMany association.
    * @see HasManySetAssociationsMixin
    */
-  export interface HasManySetAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
+  export interface HasManySetAssociationsMixinOptions extends FindOptions, InstanceUpdateOptions { }
 
   /**
    * The setAssociations mixin applied to models with hasMany.
@@ -127,7 +116,7 @@ export class HasMany extends Association {
      */
     (
       newAssociations?: Array<TModel | TModelPrimaryKey>,
-      options?: HasManySetAssociationsMixinOptions | FindOptions | InstanceUpdateOptions
+      options?: HasManySetAssociationsMixinOptions
     ): Promise<void>
   }
 
@@ -135,18 +124,7 @@ export class HasMany extends Association {
    * The options for the addAssociations mixin of the hasMany association.
    * @see HasManyAddAssociationsMixin
    */
-  export interface HasManyAddAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
+  export interface HasManyAddAssociationsMixinOptions extends InstanceUpdateOptions { }
 
   /**
    * The addAssociations mixin applied to models with hasMany.
@@ -181,7 +159,7 @@ export class HasMany extends Association {
      */
     (
       newAssociations?: Array<TModel | TModelPrimaryKey>,
-      options?: HasManyAddAssociationsMixinOptions | InstanceUpdateOptions
+      options?: HasManyAddAssociationsMixinOptions
     ): Promise<void>
   }
 
@@ -189,13 +167,7 @@ export class HasMany extends Association {
    * The options for the addAssociation mixin of the hasMany association.
    * @see HasManyAddAssociationMixin
    */
-  export interface HasManyAddAssociationMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-  }
+  export interface HasManyAddAssociationMixinOptions extends InstanceUpdateOptions { }
 
   /**
    * The addAssociation mixin applied to models with hasMany.
@@ -230,7 +202,7 @@ export class HasMany extends Association {
      */
     (
       newAssociation?: TModel | TModelPrimaryKey,
-      options?: HasManyAddAssociationMixinOptions | InstanceUpdateOptions
+      options?: HasManyAddAssociationMixinOptions
     ): Promise<void>
   }
 
@@ -238,7 +210,7 @@ export class HasMany extends Association {
    * The options for the createAssociation mixin of the hasMany association.
    * @see HasManyCreateAssociationMixin
    */
-  export interface HasManyCreateAssociationMixinOptions { }
+  export interface HasManyCreateAssociationMixinOptions extends CreateOptions { }
 
   /**
    * The createAssociation mixin applied to models with hasMany.
@@ -265,15 +237,15 @@ export class HasMany extends Association {
    * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
    * @see Instance
    */
-  export interface HasManyCreateAssociationMixin<TAttributes, TModel> {
+  export interface HasManyCreateAssociationMixin<TModel> {
     /**
      * Create a new instance of the associated model and associate it with this.
      * @param values The values used to create the association.
      * @param options The options to use when creating the association.
      */
     (
-      values?: TAttributes,
-      options?: HasManyCreateAssociationMixinOptions | CreateOptions
+      values?: { [attribute: string]: any },
+      options?: HasManyCreateAssociationMixinOptions
     ): Promise<TModel>
   }
 
@@ -281,7 +253,7 @@ export class HasMany extends Association {
    * The options for the removeAssociation mixin of the hasMany association.
    * @see HasManyRemoveAssociationMixin
    */
-  export interface HasManyRemoveAssociationMixinOptions { }
+  export interface HasManyRemoveAssociationMixinOptions extends InstanceUpdateOptions { }
 
   /**
    * The removeAssociation mixin applied to models with hasMany.
@@ -316,7 +288,7 @@ export class HasMany extends Association {
      */
     (
       oldAssociated?: TModel | TModelPrimaryKey,
-      options?: HasManyRemoveAssociationMixinOptions | InstanceUpdateOptions
+      options?: HasManyRemoveAssociationMixinOptions
     ): Promise<void>
   }
 
@@ -324,12 +296,7 @@ export class HasMany extends Association {
    * The options for the removeAssociations mixin of the hasMany association.
    * @see HasManyRemoveAssociationsMixin
    */
-  export interface HasManyRemoveAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
+  export interface HasManyRemoveAssociationsMixinOptions extends InstanceUpdateOptions { }
 
   /**
    * The removeAssociations mixin applied to models with hasMany.
@@ -364,7 +331,7 @@ export class HasMany extends Association {
      */
     (
       oldAssociateds?: Array<TModel | TModelPrimaryKey>,
-      options?: HasManyRemoveAssociationsMixinOptions | InstanceUpdateOptions
+      options?: HasManyRemoveAssociationsMixinOptions
     ): Promise<void>
   }
 
@@ -372,7 +339,7 @@ export class HasMany extends Association {
    * The options for the hasAssociation mixin of the hasMany association.
    * @see HasManyHasAssociationMixin
    */
-  export interface HasManyHasAssociationMixinOptions { }
+  export interface HasManyHasAssociationMixinOptions extends HasManyGetAssociationsMixinOptions { }
 
   /**
    * The hasAssociation mixin applied to models with hasMany.
@@ -407,7 +374,7 @@ export class HasMany extends Association {
      */
     (
       target: TModel | TModelPrimaryKey,
-      options?: HasManyHasAssociationMixinOptions | HasManyGetAssociationsMixinOptions
+      options?: HasManyHasAssociationMixinOptions
     ): Promise<boolean>
   }
 
@@ -415,12 +382,7 @@ export class HasMany extends Association {
    * The options for the hasAssociations mixin of the hasMany association.
    * @see HasManyHasAssociationsMixin
    */
-  export interface HasManyHasAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
+  export interface HasManyHasAssociationsMixinOptions extends HasManyGetAssociationsMixinOptions { }
 
   /**
    * The removeAssociations mixin applied to models with hasMany.
@@ -455,7 +417,7 @@ export class HasMany extends Association {
      */
     (
       targets: Array<TModel | TModelPrimaryKey>,
-      options?: HasManyHasAssociationsMixinOptions | HasManyGetAssociationsMixinOptions
+      options?: HasManyHasAssociationsMixinOptions
     ): Promise<boolean>
   }
 

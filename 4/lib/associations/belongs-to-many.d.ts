@@ -40,6 +40,13 @@ export interface ThroughOptions {
 }
 
 /**
+ * Attributes for the join table
+ */
+export interface JoinTableAttributes {
+  [attribute: string]: any;
+}
+
+/**
  * Options provided when associating models with belongsToMany relationship
  */
 export interface BelongsToManyOptions extends ManyToManyOptions {
@@ -123,18 +130,7 @@ export interface BelongsToManyGetAssociationsMixin<TModel> {
  * The options for the setAssociations mixin of the belongsToMany association.
  * @see BelongsToManySetAssociationsMixin
  */
-export interface BelongsToManySetAssociationsMixinOptions {
-
-  /**
-   * Run validation for the join model.
-   */
-  validate?: boolean;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-}
+export interface BelongsToManySetAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
 
 /**
  * The setAssociations mixin applied to models with belongsToMany.
@@ -161,7 +157,7 @@ export interface BelongsToManySetAssociationsMixinOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey, TJoinTableAttributes> {
+export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey> {
   /**
    * Set the associated models by passing an array of instances or their primary keys.
    * Everything that it not in the passed array will be un-associated.
@@ -170,7 +166,7 @@ export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey, TJo
    */
   (
     newAssociations?: Array<TModel | TModelPrimaryKey>,
-    options?: BelongsToManySetAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
+    options?: BelongsToManySetAssociationsMixinOptions
   ): Promise<void>
 }
 
@@ -178,18 +174,7 @@ export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey, TJo
  * The options for the addAssociations mixin of the belongsToMany association.
  * @see BelongsToManyAddAssociationsMixin
  */
-export interface BelongsToManyAddAssociationsMixinOptions {
-
-  /**
-   * Run validation for the join model.
-   */
-  validate?: boolean;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-}
+export interface BelongsToManyAddAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
 
 /**
  * The addAssociations mixin applied to models with belongsToMany.
@@ -216,7 +201,7 @@ export interface BelongsToManyAddAssociationsMixinOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey, TJoinTableAttributes> {
+export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey> {
   /**
    * Associate several instances with this.
    * @param newAssociations An array of instances or primary key of instances to associate with this.
@@ -224,7 +209,7 @@ export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey, TJo
    */
   (
     newAssociations?: Array<TModel | TModelPrimaryKey>,
-    options?: BelongsToManyAddAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
+    options?: BelongsToManyAddAssociationsMixinOptions
   ): Promise<void>
 }
 
@@ -232,13 +217,7 @@ export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey, TJo
  * The options for the addAssociation mixin of the belongsToMany association.
  * @see BelongsToManyAddAssociationMixin
  */
-export interface BelongsToManyAddAssociationMixinOptions {
-
-  /**
-   * Run validation for the join model.
-   */
-  validate?: boolean;
-}
+export interface BelongsToManyAddAssociationMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
 
 /**
  * The addAssociation mixin applied to models with belongsToMany.
@@ -265,7 +244,7 @@ export interface BelongsToManyAddAssociationMixinOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey, TJoinTableAttributes> {
+export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey> {
   /**
    * Associate an instance with this.
    * @param newAssociation An instance or the primary key of an instance to associate with this.
@@ -273,7 +252,7 @@ export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey, TJoi
    */
   (
     newAssociation?: TModel | TModelPrimaryKey,
-    options?: BelongsToManyAddAssociationMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
+    options?: BelongsToManyAddAssociationMixinOptions
   ): Promise<void>
 }
 
@@ -281,8 +260,7 @@ export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey, TJoi
  * The options for the createAssociation mixin of the belongsToMany association.
  * @see BelongsToManyCreateAssociationMixin
  */
-export interface BelongsToManyCreateAssociationMixinOptions { }
-
+export interface BelongsToManyCreateAssociationMixinOptions extends CreateOptions, JoinTableAttributes { }
 /**
  * The createAssociation mixin applied to models with belongsToMany.
  * An example of usage is as follows:
@@ -308,15 +286,15 @@ export interface BelongsToManyCreateAssociationMixinOptions { }
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyCreateAssociationMixin<TAttributes, TModel, TJoinTableAttributes> {
+export interface BelongsToManyCreateAssociationMixin<TModel> {
   /**
    * Create a new instance of the associated model and associate it with this.
    * @param values The values used to create the association.
    * @param options Options passed to `create` and `add`. Can also hold additional attributes for the join table.
    */
   (
-    values?: TAttributes,
-    options?: BelongsToManyCreateAssociationMixinOptions | CreateOptions | TJoinTableAttributes
+    values?: { [attribute: string]: any },
+    options?: BelongsToManyCreateAssociationMixinOptions
   ): Promise<TModel>
 }
 
@@ -324,7 +302,7 @@ export interface BelongsToManyCreateAssociationMixin<TAttributes, TModel, TJoinT
  * The options for the removeAssociation mixin of the belongsToMany association.
  * @see BelongsToManyRemoveAssociationMixin
  */
-export interface BelongsToManyRemoveAssociationMixinOptions { }
+export interface BelongsToManyRemoveAssociationMixinOptions extends InstanceDestroyOptions { }
 
 /**
  * The removeAssociation mixin applied to models with belongsToMany.
@@ -359,7 +337,7 @@ export interface BelongsToManyRemoveAssociationMixin<TModel, TModelPrimaryKey> {
    */
   (
     oldAssociated?: TModel | TModelPrimaryKey,
-    options?: BelongsToManyRemoveAssociationMixinOptions | InstanceDestroyOptions
+    options?: BelongsToManyRemoveAssociationMixinOptions
   ): Promise<void>
 }
 
@@ -367,12 +345,7 @@ export interface BelongsToManyRemoveAssociationMixin<TModel, TModelPrimaryKey> {
  * The options for the removeAssociations mixin of the belongsToMany association.
  * @see BelongsToManyRemoveAssociationsMixin
  */
-export interface BelongsToManyRemoveAssociationsMixinOptions {
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-}
+export interface BelongsToManyRemoveAssociationsMixinOptions extends InstanceDestroyOptions, InstanceDestroyOptions { }
 
 /**
  * The removeAssociations mixin applied to models with belongsToMany.
@@ -407,7 +380,7 @@ export interface BelongsToManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> 
    */
   (
     oldAssociateds?: Array<TModel | TModelPrimaryKey>,
-    options?: BelongsToManyRemoveAssociationsMixinOptions | InstanceDestroyOptions
+    options?: BelongsToManyRemoveAssociationsMixinOptions
   ): Promise<void>
 }
 
@@ -415,7 +388,7 @@ export interface BelongsToManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> 
  * The options for the hasAssociation mixin of the belongsToMany association.
  * @see BelongsToManyHasAssociationMixin
  */
-export interface BelongsToManyHasAssociationMixinOptions { }
+export interface BelongsToManyHasAssociationMixinOptions extends BelongsToManyGetAssociationsMixinOptions { }
 
 /**
  * The hasAssociation mixin applied to models with belongsToMany.
@@ -450,7 +423,7 @@ export interface BelongsToManyHasAssociationMixin<TModel, TModelPrimaryKey> {
    */
   (
     target: TModel | TModelPrimaryKey,
-    options?: BelongsToManyHasAssociationMixinOptions | BelongsToManyGetAssociationsMixinOptions
+    options?: BelongsToManyHasAssociationMixinOptions
   ): Promise<boolean>
 }
 
@@ -458,12 +431,7 @@ export interface BelongsToManyHasAssociationMixin<TModel, TModelPrimaryKey> {
  * The options for the hasAssociations mixin of the belongsToMany association.
  * @see BelongsToManyHasAssociationsMixin
  */
-export interface BelongsToManyHasAssociationsMixinOptions {
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-}
+export interface BelongsToManyHasAssociationsMixinOptions extends BelongsToManyGetAssociationsMixinOptions { }
 
 /**
  * The removeAssociations mixin applied to models with belongsToMany.
@@ -498,7 +466,7 @@ export interface BelongsToManyHasAssociationsMixin<TModel, TModelPrimaryKey> {
    */
   (
     targets: Array<TModel | TModelPrimaryKey>,
-    options?: BelongsToManyHasAssociationsMixinOptions | BelongsToManyGetAssociationsMixinOptions
+    options?: BelongsToManyHasAssociationsMixinOptions
   ): Promise<boolean>
 }
 
