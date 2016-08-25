@@ -4911,6 +4911,11 @@ declare module sequelize {
     underscoredAll?: boolean;
 
     /**
+     * Indicates if the model's table has a trigger associated with it. Default false.
+     */
+    hasTrigger?: boolean;
+
+    /**
      * If freezeTableName is true, sequelize will not try to alter the DAO name to get the table name.
      * Otherwise, the dao name will be pluralized. Default false.
      */
