@@ -2185,9 +2185,11 @@ export abstract class Model {
   /**
    * A hook that is run before a count query
    *
+   * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeCount(fn: (options: FindOptions) => void): void;
+  static beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
+  static beforeCount(fn: (options: CountOptions) => void): void;
 
   /**
    * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
