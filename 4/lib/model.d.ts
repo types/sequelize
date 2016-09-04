@@ -1409,7 +1409,7 @@ export interface HooksOptions {
   beforeBulkUpdate?: (options: UpdateOptions) => any;
   afterBulkUpdate?: (options: UpdateOptions) => any;
   beforeFind?: (options: FindOptions) => any;
-  beforeCount?: (options: FindOptions) => any;
+  beforeCount?: (options: CountOptions) => any;
   beforeFindAfterExpandIncludeAll?: (options: FindOptions) => any;
   beforeFindAfterOptions?: (options: FindOptions) => any;
   afterFind?: (instancesOrInstance: Array<Model> | Model, options: FindOptions) => any;
