@@ -2075,7 +2075,7 @@ declare module sequelize {
     beforeBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
     afterBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
     beforeFind?: (options: FindOptions, fn?: Function) => any;
-    beforeCount?: (options: FindOptions, fn?: Function) => any;
+    beforeCount?: (options: CountOptions, fn?: Function) => any;
     beforeFindAfterExpandIncludeAll?: (options: FindOptions, fn?: Function) => any;
     beforeFindAfterOptions?: (options: FindOptions, fn?: Function) => any;
     afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
