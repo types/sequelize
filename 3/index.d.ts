@@ -2317,7 +2317,7 @@ declare module sequelize {
      *
      * @param fn   A callback function that is called with options
      */
-    static beforeCount(fn: (options: FindOptions) => void): void;
+    beforeCount(fn: (options: FindOptions) => void): void;
   
     /**
      * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
