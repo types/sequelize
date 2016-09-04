@@ -1409,6 +1409,7 @@ export interface HooksOptions {
   beforeBulkUpdate?: (options: UpdateOptions) => any;
   afterBulkUpdate?: (options: UpdateOptions) => any;
   beforeFind?: (options: FindOptions) => any;
+  beforeCount?: (options: FindOptions) => any;
   beforeFindAfterExpandIncludeAll?: (options: FindOptions) => any;
   beforeFindAfterOptions?: (options: FindOptions) => any;
   afterFind?: (instancesOrInstance: Array<Model> | Model, options: FindOptions) => any;
@@ -2180,6 +2181,13 @@ export abstract class Model {
    */
   static beforeFind(name: string, fn: (options: FindOptions) => void): void;
   static beforeFind(fn: (options: FindOptions) => void): void;
+
+  /**
+   * A hook that is run before a count query
+   *
+   * @param fn   A callback function that is called with options
+   */
+  static beforeCount(fn: (options: FindOptions) => void): void;
 
   /**
    * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
