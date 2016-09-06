@@ -2188,7 +2188,7 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
+  static beforeCount(name: string, fn: (options: CountOptions) => void): void;
   static beforeCount(fn: (options: CountOptions) => void): void;
 
   /**
