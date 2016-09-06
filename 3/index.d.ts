@@ -2319,7 +2319,7 @@ declare module sequelize {
      * @param fn   A callback function that is called with options
      */
     beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
-    beforeCount(fn: (options: CountOptions) => void): void;
+    beforeCount(fn: (options: CountOptions, fn?: Function) => void): void;
   
     /**
      * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
