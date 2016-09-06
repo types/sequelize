@@ -2075,6 +2075,7 @@ declare module sequelize {
     beforeBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
     afterBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
     beforeFind?: (options: FindOptions, fn?: Function) => any;
+    beforeCount?: (options: CountOptions, fn?: Function) => any;
     beforeFindAfterExpandIncludeAll?: (options: FindOptions, fn?: Function) => any;
     beforeFindAfterOptions?: (options: FindOptions, fn?: Function) => any;
     afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
@@ -2311,6 +2312,15 @@ declare module sequelize {
     beforeFind(name: string, fn: (options: FindOptions, fn?: Function) => void): void;
     beforeFind(fn: (options: FindOptions, fn?: Function) => void): void;
 
+    /**
+     * A hook that is run before a count query
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
+    beforeCount(fn: (options: CountOptions, fn?: Function) => void): void;
+  
     /**
      * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
      *
