@@ -8,7 +8,7 @@ Typescript Typings for [Sequelize](http://sequelizejs.com).
 ## Installation
 
 ```bash
-typings install --save sequelize@4
+typings install --save sequelize@4.0.0-1
 ```
 
 ## Usage
@@ -50,7 +50,7 @@ User.init({
   username: STRING,
   firstName: STRING,
   lastName: STRING
-}, {}, sequelize.modelManager);
+}, { sequelize });
 
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
