@@ -1,5 +1,5 @@
 
-import {Association} from './base';
+import {Association, SingleAssociationAccessors} from './base';
 import {Model, SaveOptions, CreateOptions} from '../model';
 import {DataType} from '../data-types';
 import {AssociationOptions} from './base';
@@ -26,6 +26,7 @@ export interface BelongsToOptions extends AssociationOptions {
 }
 
 export class BelongsTo extends Association {
+  accessors: SingleAssociationAccessors;
   constructor(source: typeof Model, target: typeof Model, options: BelongsToOptions);
 }
 
