@@ -1,6 +1,7 @@
 import {sequelize} from '../connection';
 import {
   Model,
+  HasMany,
   DataTypes,
   HasManyAddAssociationMixin,
   HasManyCountAssociationsMixin,
@@ -14,6 +15,10 @@ import {
 } from 'sequelize';
 
 export class UserGroup extends Model {
+
+  static associations: {
+    users: HasMany
+  };
 
   id: number;
   name: string;

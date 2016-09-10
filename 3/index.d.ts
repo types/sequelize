@@ -2320,7 +2320,7 @@ declare module sequelize {
      */
     beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
     beforeCount(fn: (options: CountOptions, fn?: Function) => void): void;
-  
+
     /**
      * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
      *
@@ -3623,6 +3623,16 @@ declare module sequelize {
 
     /** The name of the database table */
     tableName: string;
+
+    /**
+     * The name of the primary key attribute
+     */
+    primaryKeyAttribute: string;
+
+    /**
+     * An object hash from alias to association object
+     */
+    associations: any;
 
     /**
      * The Instance class

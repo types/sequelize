@@ -1,6 +1,7 @@
 
 import {
   Model,
+  BelongsTo,
   FindOptions,
   DataTypes,
   BelongsToGetAssociationMixin,
@@ -10,6 +11,10 @@ import {
 import {sequelize} from '../connection';
 
 export class User extends Model {
+
+  static associations: {
+    group: BelongsTo
+  };
 
   id: number;
   username: string;

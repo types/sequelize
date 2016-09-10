@@ -1595,6 +1595,16 @@ export abstract class Model {
   static tableName: string;
 
   /**
+   * The name of the primary key attribute
+   */
+  static primaryKeyAttribute: string;
+
+  /**
+   * An object hash from alias to association object
+   */
+  static associations: any;
+
+  /**
    * Returns true if this instance has not yet been persisted to the database
    */
   isNewRecord: boolean;
