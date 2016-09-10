@@ -1270,5 +1270,7 @@ import * as Deferrable from './deferrable';
 export {Deferrable};
 export {Promise} from './promise';
 export {Validator} from './utils/validator-extras';
+import * as Utils from './utils';
+export {Utils};
 
 export default Sequelize;

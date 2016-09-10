@@ -1492,9 +1492,33 @@ declare module sequelize {
     source: Model<any, any>;
     target: Model<any, any>;
     identifier: string;
+    isSingleAssociation: boolean;
+    isMultiAssociation: boolean;
+    foreignKey: string;
   }
 
-  export interface BelongsToMany extends Association {}
+  export interface SingleAssociationAccessors {
+    get: string;
+    set: string;
+    create: string;
+  }
+
+  export interface MultiAssociationAccessors {
+    get: string;
+    set: string;
+    addMultiple: string;
+    add: string;
+    create: string;
+    remove: string;
+    removeMultiple: string;
+    hasSingle: string;
+    hasAll: string;
+    count: string;
+  }
+
+  export interface BelongsToMany extends Association {
+    otherKey: string;
+  }
   export interface BelongsTo extends Association {}
   export interface HasMany extends Association {}
   export interface HasOne extends Association {}

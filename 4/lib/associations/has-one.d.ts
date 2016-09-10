@@ -1,5 +1,5 @@
 
-import {Association, AssociationOptions} from './base';
+import {Association, AssociationOptions, SingleAssociationAccessors} from './base';
 import {Model, SaveOptions, CreateOptions} from '../model';
 import {DataType} from '../data-types';
 import {Promise} from '../promise';
@@ -16,6 +16,7 @@ export interface HasOneOptions extends AssociationOptions {
 }
 
 export class HasOne extends Association {
+  accessors: SingleAssociationAccessors;
   constructor(source: typeof Model, target: typeof Model, options: HasOneOptions);
 }
 
