@@ -3649,6 +3649,21 @@ declare module sequelize {
     tableName: string;
 
     /**
+     * The name of the primary key attribute
+     */
+    primaryKeyAttribute: string;
+
+    /**
+     * An object hash from alias to association object
+     */
+    associations: any;
+
+    /**
+     * The options that the model was defined with
+     */
+    options: DefineOptions<TInstance>;
+
+    /**
      * The Instance class
      */
     Instance(): Instance<TInstance, TAttributes>;
