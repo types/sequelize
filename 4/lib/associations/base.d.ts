@@ -7,6 +7,8 @@ export abstract class Association {
   source: typeof Model;
   target: typeof Model;
   isSelfAssociation: boolean;
+  isSingleAssociation: boolean;
+  isMultiAssociation: boolean;
   as: string;
   isAliased: boolean;
   foreignKey: string;
@@ -15,6 +17,24 @@ export abstract class Association {
   inspect(): string;
 }
 
+export interface SingleAssociationAccessors {
+  get: string;
+  set: string;
+  create: string;
+}
+
+export interface MultiAssociationAccessors {
+  get: string;
+  set: string;
+  addMultiple: string;
+  add: string;
+  create: string;
+  remove: string;
+  removeMultiple: string;
+  hasSingle: string;
+  hasAll: string;
+  count: string;
+}
 
 /** Foreign Key Options */
 export interface ForeignKeyOptions extends ColumnOptions {

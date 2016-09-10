@@ -1,11 +1,15 @@
 
-import {Association, ManyToManyOptions, AssociationScope, ForeignKeyOptions} from './base';
-import {DataType} from '../data-types';
+import {
+  Association,
+  ManyToManyOptions,
+  AssociationScope,
+  ForeignKeyOptions,
+  MultiAssociationAccessors
+} from './base';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
 import {
   Model,
-  ColumnOptions,
   WhereOptions,
   FindOptions,
   BulkCreateOptions,
@@ -67,6 +71,8 @@ export interface BelongsToManyOptions extends ManyToManyOptions {
 }
 
 export class BelongsToMany extends Association {
+  otherKey: string;
+  accessors: MultiAssociationAccessors;
   constructor(source: typeof Model, target: typeof Model, options: BelongsToManyOptions);
 }
 

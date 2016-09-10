@@ -1,5 +1,5 @@
 
-import {Association, ManyToManyOptions} from './base';
+import {Association, ManyToManyOptions, MultiAssociationAccessors} from './base';
 import {Model, WhereOptions, FindOptions, InstanceUpdateOptions, CreateOptions} from '../model';
 import {DataType} from '../data-types';
 import {Transaction} from '../transaction';
@@ -17,6 +17,7 @@ export interface HasManyOptions extends ManyToManyOptions {
 }
 
 export class HasMany extends Association {
+  accessors: MultiAssociationAccessors;
   constructor(source: typeof Model, target: typeof Model, options: HasManyOptions);
 }
 
