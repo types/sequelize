@@ -1605,6 +1605,11 @@ export abstract class Model {
   static associations: any;
 
   /**
+   * The options that the model was initialized with
+   */
+  static options: InitOptions;
+
+  /**
    * Returns true if this instance has not yet been persisted to the database
    */
   isNewRecord: boolean;

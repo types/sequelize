@@ -3635,6 +3635,11 @@ declare module sequelize {
     associations: any;
 
     /**
+     * The options that the model was defined with
+     */
+    options: DefineOptions<TInstance>;
+
+    /**
      * The Instance class
      */
     Instance(): Instance<TInstance, TAttributes>;
