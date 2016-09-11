@@ -433,7 +433,7 @@ export interface CountOptions {
   /**
    * Include options. See `find` for details
    */
-  include?: Array<typeof Model | IncludeOptions>;
+  include?: Includeable[];
 
   /**
    * Apply COUNT(DISTINCT(col))
