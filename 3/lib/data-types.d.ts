@@ -43,11 +43,11 @@
  * @class DataTypes
  */
 
-export type DataType = string | AbstractDataTypeStatic | AbstractDataType;
+export type DataType = string | AbstractDataTypeConstructor | AbstractDataType;
 
-export const ABSTRACT: AbstractDataTypeStatic;
+export const ABSTRACT: AbstractDataTypeConstructor;
 
-export interface AbstractDataTypeStatic {
+interface AbstractDataTypeConstructor {
   new (options: Object): AbstractDataType;
   (options: Object): AbstractDataType;
   key: string;
@@ -70,9 +70,9 @@ export interface AbstractDataType {
  *
  * @property STRING
  */
-export const STRING: StringDataTypeStatic;
+export const STRING: StringDataTypeConstructor;
 
-export interface StringDataTypeStatic extends AbstractDataTypeStatic {
+interface StringDataTypeConstructor extends AbstractDataTypeConstructor {
   new (length?: number, binary?: boolean): StringDataType;
   new (options?: StringDataTypeOptions): StringDataType;
   (length?: number, binary?: boolean): StringDataType;
@@ -97,9 +97,9 @@ export interface StringDataTypeOptions {
  *
  * @property CHAR
  */
-export const CHAR: CharDataTypeStatic;
+export const CHAR: CharDataTypeConstructor;
 
-export interface CharDataTypeStatic extends StringDataTypeStatic {
+interface CharDataTypeConstructor extends StringDataTypeConstructor {
   new (length?: number, binary?: boolean): CharDataType;
   new (options?: CharDataTypeOptions): CharDataType;
   (length?: number, binary?: boolean): CharDataType;
@@ -116,9 +116,9 @@ export interface CharDataTypeOptions extends StringDataTypeOptions {}
  * An (un)limited length text column. Available lengths: `tiny`, `medium`, `long`
  * @property TEXT
  */
-export const TEXT: TextDataTypeStatic;
+export const TEXT: TextDataTypeConstructor;
 
-export interface TextDataTypeStatic extends AbstractDataTypeStatic {
+interface TextDataTypeConstructor extends AbstractDataTypeConstructor {
   new (length?: number): TextDataType;
   (options?: TextDataTypeOptions): TextDataType;
 }
@@ -132,9 +132,9 @@ export interface TextDataTypeOptions {
  length?: number;
 }
 
-export const NUMBER: NumberDataTypeStatic;
+export const NUMBER: NumberDataTypeConstructor;
 
-export interface NumberDataTypeStatic extends AbstractDataTypeStatic {
+interface NumberDataTypeConstructor extends AbstractDataTypeConstructor {
   new (options?: NumberDataTypeOptions): NumberDataType;
   (options?: NumberDataTypeOptions): NumberDataType;
   options: NumberDataTypeOptions;
@@ -166,9 +166,9 @@ export interface NumberDataTypeOptions {
  *
  * @property INTEGER
  */
-export const INTEGER: IntegerDataTypeStatic;
+export const INTEGER: IntegerDataTypeConstructor;
 
-export interface IntegerDataTypeStatic extends NumberDataTypeStatic {
+interface IntegerDataTypeConstructor extends NumberDataTypeConstructor {
   new (options?: NumberDataTypeOptions): IntegerDataType;
   (options?: NumberDataTypeOptions): IntegerDataType;
 }
@@ -188,9 +188,9 @@ export interface IntegerDataTypeOptions {
  *
  * @property BIGINT
  */
-export const BIGINT: BigIntDataTypeStatic;
+export const BIGINT: BigIntDataTypeConstructor;
 
-export interface BigIntDataTypeStatic extends NumberDataTypeStatic {
+interface BigIntDataTypeConstructor extends NumberDataTypeConstructor {
   new (options?: BigIntDataTypeOptions): BigIntDataType;
   (options?: BigIntDataTypeOptions): BigIntDataType;
 }
@@ -210,9 +210,9 @@ export interface BigIntDataTypeOptions {
  *
  * @property FLOAT
  */
- export const FLOAT: FloatDataTypeStatic;
+ export const FLOAT: FloatDataTypeConstructor;
 
- export interface FloatDataTypeStatic extends NumberDataTypeStatic {
+ interface FloatDataTypeConstructor extends NumberDataTypeConstructor {
    new (length?: number, decimals?: number): FloatDataType;
    new (options?: FloatDataTypeOptions): FloatDataType;
    (length?: number, decimals?: number): FloatDataType;
@@ -236,9 +236,9 @@ export interface BigIntDataTypeOptions {
   *
   * @property REAL
   */
-export const REAL: RealDataTypeStatic;
+export const REAL: RealDataTypeConstructor;
 
-export interface RealDataTypeStatic extends NumberDataTypeStatic {
+interface RealDataTypeConstructor extends NumberDataTypeConstructor {
   new (length?: number, decimals?: number): RealDataType;
   new (options?: RealDataTypeOptions): RealDataType;
   (length?: number, decimals?: number): RealDataType;
@@ -262,9 +262,9 @@ export interface RealDataTypeOptions {
  *
  * @property DOUBLE
  */
-export const DOUBLE: DoubleDataTypeStatic;
+export const DOUBLE: DoubleDataTypeConstructor;
 
-export interface DoubleDataTypeStatic extends NumberDataTypeStatic {
+interface DoubleDataTypeConstructor extends NumberDataTypeConstructor {
   new (length?: number, decimals?: number): DoubleDataType;
   new (options?: DoubleDataTypeOptions): DoubleDataType;
   (length?: number, decimals?: number): DoubleDataType;
@@ -287,9 +287,9 @@ export interface DoubleDataTypeOptions {
  *
  * @property DECIMAL
  */
-export const DECIMAL: DecimalDataTypeStatic;
+export const DECIMAL: DecimalDataTypeConstructor;
 
-export interface DecimalDataTypeStatic extends NumberDataTypeStatic {
+interface DecimalDataTypeConstructor extends NumberDataTypeConstructor {
   new (precision?: number, scale?: number): DecimalDataType;
   new (options?: DecimalDataTypeOptions): DecimalDataType;
   (precision?: number, scale?: number): DecimalDataType;
@@ -311,28 +311,28 @@ export interface DecimalDataTypeOptions {
  * A boolean / tinyint column, depending on dialect
  * @property BOOLEAN
  */
-export const BOOLEAN: AbstractDataTypeStatic;
+export const BOOLEAN: AbstractDataTypeConstructor;
 
 /**
  * A time column
  * @property TIME
  */
-export const TIME: AbstractDataTypeStatic;
+export const TIME: AbstractDataTypeConstructor;
 
 /**
  * A datetime column
  * @property DATE
  */
-export const DATE: DateDataTypeStatic;
+export const DATE: DateDataTypeConstructor;
 
-export interface DateDataTypeStatic extends AbstractDataTypeStatic {
+interface DateDataTypeConstructor extends AbstractDataTypeConstructor {
   new (length?: any): DateDataType;
   new (options?: DateDataTypeOptions): DateDataType;
   (length?: any): DateDataType;
   (options?: DateDataTypeOptions): DateDataType;
 }
 
-export interface DateDataType extends AbstractDataTypeStatic {
+export interface DateDataType extends AbstractDataTypeConstructor {
   options: DateDataTypeOptions;
 }
 
@@ -344,9 +344,9 @@ export interface DateDataTypeOptions {
  * A date only column
  * @property DATEONLY
  */
-export const DATEONLY: DateOnlyDataTypeStatic;
+export const DATEONLY: DateOnlyDataTypeConstructor;
 
-export interface DateOnlyDataTypeStatic extends AbstractDataTypeStatic {
+interface DateOnlyDataTypeConstructor extends AbstractDataTypeConstructor {
   new (length: any): DateOnlyDataType;
   new (options: DateOnlyDataTypeOptions): DateOnlyDataType;
   (length: any): DateOnlyDataType;
@@ -365,34 +365,34 @@ export interface DateOnlyDataTypeOptions {
  * A key / value column. Only available in postgres.
  * @property HSTORE
  */
-export const HSTORE: AbstractDataTypeStatic;
+export const HSTORE: AbstractDataTypeConstructor;
 
 /**
  * A JSON string column. Only available in postgres.
  * @property JSON
  */
-export const JSON: AbstractDataTypeStatic;
+export const JSON: AbstractDataTypeConstructor;
 
 /**
  * A pre-processed JSON data column. Only available in postgres.
  * @property JSONB
  */
-export const JSONB: AbstractDataTypeStatic;
+export const JSONB: AbstractDataTypeConstructor;
 
 /**
  * A default value of the current timestamp
  * @property NOW
  */
-export const NOW: AbstractDataTypeStatic;
+export const NOW: AbstractDataTypeConstructor;
 
 /**
  * Binary storage. Available lengths: `tiny`, `medium`, `long`
  *
  * @property BLOB
  */
-export const BLOB: BlobDataTypeStatic;
+export const BLOB: BlobDataTypeConstructor;
 
-export interface BlobDataTypeStatic extends AbstractDataTypeStatic {
+interface BlobDataTypeConstructor extends AbstractDataTypeConstructor {
   new (length?: number): BlobDataType;
   new (options?: BlobDataTypeOptions): BlobDataType;
   (length?: number): BlobDataType;
@@ -415,12 +415,12 @@ export interface BlobDataTypeOptions {
  * See {@link http://www.postgresql.org/docs/9.4/static/rangetypes.html|Postgres documentation} for more details
  * @property RANGE
  */
-export const RANGE: RangeDataTypeStatic;
+export const RANGE: RangeDataTypeConstructor;
 
-export type RangeableDataType = IntegerDataTypeStatic | IntegerDataType | BigIntDataTypeStatic | BigIntDataType
-  | DecimalDataTypeStatic | DecimalDataType | DateOnlyDataTypeStatic | DateOnlyDataType | DateDataTypeStatic | DateDataType;
+export type RangeableDataType = IntegerDataTypeConstructor | IntegerDataType | BigIntDataTypeConstructor | BigIntDataType
+  | DecimalDataTypeConstructor | DecimalDataType | DateOnlyDataTypeConstructor | DateOnlyDataType | DateDataTypeConstructor | DateDataType;
 
-export interface RangeDataTypeStatic extends AbstractDataTypeStatic {
+interface RangeDataTypeConstructor extends AbstractDataTypeConstructor {
   new <T extends RangeableDataType>(subtype?: T): RangeDataType<T>;
   new <T extends RangeableDataType>(options: RangeDataTypeOptions<T>): RangeDataType<T>;
   <T extends RangeableDataType>(subtype?: T): RangeDataType<T>;
@@ -439,19 +439,19 @@ export interface RangeDataTypeOptions<T extends RangeableDataType> {
  * A column storing a unique universal identifier. Use with `UUIDV1` or `UUIDV4` for default values.
  * @property UUID
  */
-export const UUID: AbstractDataTypeStatic;
+export const UUID: AbstractDataTypeConstructor;
 
 /**
  * A default unique universal identifier generated following the UUID v1 standard
  * @property UUIDV1
  */
-export const UUIDV1: AbstractDataTypeStatic;
+export const UUIDV1: AbstractDataTypeConstructor;
 
 /**
  * A default unique universal identifier generated following the UUID v4 standard
  * @property UUIDV4
  */
-export const UUIDV4: AbstractDataTypeStatic;
+export const UUIDV4: AbstractDataTypeConstructor;
 
 /**
  * A virtual value that is not stored in the DB. This could for example be useful if you want to provide a default value in your model that is returned to the user but not stored in the DB.
@@ -495,14 +495,14 @@ export const UUIDV4: AbstractDataTypeStatic;
  * @property VIRTUAL
  * @alias NONE
  */
-export const VIRTUAL: VirtualDataTypeStatic;
+export const VIRTUAL: VirtualDataTypeConstructor;
 
-export interface VirtualDataTypeStatic extends AbstractDataTypeStatic {
-  new <T extends AbstractDataTypeStatic|AbstractDataType>(ReturnType: T, fields?: string[]): VirtualDataType<T>;
-  <T extends AbstractDataTypeStatic|AbstractDataType>(ReturnType: T, fields?: string[]): VirtualDataType<T>;
+interface VirtualDataTypeConstructor extends AbstractDataTypeConstructor {
+  new <T extends AbstractDataTypeConstructor|AbstractDataType>(ReturnType: T, fields?: string[]): VirtualDataType<T>;
+  <T extends AbstractDataTypeConstructor|AbstractDataType>(ReturnType: T, fields?: string[]): VirtualDataType<T>;
 }
 
-export interface VirtualDataType<T extends AbstractDataTypeStatic|AbstractDataType> extends AbstractDataType {
+export interface VirtualDataType<T extends AbstractDataTypeConstructor|AbstractDataType> extends AbstractDataType {
   returnType: T;
   fields: string[];
 }
@@ -512,9 +512,9 @@ export interface VirtualDataType<T extends AbstractDataTypeStatic|AbstractDataTy
  *
  * @property ENUM
  */
-export const ENUM: EnumDataTypeStatic;
+export const ENUM: EnumDataTypeConstructor;
 
-export interface EnumDataTypeStatic extends AbstractDataTypeStatic {
+interface EnumDataTypeConstructor extends AbstractDataTypeConstructor {
   new <T extends string>(...values: T[]): EnumDataType<T>;
   new <T extends string>(options: EnumDataTypeOptions<T>): EnumDataType<T>;
   <T extends string>(...values: T[]): EnumDataType<T>;
@@ -534,21 +534,21 @@ export interface EnumDataTypeOptions<T extends string> {
  * An array of `type`, e.g. `DataTypes.ARRAY(DataTypes.DECIMAL)`. Only available in postgres.
  * @property ARRAY
  */
-export const ARRAY: ArrayDataTypeStatic;
+export const ARRAY: ArrayDataTypeConstructor;
 
-export interface ArrayDataTypeStatic extends AbstractDataTypeStatic {
-  new <T extends AbstractDataTypeStatic|AbstractDataType>(type: T): ArrayDataType<T>;
-  new <T extends AbstractDataTypeStatic|AbstractDataType>(options: ArrayDataTypeOptions<T>): ArrayDataType<T>;
-  <T extends AbstractDataTypeStatic|AbstractDataType>(type: T): ArrayDataType<T>;
-  <T extends AbstractDataTypeStatic|AbstractDataType>(options: ArrayDataTypeOptions<T>): ArrayDataType<T>;
-  is<T extends AbstractDataTypeStatic|AbstractDataType>(obj: any, type: T): obj is ArrayDataType<T>;
+interface ArrayDataTypeConstructor extends AbstractDataTypeConstructor {
+  new <T extends AbstractDataTypeConstructor|AbstractDataType>(type: T): ArrayDataType<T>;
+  new <T extends AbstractDataTypeConstructor|AbstractDataType>(options: ArrayDataTypeOptions<T>): ArrayDataType<T>;
+  <T extends AbstractDataTypeConstructor|AbstractDataType>(type: T): ArrayDataType<T>;
+  <T extends AbstractDataTypeConstructor|AbstractDataType>(options: ArrayDataTypeOptions<T>): ArrayDataType<T>;
+  is<T extends AbstractDataTypeConstructor|AbstractDataType>(obj: any, type: T): obj is ArrayDataType<T>;
 }
 
-export interface ArrayDataType<T extends AbstractDataTypeStatic|AbstractDataType> extends AbstractDataType {
+export interface ArrayDataType<T extends AbstractDataTypeConstructor|AbstractDataType> extends AbstractDataType {
   options: ArrayDataTypeOptions<T>;
 }
 
-export interface ArrayDataTypeOptions<T extends AbstractDataTypeStatic|AbstractDataType> {
+export interface ArrayDataTypeOptions<T extends AbstractDataTypeConstructor|AbstractDataType> {
   type: T;
 }
 
@@ -556,9 +556,9 @@ export interface ArrayDataTypeOptions<T extends AbstractDataTypeStatic|AbstractD
  * A geometry datatype represents two dimensional spacial objects.
  * @property GEOMETRY
  */
-export const GEOMETRY: GeometryDataTypeStatic;
+export const GEOMETRY: GeometryDataTypeConstructor;
 
-export interface GeometryDataTypeStatic extends AbstractDataTypeStatic {
+interface GeometryDataTypeConstructor extends AbstractDataTypeConstructor {
   new (type: string, srid?: number): GeometryDataType;
   new (options: GeometryDataTypeOptions): GeometryDataType;
   (type: string, srid?: number): GeometryDataType;
@@ -581,9 +581,9 @@ export interface GeometryDataTypeOptions {
  * A geography datatype represents two dimensional spacial objects in an elliptic coord system.
  * @property GEOGRAPHY
  */
-export const GEOGRAPHY: GeographyDataTypeStatic;
+export const GEOGRAPHY: GeographyDataTypeConstructor;
 
-export interface GeographyDataTypeStatic extends AbstractDataTypeStatic {
+interface GeographyDataTypeConstructor extends AbstractDataTypeConstructor {
   new (type: string, srid?: number): GeographyDataType;
   new (options: GeographyDataTypeOptions): GeographyDataType;
   (type: string, srid?: number): GeographyDataType;
