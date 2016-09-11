@@ -52,7 +52,7 @@ export interface SchemaOptions {
   /**
    * A function that gets executed while running the query to log the sql.
    */
-  logging?: Function | boolean
+  logging?: boolean | Function;
 
 }
 
@@ -433,7 +433,7 @@ export interface CountOptions {
   /**
    * Include options. See `find` for details
    */
-  include?: Array<typeof Model | IncludeOptions>;
+  include?: Includeable[];
 
   /**
    * Apply COUNT(DISTINCT(col))
@@ -647,7 +647,7 @@ export interface TruncateOptions {
   /**
    * A function that gets executed while running the query to log the sql.
    */
-  logging?: boolean | ((sql: string) => any);
+  logging?: boolean | Function;
 
   /**
    * Filter the destroy
