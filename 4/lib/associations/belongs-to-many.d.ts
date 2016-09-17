@@ -68,6 +68,11 @@ export interface BelongsToManyOptions extends ManyToManyOptions {
    * target
    */
   otherKey?: string | ForeignKeyOptions;
+
+  /**
+   * Should the join model have timestamps
+   */
+  timestamps?: boolean;
 }
 
 export class BelongsToMany extends Association {

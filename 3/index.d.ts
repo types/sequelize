@@ -1458,6 +1458,10 @@ declare module sequelize {
      */
     otherKey?: string | AssociationForeignKeyOptions;
 
+    /**
+     * Should the join model have timestamps
+     */
+    timestamps?: boolean;
   }
 
   /**
