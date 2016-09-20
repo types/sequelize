@@ -1,7 +1,7 @@
 // Type definitions for Sequelize 3.x
 // Project: http://sequelizejs.com
 
-import SequelizePromise = require('./lib/Promise');
+import SequelizePromise = require('./lib/promise');
 import {DataType, DataTypes as LibDataTypes} from './lib/data-types';
 
 import Utils = require('./lib/utils');
