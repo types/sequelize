@@ -5317,7 +5317,7 @@ declare module sequelize {
     /**
      * A modified version of bluebird promises, that allows listening for sql events
      */
-    Promise: typeof Promise;
+    Promise: typeof SequelizePromise;
 
     /**
      * Available query types for use with `sequelize.query`
