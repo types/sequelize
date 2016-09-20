@@ -3995,7 +3995,7 @@ declare module sequelize {
     /**
      * Delete multiple instances, or set their deletedAt timestamp to the current time if `paranoid` is enabled.
      *
-     * @return SequelizePromise<number> The number of destroyed rows
+     * @return Promise<number> The number of destroyed rows
      */
     destroy(options?: DestroyOptions): SequelizePromise<number>;
 
@@ -4005,7 +4005,7 @@ declare module sequelize {
     restore(options?: RestoreOptions): SequelizePromise<void>;
 
     /**
-     * Update multiple instances that match the where options. the promise returns an array with one or two
+     * Update multiple instances that match the where options. The promise returns an array with one or two
      * elements. The first element is always the number of affected rows, while the second element is the actual
      * affected rows (only supported in postgres with `options.returning` true.)
      */
