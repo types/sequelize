@@ -3932,14 +3932,14 @@ declare module sequelize {
 
     /**
      * Find a row that matches the query, or build (but don't save) the row if none is found.
-     * The successfull result of the SequelizePromise will be (instance, initialized) - Make sure to use .spread()
+     * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
      */
     findOrInitialize(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
     findOrBuild(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
 
     /**
      * Find a row that matches the query, or build and save the row if none is found
-     * The successful result of the SequelizePromise will be (instance, created) - Make sure to use .spread()
+     * The successful result of the promise will be (instance, created) - Make sure to use .spread()
      *
      * If no transaction is passed in the `options` object, a new transaction will be created internally, to
      * prevent the race condition where a matching row is created by another connection after the find but
@@ -4005,7 +4005,7 @@ declare module sequelize {
     restore(options?: RestoreOptions): SequelizePromise<void>;
 
     /**
-     * Update multiple instances that match the where options. The SequelizePromise returns an array with one or two
+     * Update multiple instances that match the where options. the promise returns an array with one or two
      * elements. The first element is always the number of affected rows, while the second element is the actual
      * affected rows (only supported in postgres with `options.returning` true.)
      */
@@ -5315,7 +5315,7 @@ declare module sequelize {
     Utils: typeof Utils;
 
     /**
-     * A modified version of bluebird SequelizePromises, that allows listening for sql events
+     * A modified version of bluebird promises, that allows listening for sql events
      */
     Promise: typeof SequelizePromise;
 
@@ -5701,11 +5701,11 @@ declare module sequelize {
      * })
      * ```
      *
-     * A syntax for automatically committing or rolling back based on the SequelizePromise chain resolution is also
+     * A syntax for automatically committing or rolling back based on the promise chain resolution is also
      * supported:
      *
      * ```js
-     * sequelize.transaction(function (t) { // Note that we use a callback rather than a SequelizePromise.then()
+     * sequelize.transaction(function (t) { // Note that we use a callback rather than a promise.then()
      *   return User.find(..., { transaction: t}).then(function (user) {
      *     return user.updateAttributes(..., { transaction: t});
      *   });
