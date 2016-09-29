@@ -308,6 +308,16 @@ export interface IncludeOptions {
   required?: boolean;
 
   /**
+   * Limit include. Only available when setting `separate` to true.
+   */
+  limit?: number;
+
+  /**
+   * Run include in separate queries.
+   */
+  separate?: boolean;
+
+  /**
    * Through Options
    */
   through?: IncludeThroughOptions;

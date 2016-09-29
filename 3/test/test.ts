@@ -52,3 +52,13 @@ Something.findOne({
 Something.findOne({
   order: sequelize.literal('convert(user_name using gbk)')
 })
+
+Something.findAll({
+    include: [{
+        model: User,
+        where: { state: Sequelize.col('project.state') },
+        limit: 1,
+        separate: true,
+        order: [['id', 'DESC']]
+    }]
+})
