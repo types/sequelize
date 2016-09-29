@@ -327,6 +327,10 @@ export interface IncludeOptions {
    */
   include?: Includeable[];
 
+  /**
+   * Order include. Only available when setting `separate` to true.
+   */
+  order?: Order;
 }
 
 export type OrderItem =

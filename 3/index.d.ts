@@ -3121,6 +3121,11 @@ declare module sequelize {
      */
     include?: Array<Model<any, any> | Association | IncludeOptions>;
 
+    /**
+     * Order include. Only available when setting `separate` to true.
+     */
+    order?: Order;
+
   }
 
   export type OrderItem =
