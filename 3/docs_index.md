@@ -32,22 +32,22 @@ _Start typing to search_
 
 ##### HasMany
 <ul class="tsd-index-list" style="list-style: none">
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonegetassociationmixin.html">getAssociations()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonesetassociationmixin.html">setAssociations()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasoneaddassociationmixin.html">addAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonecreateassociationmixin.html">createAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonehasassociationmixin.html">hasAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonecountassociationmixin.html">countAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanygetassociationsmixin.html">getAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanysetassociationsmixin.html">setAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanyaddassociationmixin.html">addAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanycreateassociationmixin.html">createAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanyhasassociationmixin.html">hasAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasmanycountassociationsmixin.html">countAssociations()</a></li>
 </ul>
 
 ##### BelongsToMany
 <ul class="tsd-index-list" style="list-style: none">
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonegetassociationmixin.html">getAssociations()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonesetassociationmixin.html">setAssociations()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasoneaddassociationmixin.html">addAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonecreateassociationmixin.html">createAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonehasassociationmixin.html">hasAssociation()</a></li>
-  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.hasonecountassociationmixin.html">countAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanygetassociationmixin.html">getAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanysetassociationsmixin.html">setAssociations()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanyaddassociationmixin.html">addAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanycreateassociationmixin.html">createAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanyhasassociationmixin.html">hasAssociation()</a></li>
+  <li class="tsd-kind-interface tsd-has-type-parameter"><a class="tsd-kind-icon" href="interfaces/sequelize.belongstomanycountassociationsmixin.html">countAssociations()</a></li>
 </ul>
 
 ## Example
