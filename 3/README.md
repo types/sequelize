@@ -1,5 +1,5 @@
 # Typed Sequelize@3
-[![Build Status](https://travis-ci.org/louy/typed-sequelize.svg?branch=master)](https://travis-ci.org/louy/typed-sequelize)
+[![Build Status](https://travis-ci.org/types/npm-sequelize.svg?branch=master)](https://travis-ci.org/types/npm-sequelize)
 
 ## [API Documentation](http://typed-sequelize.surge.sh/v3)
 
