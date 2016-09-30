@@ -15,7 +15,7 @@ _Start typing to search_
 #### Associations
 <ul class="tsd-index-list" style="list-style: none">
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_belongs_to_many_d_.html">BelongsToMany</a></li>
-  <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_belongs_to_many_d_.html">BelongsTo</a></li>
+  <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_belongs_to_d_.html">BelongsTo</a></li>
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_has_many_d_.html">HasMany</a></li>
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_has_one_d_.html">HasOne</a></li>
 </ul>
