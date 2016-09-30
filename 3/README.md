@@ -7,7 +7,7 @@
 
 First, install:
 ```bash
-typings install --save sequelize
+typings install --save sequelize@3
 ```
 
 To create a model:
