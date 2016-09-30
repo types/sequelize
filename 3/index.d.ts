@@ -3102,6 +3102,16 @@ declare module sequelize {
     required?: boolean;
 
     /**
+     * Limit include. Only available when setting `separate` to true.
+     */
+    limit?: number;
+
+    /**
+     * Run include in separate queries.
+     */
+    separate?: boolean;
+
+    /**
      * Through Options
      */
     through?: IncludeThroughOptions;
@@ -3110,6 +3120,11 @@ declare module sequelize {
      * Load further nested related models
      */
     include?: Array<Model<any, any> | Association | IncludeOptions>;
+
+    /**
+     * Order include. Only available when setting `separate` to true.
+     */
+    order?: Order;
 
   }
 
