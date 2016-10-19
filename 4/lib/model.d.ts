@@ -344,6 +344,7 @@ export type FindAttributeOptions =
   Array<string | [string | Fn, string]> |
   {
     exclude: Array<string>;
+    include?: Array<string | [string | Fn, string]>;
   } | {
     exclude?: Array<string>;
     include: Array<string | [string | Fn, string]>;
