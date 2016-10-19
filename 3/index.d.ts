@@ -3139,6 +3139,7 @@ declare module sequelize {
     Array<string | [string | fn, string]> |
     {
       exclude: Array<string>;
+      include?: Array<string | [string | fn, string]>;
     } | {
       exclude?: Array<string>;
       include: Array<string | [string | fn, string]>;
