@@ -3684,6 +3684,16 @@ declare module sequelize {
     options: DefineOptions<TInstance>;
 
     /**
+     * The attributes of the model
+     */
+    rawAttributes: { [attribute: string]: DefineAttributeColumnOptions };
+
+    /**
+     * The attributes of the model
+     */
+    attributes: { [attribute: string]: DefineAttributeColumnOptions };
+
+    /**
      * The Instance class
      */
     Instance(): Instance<TInstance, TAttributes>;
