@@ -1625,6 +1625,16 @@ export abstract class Model {
   static options: InitOptions;
 
   /**
+   * The attributes of the model
+   */
+  static rawAttributes: { [attribute: string]: ModelAttributeColumnOptions };
+
+  /**
+   * The attributes of the model
+   */
+  static attributes: { [attribute: string]: ModelAttributeColumnOptions };
+
+  /**
    * Returns true if this instance has not yet been persisted to the database
    */
   isNewRecord: boolean;
