@@ -341,14 +341,14 @@ export type OrderItem =
 export type Order = string | Fn | Col | Literal | OrderItem[];
 
 export type FindAttributeOptions =
-  Array<string | [string | Fn, string]> |
-  {
-    exclude: Array<string>;
-    include?: Array<string | [string | Fn, string]>;
-  } | {
-    exclude?: Array<string>;
-    include: Array<string | [string | Fn, string]>;
-  };
+    Array<string | Literal | [string | Literal | Fn, string]> |
+    {
+      exclude: Array<string>;
+      include?: Array<string | Literal | [string | Literal | Fn, string]>;
+    } | {
+      exclude?: Array<string>;
+      include: Array<string | Literal | [string | Literal | Fn, string]>;
+    };
 
 /**
  * Options that are passed to any model creating a SELECT query
