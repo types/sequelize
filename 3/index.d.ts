@@ -3136,13 +3136,13 @@ declare module sequelize {
   export type Order = string | fn | col | literal | OrderItem[];
 
   export type FindAttributeOptions =
-    Array<string | [string | fn, string]> |
+    Array<string | [string | literal | fn, string]> |
     {
       exclude: Array<string>;
-      include?: Array<string | [string | fn, string]>;
+      include?: Array<string | [string | literal | fn, string]>;
     } | {
       exclude?: Array<string>;
-      include: Array<string | [string | fn, string]>;
+      include: Array<string | [string | literal | fn, string]>;
     };
 
   /**

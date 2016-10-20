@@ -341,13 +341,13 @@ export type OrderItem =
 export type Order = string | Fn | Col | Literal | OrderItem[];
 
 export type FindAttributeOptions =
-  Array<string | [string | Fn, string]> |
+  Array<string | [string | Literal | Fn, string]> |
   {
     exclude: Array<string>;
-    include?: Array<string | [string | Fn, string]>;
+    include?: Array<string | [string | Literal | Fn, string]>;
   } | {
     exclude?: Array<string>;
-    include: Array<string | [string | Fn, string]>;
+    include: Array<string | [string | Literal | Fn, string]>;
   };
 
 /**
