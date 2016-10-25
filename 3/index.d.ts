@@ -3696,7 +3696,10 @@ declare module sequelize {
     /**
      * The Instance class
      */
-    Instance: TInstance;
+    Instance: {
+      new (): TInstance, // for instanceof checks
+      prototype: TInstance
+    };
 
     /**
      * Remove attribute from model definition
