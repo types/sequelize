@@ -3696,7 +3696,7 @@ declare module sequelize {
     /**
      * The Instance class
      */
-    Instance: Instance<TInstance, TAttributes>;
+    Instance: TInstance;
 
     /**
      * Remove attribute from model definition
