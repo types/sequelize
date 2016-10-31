@@ -2526,9 +2526,12 @@ export abstract class Model {
    *
    * If changed is called without an argument, it will return an array of keys that have changed.
    *
+   * If changed is called with two arguments, it will set the property to `dirty`.
+   *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
   changed(key: string): boolean;
+  changed(key: string, dirty: boolean): void;
   changed(): boolean | Array<string>;
 
   /**
