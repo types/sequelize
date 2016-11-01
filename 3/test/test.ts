@@ -62,3 +62,7 @@ Something.findAll({
         order: [['id', 'DESC']]
     }]
 })
+
+Something.findAndCountAll({
+  distinct: true
+})

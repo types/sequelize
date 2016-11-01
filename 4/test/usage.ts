@@ -12,4 +12,5 @@ async function test(): Promise<void> {
   new User({firstName: 'John'});
 
   const user2 = await User.create({firstName: 'John', groupId: 1}) as User;
+  await User.findAndCountAll({ distinct: true });
 }
