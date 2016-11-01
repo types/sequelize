@@ -473,6 +473,8 @@ export interface CountOptions {
   transaction?: Transaction;
 }
 
+export interface FindAndCountOptions extends CountOptions, FindOptions { }
+
 /**
  * Options for Model.build method
  */
@@ -1913,8 +1915,8 @@ export abstract class Model {
    * without
    * profiles will be counted
    */
-  static findAndCount(options?: FindOptions): Promise<{ rows: Array<Model>, count: number }>;
-  static findAndCountAll(options?: FindOptions): Promise<{ rows: Array<Model>, count: number }>;
+  static findAndCount(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
+  static findAndCountAll(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
 
   /**
    * Find the maximum value of field

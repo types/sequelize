@@ -3271,6 +3271,8 @@ declare module sequelize {
     transaction?: Transaction;
   }
 
+  export interface FindAndCountOptions extends CountOptions, FindOptions { }
+
   /**
    * Options for Model.build method
    */
@@ -3929,8 +3931,8 @@ declare module sequelize {
      * without
      * profiles will be counted
      */
-    findAndCount(options?: FindOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
-    findAndCountAll(options?: FindOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
+    findAndCount(options?: FindAndCountOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
+    findAndCountAll(options?: FindAndCountOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
 
     /**
      * Find the maximum value of field
