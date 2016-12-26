@@ -3066,6 +3066,8 @@ declare module sequelize {
 
   }
 
+  export type Includeable = Model<any, any> | Association | IncludeOptions;
+
   /**
    * Complex include options
    */
@@ -3122,7 +3124,7 @@ declare module sequelize {
     /**
      * Load further nested related models
      */
-    include?: Array<Model<any, any> | Association | IncludeOptions>;
+    include?: Includeable[];
 
     /**
      * Order include. Only available when setting `separate` to true.
@@ -3179,7 +3181,7 @@ declare module sequelize {
      * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
      * the as attribute when eager loading Y).
      */
-    include?: Array<Model<any, any> | Association | IncludeOptions>;
+    include?: Includeable[];
 
     /**
      * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
@@ -3246,7 +3248,7 @@ declare module sequelize {
     /**
      * Include options. See `find` for details
      */
-    include?: Array<Model<any, any> | Association | IncludeOptions>;
+    include?: Includeable[];
 
     /**
      * Apply COUNT(DISTINCT(col))
@@ -3293,7 +3295,7 @@ declare module sequelize {
      *
      * TODO: See set
      */
-    include?: Array<Model<any, any> | Association | IncludeOptions>;
+    include?: Includeable[];
 
   }
 
