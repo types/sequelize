@@ -1,24 +1,27 @@
 
-import {DataTypes, Model} from 'sequelize';
+import {DataTypes, Model, Instance} from 'sequelize';
 import {sequelize} from './connection';
 
 // I really wouldn't recommend this, but if you want you can still use define() and interfaces
 
-type UserInstance = {
+interface UserInstance extends Instance {
   id: number;
   username: string;
   firstName: string;
   lastName: string;
   createdAt: Date;
   updatedAt: Date;
-} & Model;
+}
 
-type User = {
-  new (): UserInstance;
+interface User extends Model<UserInstance> {
   customStaticMethod(): any;
-} & typeof Model;
+}
 
-const User: User = sequelize.define<User>('User', {firstName: DataTypes.STRING}, {tableName: 'users'});
+const User = sequelize.define<User, UserInstance>('User', {
+  firstName: DataTypes.STRING
+}, {
+  tableName: 'users'
+});
 
 async function test() {
 
@@ -26,7 +29,7 @@ async function test() {
 
   const user: UserInstance = new User();
 
-  const user2: UserInstance = await User.find() as UserInstance;
+  const user2: UserInstance = await User.find();
 
   user2.firstName = 'John';
 

@@ -1,24 +1,12 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6"
+    "target": "es6",
+    "strictNullChecks": true,
+    "noEmit": true
   },
-  "filesGlob": [
+  "include": [
     "../dist/index.d.ts",
     "./**/*.ts"
-  ],
-  "files": [
-    "../dist/index.d.ts",
-    "connection.ts",
-    "define.ts",
-    "errors.ts",
-    "models/User.ts",
-    "models/UserGroup.ts",
-    "promise.ts",
-    "usage.ts",
-    "where.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  }
+  ]
 }

@@ -14,7 +14,7 @@ import {
   HasManyRemoveAssociationsMixin
 } from 'sequelize';
 
-export class UserGroup extends Model {
+export class UserGroup extends Model<UserGroup> {
 
   static associations: {
     users: HasMany

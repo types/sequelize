@@ -1,7 +1,7 @@
 
 import {Sequelize} from './sequelize';
 import {Promise} from './promise';
-import {ModelAttributes, ModelAttributeColumnOptions, Model} from './model';
+import {ModelAttributes, ModelAttributeColumnOptions, Model, Instance} from './model';
 import {Transaction} from './transaction';
 import {DataType} from './data-types';
 
@@ -63,12 +63,12 @@ export interface QueryOptions {
   /**
    * A sequelize instance used to build the return instance
    */
-  instance?: Model;
+  instance?: Instance;
 
   /**
    * A sequelize model used to build the returned model instances (used to be called callee)
    */
-  model?: typeof Model;
+  model?: Model<Instance>;
 
   // TODO: force, cascade
 
@@ -174,8 +174,11 @@ export class QueryInterface {
    * @param attributes    Hash of attributes, key is attribute name, value is data type
    * @param options       Table options.
    */
-  createTable(tableName: string | { schema?: string, tableName?: string }, attributes: ModelAttributes,
-    options?: QueryInterfaceCreateTableOptions): Promise<void>;
+  createTable<TInstance extends Instance>(
+    tableName: string | { schema?: string, tableName?: string },
+    attributes: ModelAttributes<TInstance>,
+    options?: QueryInterfaceCreateTableOptions
+  ): Promise<void>;
 
   /**
    * Drops the specified table.
@@ -218,8 +221,12 @@ export class QueryInterface {
   /**
    * Adds a new column to a table
    */
-  addColumn(table: string, key: string, attribute: ModelAttributeColumnOptions | DataType,
-    options?: QueryInterfaceOptions): Promise<void>;
+  addColumn(
+    table: string,
+    key: string,
+    attribute: ModelAttributeColumnOptions<any, any> | DataType,
+    options?: QueryInterfaceOptions
+  ): Promise<void>;
 
   /**
    * Removes a column from a table
@@ -229,16 +236,22 @@ export class QueryInterface {
   /**
    * Changes a column
    */
-  changeColumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
-    dataTypeOrOptions?: DataType | ModelAttributeColumnOptions,
-    options?: QueryInterfaceOptions): Promise<void>;
+  changeColumn(
+    tableName: string | { schema?: string, tableName?: string },
+    attributeName: string,
+    dataTypeOrOptions?: DataType | ModelAttributeColumnOptions<any, any>,
+    options?: QueryInterfaceOptions
+  ): Promise<void>;
 
   /**
    * Renames a column
    */
-  renameColumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
+  renameColumn(
+    tableName: string | { schema?: string, tableName?: string },
+    attrNameBefore: string,
     attrNameAfter: string,
-    options?: QueryInterfaceOptions): Promise<void>;
+    options?: QueryInterfaceOptions
+  ): Promise<void>;
 
   /**
    * Adds a new index to a table
@@ -274,7 +287,7 @@ export class QueryInterface {
   /**
    * Inserts a new record
    */
-  insert(instance: Model, tableName: string, values: Object,
+  insert(instance: Instance, tableName: string, values: Object,
     options?: QueryOptions): Promise<Object>;
 
   /**
@@ -292,7 +305,7 @@ export class QueryInterface {
   /**
    * Updates a row
    */
-  update(instance: Model, tableName: string, values: Object, identifier: Object,
+  update(instance: Instance, tableName: string, values: Object, identifier: Object,
     options?: QueryOptions): Promise<Object>;
 
   /**
@@ -304,7 +317,7 @@ export class QueryInterface {
   /**
    * Deletes a row
    */
-  delete(instance: Model, tableName: string, identifier: Object,
+  delete(instance: Instance, tableName: string, identifier: Object,
     options?: QueryOptions): Promise<Object>;
 
   /**
@@ -321,7 +334,7 @@ export class QueryInterface {
   /**
    * Increments a row value
    */
-  increment(instance: Model, tableName: string, values: Object, identifier: Object,
+  increment(instance: Instance, tableName: string, values: Object, identifier: Object,
     options?: QueryOptions): Promise<Object>;
 
   /**

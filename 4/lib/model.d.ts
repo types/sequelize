@@ -77,7 +77,12 @@ export interface ScopeOptions {
  *
  * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
  */
-export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where | Array<string | number>;
+export type WhereOptions<TInstance extends Instance> =
+  WhereAttributeHash<TInstance>
+  | AndOperator<TInstance, keyof TInstance>
+  | OrOperator<TInstance, keyof TInstance>
+  | Where
+  | Array<string | number>;
 
 /**
  * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
@@ -98,38 +103,38 @@ export interface AllOperator {
  *
  * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
  */
-export interface WhereOperators {
+export interface WhereOperators<TInstance extends Instance, K extends keyof TInstance> {
 
   /**
    * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
    *
    * _PG only_
    */
-  $any?: Array<string | number>;
+  $any?: Array<TInstance[K]>;
 
   /** Example: `$gte: 6,` becomes `>= 6` */
-  $gte?: number | string | Date;
+  $gte?: TInstance[K];
 
   /** Example: `$lt: 10,` becomes `< 10` */
-  $lt?: number | string | Date;
+  $lt?: TInstance[K];
 
   /** Example: `$lte: 10,` becomes `<= 10` */
-  $lte?: number | string | Date;
+  $lte?: TInstance[K];
 
   /** Example: `$ne: 20,` becomes `!= 20` */
-  $ne?: string | number | WhereOperators;
+  $ne?: TInstance[K];
 
   /** Example: `$not: true,` becomes `IS NOT TRUE` */
-  $not?: boolean | string | number | WhereOperators;
+  $not?: TInstance[K] | WhereOperators<TInstance, K>;
 
   /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
-  $between?: [number, number];
+  $between?: [TInstance[K], TInstance[K]];
 
   /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
-  $in?: Array<string | number> | Literal;
+  $in?: Array<TInstance[K]> | Literal;
 
   /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
-  $notIn?: Array<string | number> | Literal;
+  $notIn?: Array<TInstance[K]> | Literal;
 
   /**
    * Examples:
@@ -185,7 +190,7 @@ export interface WhereOperators {
   $contained?: any[];
 
   /** Example: `$gt: 6,` becomes `> 6` */
-  $gt?: number | string | Date;
+  $gt?: TInstance[K];
 
   /**
    * PG only
@@ -201,13 +206,13 @@ export interface WhereOperators {
 }
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
-export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+export interface OrOperator<TInstance extends Instance, K extends keyof TInstance> {
+  $or: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
-export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+export interface AndOperator<TInstance extends Instance, K extends keyof TInstance> {
+  $and: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
 }
 
 /**
@@ -219,24 +224,9 @@ export interface WhereGeometryOptions {
 }
 
 /**
- * Used for the right hand side of WhereAttributeHash.
- * WhereAttributeHash is in there for JSON columns.
- */
-export type WhereValue =
-  string // literal value
-  | number // literal value
-  | WhereOperators
-  | WhereAttributeHash // for JSON columns
-  | Col // reference another column
-  | OrOperator
-  | AndOperator
-  | WhereGeometryOptions
-  | Array<string | number>; // implicit $or
-
-/**
  * A hash of attributes to describe your search.
  */
-export interface WhereAttributeHash {
+export type WhereAttributeHash<TInstance extends Instance> = {
   /**
    * Possible key values:
    * - A simple attribute name
@@ -248,36 +238,47 @@ export interface WhereAttributeHash {
    *         }
    *       }
    */
-  [field: string]: WhereValue;
+  [K in keyof TInstance]?:
+    TInstance[K] // literal value
+    | WhereOperators<TInstance, K>
+    | Col // reference another column
+    | OrOperator<TInstance, K>
+    | AndOperator<TInstance, K>
+    | WhereGeometryOptions
+    | Array<string | number>; // implicit $or;
 }
+
 /**
  * Through options for Include Options
  */
-export interface IncludeThroughOptions {
+export interface IncludeThroughOptions<TThroughInstance extends Instance> {
 
   /**
    * Filter on the join model for belongsToMany relations
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TThroughInstance>;
 
   /**
    * A list of attributes to select from the join model for belongsToMany relations
    */
-  attributes?: FindAttributeOptions;
+  attributes?: FindAttributeOptions<TThroughInstance>;
 
 }
 
-export type Includeable = Model | Association | IncludeOptions;
+export type Includeable<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> =
+  Model<Instance> // An associated model
+  | Association<TSourceModel, Model<Instance>> // An association between the source model and an associated model
+  | IncludeOptions<TSourceModel, TSourceInstance>;
 
 /**
  * Complex include options
  */
-export interface IncludeOptions {
+export interface IncludeOptions<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> {
 
   /**
    * The model you want to eagerly load
    */
-  model?: typeof Model;
+  model?: TSourceModel;
 
   /**
    * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
@@ -288,18 +289,18 @@ export interface IncludeOptions {
   /**
    * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
    */
-  association?: Association;
+  association?: Association<TSourceModel, Model<Instance>>;
 
   /**
    * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
    * unless you explicitly set `required: false`
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TSourceInstance>;
 
   /**
    * A list of attributes to select from the child model
    */
-  attributes?: FindAttributeOptions;
+  attributes?: FindAttributeOptions<TSourceInstance>;
 
   /**
    * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
@@ -320,34 +321,34 @@ export interface IncludeOptions {
   /**
    * Through Options
    */
-  through?: IncludeThroughOptions;
+  through?: IncludeThroughOptions<any>;
 
   /**
    * Load further nested related models
    */
-  include?: Includeable[];
+  include?: Includeable<TSourceModel, TSourceInstance>[];
 
   /**
    * Order include. Only available when setting `separate` to true.
    */
-  order?: Order;
+  order?: Order<TSourceInstance>;
 }
 
-export type OrderItem =
-  string | Fn | Col | Literal |
-  [string | Col | Fn | Literal, string] |
-  [typeof Model | { model: typeof Model, as: string }, string, string] |
-  [typeof Model, typeof Model, string, string];
-export type Order = string | Fn | Col | Literal | OrderItem[];
+export type OrderItem<TInstance extends Instance> =
+  keyof TInstance | Fn | Col | Literal |
+  [keyof TInstance | Col | Fn | Literal, string] |
+  [Model<TInstance> | { model: Model<TInstance>, as: string }, string, string] |
+  [Model<TInstance>, Model<TInstance>, string, string];
+export type Order<TInstance extends Instance> = string | Fn | Col | Literal | OrderItem<TInstance>[];
 
-export type FindAttributeOptions =
-  Array<string | [string | Literal | Fn, string]> |
+export type FindAttributeOptions<TInstance extends Instance> =
+  Array<keyof TInstance | [keyof TInstance | Literal | Fn, string]> |
   {
-    exclude: Array<string>;
-    include?: Array<string | [string | Literal | Fn, string]>;
+    exclude: Array<keyof TInstance>;
+    include?: Array<keyof TInstance | [keyof TInstance | Literal | Fn, string]>;
   } | {
-    exclude?: Array<string>;
-    include: Array<string | [string | Literal | Fn, string]>;
+    exclude?: Array<keyof TInstance>;
+    include: Array<keyof TInstance | [keyof TInstance | Literal | Fn, string]>;
   };
 
 /**
@@ -355,11 +356,11 @@ export type FindAttributeOptions =
  *
  * A hash of options to describe the scope of the search
  */
-export interface FindOptions {
+export interface FindOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
   /**
    * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
@@ -367,7 +368,7 @@ export interface FindOptions {
    * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
    * have in the returned instance
    */
-  attributes?: FindAttributeOptions;
+  attributes?: FindAttributeOptions<TInstance>;
 
   /**
    * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -381,7 +382,7 @@ export interface FindOptions {
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */
-  include?: Includeable[];
+  include?: Includeable<TModel, TInstance>[];
 
   /**
    * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
@@ -389,7 +390,7 @@ export interface FindOptions {
    * first element is the column / function to order by, the second is the direction. For example:
    * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
    */
-  order?: Order;
+  order?: Order<TInstance>;
 
   /**
    * GROUP BY in sql
@@ -416,7 +417,7 @@ export interface FindOptions {
    * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
    * locks with joins. See [transaction.LOCK for an example](transaction#lock)
    */
-  lock?: string | { level: string, of: typeof Model };
+  lock?: string | { level: string, of: Model<Instance> };
 
   /**
    * Return raw result. See sequelize.query for more information.
@@ -431,24 +432,24 @@ export interface FindOptions {
   /**
    * having ?!?
    */
-  having?: WhereAttributeHash;
+  having?: WhereAttributeHash<TInstance>;
 
 }
 
 /**
  * Options for Model.count method
  */
-export interface CountOptions {
+export interface CountOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
   /**
    * A hash of search attributes.
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
   /**
    * Include options. See `find` for details
    */
-  include?: Includeable[];
+  include?: Includeable<TModel, TInstance>[];
 
   /**
    * Apply COUNT(DISTINCT(col))
@@ -458,7 +459,7 @@ export interface CountOptions {
   /**
    * Used in conjustion with `group`
    */
-  attributes?: FindAttributeOptions;
+  attributes?: FindAttributeOptions<TInstance>;
 
   /**
    * GROUP BY in sql
@@ -473,12 +474,12 @@ export interface CountOptions {
   transaction?: Transaction;
 }
 
-export interface FindAndCountOptions extends CountOptions, FindOptions { }
+export interface FindAndCountOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends CountOptions<TModel, TInstance>, FindOptions<TModel, TInstance> { }
 
 /**
  * Options for Model.build method
  */
-export interface BuildOptions {
+export interface BuildOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
   /**
    * If set to true, values will ignore field and virtual setters.
@@ -495,19 +496,19 @@ export interface BuildOptions {
    *
    * TODO: See set
    */
-  include?: Includeable[];
+  include?: Includeable<TModel, TInstance>[];
 
 }
 
 /**
  * Options for Model.create method
  */
-export interface CreateOptions extends BuildOptions {
+export interface CreateOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends BuildOptions<TModel, TInstance> {
 
   /**
    * If set, only columns matching those in fields will be saved
    */
-  fields?: Array<string>;
+  fields?: Array<keyof TInstance>;
 
   /**
    * On Duplicate
@@ -532,17 +533,17 @@ export interface CreateOptions extends BuildOptions {
 /**
  * Options for Model.findOrInitialize method
  */
-export interface FindOrInitializeOptions {
+export interface FindOrInitializeOptions<TInstance extends Instance> {
 
   /**
    * A hash of search attributes.
    */
-  where: WhereOptions;
+  where: WhereOptions<TInstance>;
 
   /**
    * Default values to use if building a new instance
    */
-  defaults?: Object;
+  defaults?: Partial<TInstance>;
 
   /**
    * Transaction to run query under
@@ -559,7 +560,7 @@ export interface FindOrInitializeOptions {
 /**
  * Options for Model.upsert method
  */
-export interface UpsertOptions {
+export interface UpsertOptions<TInstance extends Instance> {
   /**
    * Run validations before the row is inserted
    */
@@ -568,7 +569,7 @@ export interface UpsertOptions {
   /**
    * The fields to insert / update. Defaults to all fields
    */
-  fields?: Array<string>;
+  fields?: Array<keyof TInstance>;
 
   /**
    * Transaction to run query under
@@ -594,12 +595,12 @@ export interface UpsertOptions {
 /**
  * Options for Model.bulkCreate method
  */
-export interface BulkCreateOptions {
+export interface BulkCreateOptions<TInstance extends Instance> {
 
   /**
    * Fields to insert (defaults to all fields)
    */
-  fields?: Array<string>;
+  fields?: Array<keyof TInstance>;
 
   /**
    * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
@@ -667,11 +668,6 @@ export interface TruncateOptions {
   logging?: boolean | Function;
 
   /**
-   * Filter the destroy
-   */
-  where?: WhereOptions;
-
-  /**
    * Run before / after bulk destroy hooks?
    */
   hooks?: boolean;
@@ -702,7 +698,7 @@ export interface TruncateOptions {
 /**
  * Options used for Model.destroy
  */
-export interface DestroyOptions extends TruncateOptions {
+export interface DestroyOptions<TInstance extends Instance> extends TruncateOptions {
 
   /**
    * If set to true, dialects that support it will use TRUNCATE instead of DELETE FROM. If a table is
@@ -710,17 +706,21 @@ export interface DestroyOptions extends TruncateOptions {
    */
   truncate?: boolean;
 
+  /**
+   * Filter the destroy
+   */
+  where?: WhereOptions<TInstance>;
 }
 
 /**
  * Options for Model.restore
  */
-export interface RestoreOptions {
+export interface RestoreOptions<TInstance extends Instance> {
 
   /**
    * Filter the restore
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
   /**
    * Run before / after bulk restore hooks?
@@ -753,17 +753,17 @@ export interface RestoreOptions {
 /**
  * Options used for Model.update
  */
-export interface UpdateOptions {
+export interface UpdateOptions<TInstance extends Instance> {
 
   /**
    * Options to describe the scope of the search.
    */
-  where: WhereOptions;
+  where: WhereOptions<TInstance>;
 
   /**
    * Fields to update (defaults to all fields)
    */
-  fields?: Array<string>;
+  fields?: Array<keyof TInstance>;
 
   /**
    * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
@@ -820,9 +820,9 @@ export interface UpdateOptions {
 /**
  * Options used for Model.aggregate
  */
-export interface AggregateOptions extends QueryOptions {
+export interface AggregateOptions<TInstance extends Instance> extends QueryOptions {
   /** A hash of search attributes. */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
   /**
    * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
@@ -840,7 +840,7 @@ export interface AggregateOptions extends QueryOptions {
 /**
  * Options used for Instance.increment method
  */
-export interface IncrementDecrementOptions {
+export interface IncrementDecrementOptions<TInstance extends Instance> {
 
   /**
    * The number to increment by
@@ -862,7 +862,7 @@ export interface IncrementDecrementOptions {
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
 }
 
@@ -908,12 +908,12 @@ export interface InstanceDestroyOptions {
 /**
  * Options used for Instance.update method
  */
-export interface InstanceUpdateOptions extends SaveOptions, SetOptions {
+export interface InstanceUpdateOptions<TInstance extends Instance> extends SaveOptions<TInstance>, SetOptions {
 
   /**
    * A hash of attributes to describe your search. See above for examples.
    */
-  where?: WhereOptions;
+  where?: WhereOptions<TInstance>;
 
 }
 
@@ -937,13 +937,13 @@ export interface SetOptions {
 /**
  * Options used for Instance.save method
  */
-export interface SaveOptions {
+export interface SaveOptions<TInstance extends Instance> {
 
   /**
    * An optional array of strings, representing database columns. If fields is provided, only those columns
    * will be validated and saved.
    */
-  fields?: Array<string>;
+  fields?: Array<keyof TInstance>;
 
   /**
    * If true, the updatedAt timestamp will not be updated.
@@ -1165,7 +1165,7 @@ export interface ModelValidateOptions {
 /**
  * Interface for indexes property in DefineOptions
  */
-export interface ModelIndexesOptions {
+export interface ModelIndexesOptions<TInstance extends Instance> {
 
   /**
    * The name of the index. Defaults to model name + _ + fields concatenated
@@ -1203,7 +1203,7 @@ export interface ModelIndexesOptions {
    * (field name), `length` (create a prefix index of length chars), `order` (the direction the column
    * should be sorted in), `collate` (the collation (sort order) for the column)
    */
-  fields?: Array<string | { attribute: string, length: number, order: string, collate: string }>
+  fields?: Array<keyof TInstance | { attribute: keyof TInstance, length: number, order: string, collate: string }>
 
 }
 
@@ -1225,35 +1225,21 @@ export interface ModelNameOptions {
 }
 
 /**
- * Interface for getterMethods in DefineOptions
- */
-export interface ModelGetterOptions {
-  [name: string]: () => any;
-}
-
-/**
- * Interface for setterMethods in DefineOptions
- */
-export interface ModelSetterOptions {
-  [name: string]: (val: any) => void;
-}
-
-/**
  * Interface for Define Scope Options
  */
-export interface ModelScopeOptions {
+export interface ModelScopeOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
   /**
    * Name of the scope and it's query
    */
-  [scopeName: string]: FindOptions | Function;
+  [scopeName: string]: FindOptions<TModel, TInstance> | Function;
 
 }
 
 /**
  * General column options
  */
-export interface ColumnOptions {
+export interface ColumnOptions<TColumn> {
 
   /**
    * If false, the column will have a NOT NULL constraint, and a not null validation will be run before an
@@ -1269,7 +1255,7 @@ export interface ColumnOptions {
   /**
    * A literal default value, a JavaScript function, or an SQL function (see `sequelize.fn`)
    */
-  defaultValue?: any;
+  defaultValue?: TColumn | Fn | Literal;
 
 }
 
@@ -1281,7 +1267,7 @@ export interface ModelAttributeColumnReferencesOptions {
   /**
    * If this column references another table, provide it here as a Model, or a string
    */
-  model?: string | typeof Model;
+  model?: string | Model<Instance>;
 
   /**
    * The column of the foreign table that this column references
@@ -1300,7 +1286,7 @@ export interface ModelAttributeColumnReferencesOptions {
 /**
  * Column options for the model schema attributes
  */
-export interface ModelAttributeColumnOptions extends ColumnOptions {
+export interface ModelAttributeColumnOptions<TInstance extends Instance, TAttribute> extends ColumnOptions<TAttribute> {
 
   /**
    * A string or a data type
@@ -1350,13 +1336,13 @@ export interface ModelAttributeColumnOptions extends ColumnOptions {
    * Provide a custom getter for this column. Use `this.getDataValue(String)` to manipulate the underlying
    * values.
    */
-  get?: () => any;
+  get?: (this: TInstance) => TAttribute;
 
   /**
    * Provide a custom setter for this column. Use `this.setDataValue(String, Value)` to manipulate the
    * underlying values.
    */
-  set?: (val: any) => void;
+  set?: (this: TInstance, val: TAttribute) => void;
 
   /**
    * An object of validations to execute for this column every time the model is saved. Can be either the
@@ -1381,19 +1367,19 @@ export interface ModelAttributeColumnOptions extends ColumnOptions {
    *   })
    * ```
    */
-  values?: Array<string>;
+  values?: TAttribute[];
 
 }
 
 /**
  * Interface for Attributes provided for a column
  */
-export interface ModelAttributes {
+export type ModelAttributes<TInstance extends Instance> = {
 
   /**
    * The description of a database column
    */
-  [name: string]: DataType | ModelAttributeColumnOptions;
+  [K in keyof TInstance]: DataType | ModelAttributeColumnOptions<TInstance, TInstance[K]>;
 }
 
 
@@ -1405,31 +1391,31 @@ export interface ModelAttributes {
  * beforeDestroy, beforeUpdate, afterCreate, afterDestroy, afterUpdate, afterBulkCreate, afterBulkDestroy and
  * afterBulkUpdate.
  */
-export interface HooksOptions {
+export interface HooksOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
-  beforeValidate?: (instance: Model, options: Object) => any;
-  afterValidate?: (instance: Model, options: Object) => any;
-  beforeCreate?: (attributes: Model, options: CreateOptions) => any;
-  afterCreate?: (attributes: Model, options: CreateOptions) => any;
-  beforeDestroy?: (instance: Model, options: InstanceDestroyOptions) => any;
-  beforeDelete?: (instance: Model, options: InstanceDestroyOptions) => any;
-  afterDestroy?: (instance: Model, options: InstanceDestroyOptions) => any;
-  afterDelete?: (instance: Model, options: InstanceDestroyOptions) => any;
-  beforeUpdate?: (instance: Model, options: InstanceUpdateOptions) => any;
-  afterUpdate?: (instance: Model, options: InstanceUpdateOptions) => any;
-  beforeBulkCreate?: (instances: Array<Model>, options: BulkCreateOptions) => any;
-  afterBulkCreate?: (instances: Array<Model>, options: BulkCreateOptions) => any;
-  beforeBulkDestroy?: (options: DestroyOptions) => any;
-  beforeBulkDelete?: (options: DestroyOptions) => any;
-  afterBulkDestroy?: (options: DestroyOptions) => any;
-  afterBulkDelete?: (options: DestroyOptions) => any;
-  beforeBulkUpdate?: (options: UpdateOptions) => any;
-  afterBulkUpdate?: (options: UpdateOptions) => any;
-  beforeFind?: (options: FindOptions) => any;
-  beforeCount?: (options: CountOptions) => any;
-  beforeFindAfterExpandIncludeAll?: (options: FindOptions) => any;
-  beforeFindAfterOptions?: (options: FindOptions) => any;
-  afterFind?: (instancesOrInstance: Array<Model> | Model, options: FindOptions) => any;
+  beforeValidate?: (instance: TInstance, options: Object) => any;
+  afterValidate?: (instance: TInstance, options: Object) => any;
+  beforeCreate?: (attributes: TInstance, options: CreateOptions<TModel, TInstance>) => any;
+  afterCreate?: (attributes: TInstance, options: CreateOptions<TModel, TInstance>) => any;
+  beforeDestroy?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+  beforeDelete?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+  afterDestroy?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+  afterDelete?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+  beforeUpdate?: (instance: TInstance, options: InstanceUpdateOptions<TInstance>) => any;
+  afterUpdate?: (instance: TInstance, options: InstanceUpdateOptions<TInstance>) => any;
+  beforeBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions<TInstance>) => any;
+  afterBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions<TInstance>) => any;
+  beforeBulkDestroy?: (options: DestroyOptions<TInstance>) => any;
+  beforeBulkDelete?: (options: DestroyOptions<TInstance>) => any;
+  afterBulkDestroy?: (options: DestroyOptions<TInstance>) => any;
+  afterBulkDelete?: (options: DestroyOptions<TInstance>) => any;
+  beforeBulkUpdate?: (options: UpdateOptions<TInstance>) => any;
+  afterBulkUpdate?: (options: UpdateOptions<TInstance>) => any;
+  beforeFind?: (options: FindOptions<TModel, TInstance>) => any;
+  beforeCount?: (options: CountOptions<TModel, TInstance>) => any;
+  beforeFindAfterExpandIncludeAll?: (options: FindOptions<TModel, TInstance>) => any;
+  beforeFindAfterOptions?: (options: FindOptions<TModel, TInstance>) => any;
+  afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions<TModel, TInstance>) => any;
   beforeSync?: (options: SyncOptions) => any;
   afterSync?: (options: SyncOptions) => any;
   beforeBulkSync?: (options: SyncOptions) => any;
@@ -1439,19 +1425,19 @@ export interface HooksOptions {
 /**
  * Options for model definition
  */
-export interface ModelOptions {
+export interface ModelOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
   /**
    * Define the default search scope to use for this model. Scopes have the same form as the options passed to
    * find / findAll.
    */
-  defaultScope?: FindOptions;
+  defaultScope?: FindOptions<TModel, TInstance>;
 
   /**
    * More scopes, defined in the same way as defaultScope above. See `Model.scope` for more information about
    * how scopes are defined, and what you can do with them
    */
-  scopes?: ModelScopeOptions;
+  scopes?: ModelScopeOptions<TModel, TInstance>;
 
   /**
    * Don't persits null values. This means that all columns with null values will not be saved.
@@ -1499,7 +1485,7 @@ export interface ModelOptions {
   /**
    * Indexes for the provided database table
    */
-  indexes?: Array<ModelIndexesOptions>;
+  indexes?: ModelIndexesOptions<TInstance>[];
 
   /**
    * Override the name of the createdAt column if a string is provided, or disable it if false. Timestamps
@@ -1524,38 +1510,6 @@ export interface ModelOptions {
    * verbatim
    */
   tableName?: string;
-
-  /**
-   * Provide getter functions that work like those defined per column. If you provide a getter method with
-   * the
-   * same name as a column, it will be used to access the value of that column. If you provide a name that
-   * does not match a column, this function will act as a virtual getter, that can fetch multiple other
-   * values
-   */
-  getterMethods?: ModelGetterOptions;
-
-  /**
-   * Provide setter functions that work like those defined per column. If you provide a setter method with
-   * the
-   * same name as a column, it will be used to update the value of that column. If you provide a name that
-   * does not match a column, this function will act as a virtual setter, that can act on and set other
-   * values, but will not be persisted
-   */
-  setterMethods?: ModelSetterOptions;
-
-  /**
-   * Provide functions that are added to each instance (DAO). If you override methods provided by sequelize,
-   * you can access the original method using `this.constructor.super_.prototype`, e.g.
-   * `this.constructor.super_.prototype.toJSON.apply(this, arguments)`
-   */
-  instanceMethods?: Object;
-
-  /**
-   * Provide functions that are added to the model (Model). If you override methods provided by sequelize,
-   * you can access the original method using `this.constructor.prototype`, e.g.
-   * `this.constructor.prototype.find.apply(this, arguments)`
-   */
-  classMethods?: Object;
 
   schema?: string;
 
@@ -1585,7 +1539,7 @@ export interface ModelOptions {
    * afterBulkCreate, afterBulkDestory and afterBulkUpdate. See Hooks for more information about hook
    * functions and their signatures. Each property can either be a function, or an array of functions.
    */
-  hooks?: HooksOptions;
+  hooks?: HooksOptions<TModel, TInstance>;
 
   /**
    * An object of model wide validations. Validations have access to all model values via `this`. If the
@@ -1593,58 +1547,54 @@ export interface ModelOptions {
    * accepts an optional error.
    */
   validate?: ModelValidateOptions;
-
 }
 
 /**
  * Options passed to [[Model.init]]
  */
-export interface InitOptions extends ModelOptions {
+export interface InitOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends ModelOptions<TModel, TInstance> {
   /**
    * The sequelize connection. Required ATM.
    */
   sequelize: Sequelize;
 }
 
-export abstract class Model {
+export interface Model<TInstance extends Instance> {
 
   /** The name of the database table */
-  static tableName: string;
+  tableName: string;
 
   /**
    * The name of the primary key attribute
    */
-  static primaryKeyAttribute: string;
+  primaryKeyAttribute: string;
 
   /**
    * An object hash from alias to association object
    */
-  static associations: any;
+  associations: any;
 
   /**
    * The options that the model was initialized with
    */
-  static options: InitOptions;
+  options: InitOptions<this, TInstance>;
 
   /**
    * The attributes of the model
    */
-  static rawAttributes: { [attribute: string]: ModelAttributeColumnOptions };
+  rawAttributes: { [K in keyof TInstance]: ModelAttributeColumnOptions<TInstance, TInstance[K]> };
 
   /**
    * The attributes of the model
    */
-  static attributes: { [attribute: string]: ModelAttributeColumnOptions };
+  attributes: { [K in keyof TInstance]: ModelAttributeColumnOptions<TInstance, TInstance[K]> };
 
   /**
-   * Returns true if this instance has not yet been persisted to the database
+   * Builds a new model instance.
+   * @param values an object of key value pairs
    */
-  isNewRecord: boolean;
-
-  /**
-   * A reference to the sequelize instance
-   */
-  sequelize: Sequelize;
+  new (values?: Partial<TInstance>, options?: BuildOptions<this, TInstance>): TInstance;
+  prototype: TInstance;
 
   /**
    * Initialize a model, representing a table in the DB, with attributes and options.
@@ -1688,27 +1638,27 @@ export abstract class Model {
    *  string or a type-description object, with the properties described below:
    * @param options These options are merged with the default define options provided to the Sequelize constructor
    */
-  static init(attributes: ModelAttributes, options: InitOptions): void;
+  init(attributes: ModelAttributes<TInstance>, options: InitOptions<this, TInstance>): void;
 
   /**
    * Remove attribute from model definition
    *
    * @param attribute
    */
-  static removeAttribute(attribute: string): void;
+  removeAttribute(attribute: string): void;
 
   /**
    * Sync this Model to the DB, that is create the table. Upon success, the callback will be called with the
    * model instance (this)
    */
-  static sync(options?: SyncOptions): Promise<Model>;
+  sync(options?: SyncOptions): Promise<this>;
 
   /**
    * Drop the table represented by this Model
    *
    * @param options
    */
-  static drop(options?: DropOptions): Promise<void>;
+  drop(options?: DropOptions): Promise<void>;
 
   /**
    * Apply a schema to this model. For postgres, this will actually place the schema in front of the table
@@ -1719,7 +1669,7 @@ export abstract class Model {
    * @param schema The name of the schema
    * @param options
    */
-  static schema(schema: string, options?: SchemaOptions): Model; // I would like to use `this` as return type here, but https://github.com/Microsoft/TypeScript/issues/5863
+  schema(schema: string, options?: SchemaOptions): this;
 
   /**
    * Get the tablename of the model, taking schema into account. The method will return The name as a string
@@ -1731,7 +1681,7 @@ export abstract class Model {
    *     subscribers_1, subscribers_2)
    * @param options.logging=false A function that gets executed while running the query to log the sql.
    */
-  static getTableName(options?: { logging: Function }): string | Object;
+  getTableName(options?: { logging: Function }): string | { tableName: string, schema: string, delimiter: string };
 
   /**
    * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -1780,7 +1730,7 @@ export abstract class Model {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | Array<string> | ScopeOptions | WhereAttributeHash): typeof Model;
+  scope(options?: string | string[] | ScopeOptions | WhereAttributeHash<TInstance>): this;
 
   /**
    * Search for multiple instances.
@@ -1844,22 +1794,22 @@ export abstract class Model {
    *
    * @see    {Sequelize#query}
    */
-  static findAll(options?: FindOptions): Promise<Array<Model>>;
-  static all(optionz?: FindOptions): Promise<Array<Model>>;
+  findAll(options?: FindOptions<this, TInstance>): Promise<TInstance[]>;
+  all(optionz?: FindOptions<this, TInstance>): Promise<TInstance[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById(identifier?: number | string, options?: FindOptions): Promise<Model>;
-  static findByPrimary(identifier?: number | string, options?: FindOptions): Promise<Model>;
+  findById(identifier?: number | string, options?: FindOptions<this, TInstance>): Promise<TInstance>;
+  findByPrimary(identifier?: number | string, options?: FindOptions<this, TInstance>): Promise<TInstance>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne(options?: FindOptions): Promise<Model>;
-  static find(optionz?: FindOptions): Promise<Model>;
+  findOne(options?: FindOptions<this, TInstance>): Promise<TInstance>;
+  find(optionz?: FindOptions<this, TInstance>): Promise<TInstance>;
 
   /**
    * Run an aggregation method on the specified field
@@ -1870,15 +1820,14 @@ export abstract class Model {
    * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
    *     which case the complete data result is returned.
    */
-  aggregate<T>(field: string, aggregateFunction: string, options?: AggregateOptions): Promise<T>;
-  static aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): Promise<number>;
+  aggregate(field: string, aggregateFunction: string, options?: AggregateOptions<TInstance>): Promise<number>;
 
   /**
    * Count the number of records matching the provided where clause.
    *
    * If you provide an `include` option, the number of matching associations will be counted instead.
    */
-  static count(options?: CountOptions): Promise<number>;
+  count(options?: CountOptions<this, TInstance>): Promise<number>;
 
   /**
    * Find all the rows matching your query, within a specified offset / limit, and get the total number of
@@ -1915,45 +1864,45 @@ export abstract class Model {
    * without
    * profiles will be counted
    */
-  static findAndCount(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
-  static findAndCountAll(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
+  findAndCount(options?: FindAndCountOptions<this, TInstance>): Promise<{ rows: TInstance[], count: number }>;
+  findAndCountAll(options?: FindAndCountOptions<this, TInstance>): Promise<{ rows: TInstance[], count: number }>;
 
   /**
    * Find the maximum value of field
    */
-  static max(field: string, options?: AggregateOptions): Promise<any>;
+  max(field: string, options?: AggregateOptions<TInstance>): Promise<any>;
 
   /**
    * Find the minimum value of field
    */
-  static min(field: string, options?: AggregateOptions): Promise<any>;
+  min(field: string, options?: AggregateOptions<TInstance>): Promise<any>;
 
   /**
    * Find the sum of field
    */
-  static sum(field: string, options?: AggregateOptions): Promise<number>;
+  sum(field: string, options?: AggregateOptions<TInstance>): Promise<number>;
 
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build(record?: Object, options?: BuildOptions): Model;
+  build(record?: Partial<TInstance>, options?: BuildOptions<this, TInstance>): TInstance;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild(records: Object[], options?: BuildOptions): Array<Model>;
+  bulkBuild(records: Partial<TInstance>[], options?: BuildOptions<this, TInstance>): TInstance;
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create(values?: Object, options?: CreateOptions): Promise<Model>;
+  create(values?: Partial<TInstance>, options?: CreateOptions<this, TInstance>): Promise<TInstance[]>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize(options: FindOrInitializeOptions): Promise<Model>;
-  static findOrBuild(options: FindOrInitializeOptions): Promise<Model>;
+  findOrInitialize(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
+  findOrBuild(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -1966,7 +1915,7 @@ export abstract class Model {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate(options: FindOrInitializeOptions): Promise<Model>;
+  findOrCreate(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -1987,8 +1936,8 @@ export abstract class Model {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert(values: Object, options?: UpsertOptions): Promise<boolean>;
-  static insertOrUpdate(values: Object, options?: UpsertOptions): Promise<boolean>;
+  upsert(values: Partial<TInstance>, options?: UpsertOptions<TInstance>): Promise<boolean>;
+  insertOrUpdate(values: Partial<TInstance>, options?: UpsertOptions<TInstance>): Promise<boolean>;
 
   /**
    * Create and insert multiple instances in bulk.
@@ -2001,42 +1950,42 @@ export abstract class Model {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate(records: Array<Object>, options?: BulkCreateOptions): Promise<Array<Model>>;
+  bulkCreate(records: Partial<TInstance[]>, options?: BulkCreateOptions<TInstance>): Promise<TInstance[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
    */
-  static truncate(options?: TruncateOptions): Promise<void>;
+  truncate(options?: TruncateOptions): Promise<void>;
 
   /**
    * Delete multiple instances, or set their deletedAt timestamp to the current time if `paranoid` is enabled.
    *
    * @return Promise<number> The number of destroyed rows
    */
-  static destroy(options?: DestroyOptions): Promise<number>;
+  destroy(options?: DestroyOptions<TInstance>): Promise<number>;
 
   /**
    * Restore multiple instances if `paranoid` is enabled.
    */
-  static restore(options?: RestoreOptions): Promise<void>;
+  restore(options?: RestoreOptions<TInstance>): Promise<void>;
 
   /**
    * Update multiple instances that match the where options. The promise returns an array with one or two
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update(values: Object, options: UpdateOptions): Promise<[number, Array<Model>]>;
+  update(values: Partial<TInstance>, options: UpdateOptions<TInstance>): Promise<[number, TInstance[]]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
    * their types.
    */
-  static describe(): Promise<Object>;
+  describe(): Promise<{ [K in keyof TInstance]: any }>;
 
   /**
    * Unscope the model
    */
-  static unscoped(): typeof Model;
+  unscoped(): this;
 
   /**
    * Add a hook to the model
@@ -2048,10 +1997,10 @@ export abstract class Model {
    *
    * @alias hook
    */
-  static addHook(hookType: string, name: string, fn: Function): typeof Model;
-  static addHook(hookType: string, fn: Function): typeof Model;
-  static hook(hookType: string, name: string, fn: Function): typeof Model;
-  static hook(hookType: string, fn: Function): typeof Model;
+  addHook(hookType: string, name: string, fn: Function): this;
+  addHook(hookType: string, fn: Function): this;
+  hook(hookType: string, name: string, fn: Function): this;
+  hook(hookType: string, fn: Function): this;
 
   /**
    * Remove hook from the model
@@ -2059,7 +2008,7 @@ export abstract class Model {
    * @param hookType
    * @param name
    */
-  static removeHook(hookType: string, name: string): typeof Model;
+  removeHook(hookType: string, name: string): this;
 
   /**
    * Check whether the mode has any hooks of this type
@@ -2068,8 +2017,8 @@ export abstract class Model {
    *
    * @alias hasHooks
    */
-  static hasHook(hookType: string): boolean;
-  static hasHooks(hookType: string): boolean;
+  hasHook(hookType: string): boolean;
+  hasHooks(hookType: string): boolean;
 
   /**
    * A hook that is run before validation
@@ -2077,8 +2026,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static beforeValidate(name: string, fn: (instance: Model, options: Object) => void): void;
-  static beforeValidate(fn: (instance: Model, options: Object) => void): void;
+  beforeValidate(name: string, fn: (instance: TInstance, options: Object) => void): void;
+  beforeValidate(fn: (instance: TInstance, options: Object) => void): void;
 
   /**
    * A hook that is run after validation
@@ -2086,9 +2035,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static afterValidate(name: string,
-    fn: (instance: Model, options: Object) => void): void;
-  static afterValidate(fn: (instance: Model, options: Object) => void): void;
+  afterValidate(name: string, fn: (instance: TInstance, options: Object) => void): void;
+  afterValidate(fn: (instance: TInstance, options: Object) => void): void;
 
   /**
    * A hook that is run before creating a single instance
@@ -2096,8 +2044,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with attributes, options
    */
-  static beforeCreate(name: string, fn: (attributes: Model, options: CreateOptions) => void): void;
-  static beforeCreate(fn: (attributes: Model, options: CreateOptions) => void): void;
+  beforeCreate(name: string, fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+  beforeCreate(fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run after creating a single instance
@@ -2105,8 +2053,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with attributes, options
    */
-  static afterCreate(name: string, fn: (attributes: Model, options: CreateOptions) => void): void;
-  static afterCreate(fn: (attributes: Model, options: CreateOptions) => void): void;
+  afterCreate(name: string, fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+  afterCreate(fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run before destroying a single instance
@@ -2115,10 +2063,10 @@ export abstract class Model {
    * @param fn A callback function that is called with instance, options
    * @alias beforeDelete
    */
-  static beforeDestroy(name: string, fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static beforeDestroy(fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static beforeDelete(name: string, fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static beforeDelete(fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
+  beforeDestroy(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  beforeDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  beforeDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  beforeDelete(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
 
   /**
    * A hook that is run after destroying a single instance
@@ -2127,10 +2075,10 @@ export abstract class Model {
    * @param fn A callback function that is called with instance, options
    * @alias afterDelete
    */
-  static afterDestroy(name: string, fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static afterDestroy(fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static afterDelete(name: string, fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
-  static afterDelete(fn: (instance: Model, options: InstanceDestroyOptions) => void): void;
+  afterDestroy(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  afterDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  afterDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+  afterDelete(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
 
   /**
    * A hook that is run before updating a single instance
@@ -2138,9 +2086,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static beforeUpdate(name: string,
-    fn: (instance: Model, options: UpdateOptions) => void): void;
-  static beforeUpdate(fn: (instance: Model, options: UpdateOptions) => void): void;
+  beforeUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+  beforeUpdate(fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run after updating a single instance
@@ -2148,8 +2095,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static afterUpdate(name: string, fn: (instance: Model, options: UpdateOptions) => void): void;
-  static afterUpdate(fn: (instance: Model, options: UpdateOptions) => void): void;
+  afterUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+  afterUpdate(fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run before creating instances in bulk
@@ -2157,9 +2104,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instances, options
    */
-  static beforeBulkCreate(name: string,
-    fn: (instances: Model[], options: BulkCreateOptions) => void): void;
-  static beforeBulkCreate(fn: (instances: Model[], options: BulkCreateOptions) => void): void;
+  beforeBulkCreate(name: string, fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+  beforeBulkCreate(fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run after creating instances in bulk
@@ -2168,8 +2114,8 @@ export abstract class Model {
    * @param fn A callback function that is called with instances, options
    * @name afterBulkCreate
    */
-  static afterBulkCreate(name: string, fn: (instances: Model[], options: BulkCreateOptions) => void): void;
-  static afterBulkCreate(fn: (instances: Model[], options: BulkCreateOptions) => void): void;
+  afterBulkCreate(name: string, fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+  afterBulkCreate(fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run before destroying instances in bulk
@@ -2179,10 +2125,10 @@ export abstract class Model {
    *
    * @alias beforeBulkDelete
    */
-  static beforeBulkDestroy(name: string, fn: (options: BulkCreateOptions) => void): void;
-  static beforeBulkDestroy(fn: (options: BulkCreateOptions) => void): void;
-  static beforeBulkDelete(name: string, fn: (options: BulkCreateOptions) => void): void;
-  static beforeBulkDelete(fn: (options: BulkCreateOptions) => void): void;
+  beforeBulkDestroy(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+  beforeBulkDestroy(fn: (options: DestroyOptions<TInstance>) => void): void;
+  beforeBulkDelete(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+  beforeBulkDelete(fn: (options: DestroyOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run after destroying instances in bulk
@@ -2192,10 +2138,10 @@ export abstract class Model {
    *
    * @alias afterBulkDelete
    */
-  static afterBulkDestroy(name: string, fn: (options: DestroyOptions) => void): void;
-  static afterBulkDestroy(fn: (options: DestroyOptions) => void): void;
-  static afterBulkDelete(name: string, fn: (options: DestroyOptions) => void): void;
-  static afterBulkDelete(fn: (options: DestroyOptions) => void): void;
+  afterBulkDestroy(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+  afterBulkDestroy(fn: (options: DestroyOptions<TInstance>) => void): void;
+  afterBulkDelete(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+  afterBulkDelete(fn: (options: DestroyOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run after updating instances in bulk
@@ -2203,8 +2149,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeBulkUpdate(name: string, fn: (options: UpdateOptions) => void): void;
-  static beforeBulkUpdate(fn: (options: UpdateOptions) => void): void;
+  beforeBulkUpdate(name: string, fn: (options: UpdateOptions<TInstance>) => void): void;
+  beforeBulkUpdate(fn: (options: UpdateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run after updating instances in bulk
@@ -2212,8 +2158,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static afterBulkUpdate(name: string, fn: (options: UpdateOptions) => void): void;
-  static afterBulkUpdate(fn: (options: UpdateOptions) => void): void;
+  afterBulkUpdate(name: string, fn: (options: UpdateOptions<TInstance>) => void): void;
+  afterBulkUpdate(fn: (options: UpdateOptions<TInstance>) => void): void;
 
   /**
    * A hook that is run before a find (select) query
@@ -2221,8 +2167,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeFind(name: string, fn: (options: FindOptions) => void): void;
-  static beforeFind(fn: (options: FindOptions) => void): void;
+  beforeFind(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+  beforeFind(fn: (options: FindOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run before a count query
@@ -2230,8 +2176,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeCount(name: string, fn: (options: CountOptions) => void): void;
-  static beforeCount(fn: (options: CountOptions) => void): void;
+  beforeCount(name: string, fn: (options: CountOptions<this, TInstance>) => void): void;
+  beforeCount(fn: (options: CountOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
@@ -2239,9 +2185,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeFindAfterExpandIncludeAll(name: string,
-    fn: (options: FindOptions) => void): void;
-  static beforeFindAfterExpandIncludeAll(fn: (options: FindOptions) => void): void;
+  beforeFindAfterExpandIncludeAll(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+  beforeFindAfterExpandIncludeAll(fn: (options: FindOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run before a find (select) query, after all option parsing is complete
@@ -2249,8 +2194,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeFindAfterOptions(name: string, fn: (options: FindOptions) => void): void;
-  static beforeFindAfterOptions(fn: (options: FindOptions) => void): void;
+  beforeFindAfterOptions(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+  beforeFindAfterOptions(fn: (options: FindOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run after a find (select) query
@@ -2258,9 +2203,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with instance(s), options
    */
-  static afterFind(name: string, fn: (instancesOrInstance: Model[] | Model, options: FindOptions,
-    fn?: Function) => void): void;
-  static afterFind(fn: (instancesOrInstance: Model[] | Model, options: FindOptions,
+  afterFind(name: string, fn: (instancesOrinstance: TInstance[] | TInstance, options: FindOptions<this, TInstance>, fn?: Function) => void): void;
+  afterFind(fn: (instancesOrinstance: TInstance[] | TInstance, options: FindOptions<this, TInstance>,
     fn?: Function) => void): void;
 
   /**
@@ -2269,8 +2213,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with attributes, options
    */
-  static beforeDefine(name: string, fn: (attributes: ModelAttributes, options: ModelOptions) => void): void;
-  static beforeDefine(fn: (attributes: ModelAttributes, options: ModelOptions) => void): void;
+  beforeDefine(name: string, fn: (attributes: ModelAttributes<TInstance>, options: ModelOptions<this, TInstance>) => void): void;
+  beforeDefine(fn: (attributes: ModelAttributes<TInstance>, options: ModelOptions<this, TInstance>) => void): void;
 
   /**
    * A hook that is run after a define call
@@ -2278,8 +2222,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with factory
    */
-  static afterDefine(name: string, fn: (model: typeof Model) => void): void;
-  static afterDefine(fn: (model: typeof Model) => void): void;
+  afterDefine(name: string, fn: (model: this) => void): void;
+  afterDefine(fn: (model: this) => void): void;
 
   /**
    * A hook that is run before Sequelize() call
@@ -2287,8 +2231,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with config, options
    */
-  static beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
-  static beforeInit(fn: (config: Object, options: Object) => void): void;
+  beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
+  beforeInit(fn: (config: Object, options: Object) => void): void;
 
   /**
    * A hook that is run after Sequelize() call
@@ -2296,8 +2240,8 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with sequelize
    */
-  static afterInit(name: string, fn: (sequelize: Sequelize) => void): void;
-  static afterInit(fn: (sequelize: Sequelize) => void): void;
+  afterInit(name: string, fn: (sequelize: Sequelize) => void): void;
+  afterInit(fn: (sequelize: Sequelize) => void): void;
 
   /**
    * A hook that is run before sequelize.sync call
@@ -2305,8 +2249,8 @@ export abstract class Model {
    * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
    * @name beforeBulkSync
    */
-  static beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
-  static beforeBulkSync(fn: (options: SyncOptions) => any): void;
+  beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+  beforeBulkSync(fn: (options: SyncOptions) => any): void;
 
   /**
    * A hook that is run after sequelize.sync call
@@ -2314,8 +2258,8 @@ export abstract class Model {
    * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
    * @name afterBulkSync
    */
-  static afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
-  static afterBulkSync(fn: (options: SyncOptions) => any): void;
+  afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+  afterBulkSync(fn: (options: SyncOptions) => any): void;
 
   /**
    * A hook that is run before Model.sync call
@@ -2323,8 +2267,8 @@ export abstract class Model {
    * @param {Function} fn   A callback function that is called with options passed to Model.sync
    * @name beforeSync
    */
-  static beforeSync(name: string, fn: (options: SyncOptions) => any): void;
-  static beforeSync(fn: (options: SyncOptions) => any): void;
+  beforeSync(name: string, fn: (options: SyncOptions) => any): void;
+  beforeSync(fn: (options: SyncOptions) => any): void;
 
   /**
    * A hook that is run after Model.sync call
@@ -2332,8 +2276,8 @@ export abstract class Model {
    * @param {Function} fn   A callback function that is called with options passed to Model.sync
    * @name afterSync
    */
-  static afterSync(name: string, fn: (options: SyncOptions) => any): void;
-  static afterSync(fn: (options: SyncOptions) => any): void;
+  afterSync(name: string, fn: (options: SyncOptions) => any): void;
+  afterSync(fn: (options: SyncOptions) => any): void;
 
   /**
    * Creates an association between this (the source) and the provided target. The foreign key is added
@@ -2344,7 +2288,7 @@ export abstract class Model {
    * @param target The model that will be associated with hasOne relationship
    * @param options Options for the association
    */
-  static hasOne(target: typeof Model, options?: HasOneOptions): HasOne;
+  hasOne<TTarget extends Model<Instance>>(target: TTarget, options?: HasOneOptions): HasOne<this, TTarget>;
 
   /**
    * Creates an association between this (the source) and the provided target. The foreign key is added on the
@@ -2355,7 +2299,7 @@ export abstract class Model {
    * @param target The model that will be associated with hasOne relationship
    * @param options Options for the association
    */
-  static belongsTo(target: typeof Model, options?: BelongsToOptions): BelongsTo;
+  belongsTo<TTarget extends Model<Instance>>(target: TTarget, options?: BelongsToOptions): BelongsTo<this, TTarget>;
 
   /**
    * Create an association that is either 1:m or n:m.
@@ -2409,7 +2353,7 @@ export abstract class Model {
    * @param target The model that will be associated with hasOne relationship
    * @param options Options for the association
    */
-  static hasMany(target: typeof Model, options?: HasManyOptions): HasMany;
+  hasMany<TTarget extends Model<Instance>>(target: TTarget, options?: HasManyOptions): HasMany<this, TTarget>;
 
   /**
    * Create an N:M association with a join table
@@ -2459,28 +2403,38 @@ export abstract class Model {
    * @param options Options for the association
    *
    */
-  static belongsToMany(target: typeof Model, options: BelongsToManyOptions): BelongsToMany;
+  belongsToMany<TTarget extends Model<Instance>>(target: TTarget, options: BelongsToManyOptions): BelongsToMany<this, TTarget>;
+}
+
+// Not using a generic TModel parameter here to avoid a cyclic type reference
+export interface Instance {
+
+  constructor: Model<this>;
 
   /**
-   * Builds a new model instance.
-   * @param values an object of key value pairs
+   * Returns true if this instance has not yet been persisted to the database
    */
-  constructor(values?: Object, options?: BuildOptions);
+  isNewRecord: boolean;
+
+  /**
+   * A reference to the sequelize instance
+   */
+  sequelize: Sequelize;
 
   /**
    * Get an object representing the query for this instance, use with `options.where`
    */
-  where(): Object;
+  where(): WhereOptions<this>;
 
   /**
    * Get the value of the underlying data value
    */
-  getDataValue(key: string): any;
+  getDataValue<K extends keyof this>(key: K): this[K];
 
   /**
    * Update the underlying data value
    */
-  setDataValue(key: string, value: any): void;
+  setDataValue<K extends keyof this>(key: K, value: this[K]): void;
 
   /**
    * If no key is given, returns all values of the instance, also invoking virtual getters.
@@ -2490,8 +2444,8 @@ export abstract class Model {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get(options?: { plain?: boolean, clone?: boolean }): any;
-  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
+  get(options?: { plain?: boolean, clone?: boolean }): { [K in keyof this]: this[K] };
+  get<K extends keyof this>(key: K, options?: { plain?: boolean, clone?: boolean }): this[K];
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -2517,10 +2471,10 @@ export abstract class Model {
    * @param options.raw If set to true, field and virtual setters will be ignored
    * @param options.reset Clear all previously set data values
    */
-  set(key: string, value: any, options?: SetOptions): Model;
-  set(keys: Object, options?: SetOptions): Model;
-  setAttributes(key: string, value: any, options?: SetOptions): Model;
-  setAttributes(keys: Object, options?: SetOptions): Model;
+  set<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+  set(keys: Partial<this>, options?: SetOptions): this;
+  setAttributes<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+  setAttributes(keys: Partial<this>, options?: SetOptions): this;
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -2532,14 +2486,14 @@ export abstract class Model {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed(key: string): boolean;
-  changed(key: string, dirty: boolean): void;
-  changed(): boolean | Array<string>;
+  changed(key: keyof this): boolean;
+  changed(key: keyof this, dirty: boolean): void;
+  changed(): boolean | Array<keyof this>;
 
   /**
    * Returns the previous value for key from `_previousDataValues`.
    */
-  previous(key: string): any;
+  previous<K extends keyof this>(key: K): this[K];
 
   /**
    * Validate this instance, and if the validation passes, persist it to the database.
@@ -2548,7 +2502,7 @@ export abstract class Model {
    * called with an instance of `Sequelize.ValidationError`. This error will have a property for each of the
    * fields for which validation failed, with the error message for that field.
    */
-  save(options?: SaveOptions): Promise<Model>;
+  save(options?: SaveOptions<this>): Promise<this>;
 
   /**
    * Refresh the current instance in-place, i.e. update the object with current data from the DB and return
@@ -2556,7 +2510,7 @@ export abstract class Model {
    * return a new instance. With this method, all references to the Instance are updated with the new data
    * and no new objects are created.
    */
-  reload(options?: FindOptions): Promise<Model>;
+  reload(options?: FindOptions<Model<this>, this>): Promise<this>;
 
   /**
    * Validate the attribute of this instance according to validation rules set in the model definition.
@@ -2566,15 +2520,15 @@ export abstract class Model {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate(options?: { skip?: Array<string> }): Promise<void>;
+  validate(options?: { skip?: string[] }): Promise<void>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
    */
-  update(key: string, value: any, options?: InstanceUpdateOptions): Promise<Model>;
-  update(keys: Object, options?: InstanceUpdateOptions): Promise<Model>;
-  updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<Model>;
-  updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<Model>;
+  update<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions<this>): Promise<this>;
+  update(keys: Partial<this>, options?: InstanceUpdateOptions<this>): Promise<this>;
+  updateAttributes<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions<this>): Promise<this>;
+  updateAttributes(keys: Partial<this>, options?: InstanceUpdateOptions<this>): Promise<this>;
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
@@ -2607,8 +2561,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment(fields: string | Array<string> | Object,
-    options?: IncrementDecrementOptions): Promise<Model>;
+  increment(fields: keyof this | (keyof this)[] | { [K in keyof this]?: number }, options?: IncrementDecrementOptions<this>): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2630,24 +2583,24 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement(fields: string | Array<string> | Object,
-    options?: IncrementDecrementOptions): Promise<Model>;
+  decrement(fields: keyof this | (keyof this)[] | { [K in keyof this]?: number }, options?: IncrementDecrementOptions<this>): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
    */
-  equals(other: Model): boolean;
+  equals(other: this): boolean;
 
   /**
    * Check if this is eqaul to one of `others` by calling equals
    */
-  equalsOneOf(others: Model[]): boolean;
+  equalsOneOf(others: this[]): boolean;
 
   /**
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON(): Object;
+  toJSON(): { [K in keyof this]: this[K] };
 }
 
+export const Model: Model<Instance>;
 export default Model;

@@ -1,6 +1,6 @@
 
 import {Association, AssociationOptions, SingleAssociationAccessors} from './base';
-import {Model, SaveOptions, CreateOptions} from '../model';
+import {Model, Instance, SaveOptions, CreateOptions} from '../model';
 import {DataType} from '../data-types';
 import {Promise} from '../promise';
 
@@ -15,9 +15,9 @@ export interface HasOneOptions extends AssociationOptions {
   keyType?: DataType;
 }
 
-export class HasOne extends Association {
+export class HasOne<TSourceModel extends Model<Instance>, TTargetModel extends Model<Instance>> extends Association<TSourceModel, TTargetModel> {
   accessors: SingleAssociationAccessors;
-  constructor(source: typeof Model, target: typeof Model, options: HasOneOptions);
+  constructor(source: TSourceModel, target: TTargetModel, options: HasOneOptions);
 }
 
 
@@ -50,19 +50,19 @@ export interface HasOneGetAssociationMixinOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
  * @see Instance
  */
-export interface HasOneGetAssociationMixin<TModel> {
+export interface HasOneGetAssociationMixin<TInstance extends Instance> {
   /**
    * Get the associated instance.
    * @param options The options to use when getting the association.
    */
-  (options?: HasOneGetAssociationMixinOptions): Promise<TModel>
+  (options?: HasOneGetAssociationMixinOptions): Promise<TInstance>
 }
 
 /**
  * The options for the setAssociation mixin of the hasOne association.
  * @see HasOneSetAssociationMixin
  */
-export interface HasOneSetAssociationMixinOptions extends HasOneGetAssociationMixinOptions, SaveOptions {
+export interface HasOneSetAssociationMixinOptions<TInstance extends Instance> extends HasOneGetAssociationMixinOptions, SaveOptions<TInstance> {
   /**
    * Skip saving this after setting the foreign key if false.
    */
@@ -87,15 +87,15 @@ export interface HasOneSetAssociationMixinOptions extends HasOneGetAssociationMi
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
  * @see Instance
  */
-export interface HasOneSetAssociationMixin<TModel, TModelPrimaryKey> {
+export interface HasOneSetAssociationMixin<TInstance extends Instance, TPrimaryKey> {
   /**
    * Set the associated instance.
    * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
    * @param options The options passed to `getAssocation` and `target.save`.
    */
   (
-    newAssociation?: TModel | TModelPrimaryKey,
-    options?: HasOneSetAssociationMixinOptions
+    newAssociation?: TInstance | TPrimaryKey,
+    options?: HasOneSetAssociationMixinOptions<TInstance>
   ): Promise<void>
 }
 
@@ -103,7 +103,9 @@ export interface HasOneSetAssociationMixin<TModel, TModelPrimaryKey> {
  * The options for the createAssociation mixin of the hasOne association.
  * @see HasOneCreateAssociationMixin
  */
-export interface HasOneCreateAssociationMixinOptions extends HasOneSetAssociationMixinOptions, CreateOptions { }
+export interface HasOneCreateAssociationMixinOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends
+  HasOneSetAssociationMixinOptions<TInstance>,
+  CreateOptions<TModel, TInstance> { }
 
 
 /**
@@ -124,14 +126,14 @@ export interface HasOneCreateAssociationMixinOptions extends HasOneSetAssociatio
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
  * @see Instance
  */
-export interface HasOneCreateAssociationMixin<TModel> {
+export interface HasOneCreateAssociationMixin<TModel extends Model<TInstance>, TInstance extends Instance> {
   /**
    * Create a new instance of the associated model and associate it with this.
    * @param values The values used to create the association.
    * @param options The options passed to `target.create` and `setAssociation`.
    */
   (
-    values?: { [attribute: string]: any },
-    options?: HasOneCreateAssociationMixinOptions
-  ): Promise<TModel>
+    values?: Partial<TInstance>,
+    options?: HasOneCreateAssociationMixinOptions<TModel, TInstance>
+  ): Promise<TInstance>
 }

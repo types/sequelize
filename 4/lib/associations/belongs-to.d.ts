@@ -1,6 +1,6 @@
 
 import {Association, SingleAssociationAccessors} from './base';
-import {Model, SaveOptions, CreateOptions} from '../model';
+import {Model, Instance, SaveOptions, CreateOptions} from '../model';
 import {DataType} from '../data-types';
 import {AssociationOptions} from './base';
 import {Promise} from '../promise';
@@ -25,9 +25,9 @@ export interface BelongsToOptions extends AssociationOptions {
 
 }
 
-export class BelongsTo extends Association {
+export class BelongsTo<TSource extends Model<Instance>, TTarget extends Model<Instance>> extends Association<TSource, TTarget> {
   accessors: SingleAssociationAccessors;
-  constructor(source: typeof Model, target: typeof Model, options: BelongsToOptions);
+  constructor(source: TSource, target: TTarget, options: BelongsToOptions);
 }
 
 
@@ -60,19 +60,19 @@ export interface BelongsToGetAssociationMixinOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToGetAssociationMixin<TModel> {
+export interface BelongsToGetAssociationMixin<TInstance extends Instance> {
   /**
    * Get the associated instance.
    * @param options The options to use when getting the association.
    */
-  (options?: BelongsToGetAssociationMixinOptions): Promise<TModel>
+  (options?: BelongsToGetAssociationMixinOptions): Promise<TInstance>
 }
 
 /**
  * The options for the setAssociation mixin of the belongsTo association.
  * @see BelongsToSetAssociationMixin
  */
-export interface BelongsToSetAssociationMixinOptions extends SaveOptions {
+export interface BelongsToSetAssociationMixinOptions<TInstance extends Instance> extends SaveOptions<TInstance> {
   /**
    * Skip saving this after setting the foreign key if false.
    */
@@ -97,20 +97,22 @@ export interface BelongsToSetAssociationMixinOptions extends SaveOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToSetAssociationMixin<TModel, TPrimaryKey> {
+export interface BelongsToSetAssociationMixin<TInstance extends Instance, TPrimaryKey> {
   /**
    * Set the associated instance.
    * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
    * @param options the options passed to `this.save`.
    */
-  (newAssociation?: TModel | TPrimaryKey, options?: BelongsToSetAssociationMixinOptions): Promise<void>
+  (newAssociation?: TInstance | TPrimaryKey, options?: BelongsToSetAssociationMixinOptions<TInstance>): Promise<void>
 }
 
 /**
  * The options for the createAssociation mixin of the belongsTo association.
  * @see BelongsToCreateAssociationMixin
  */
-export interface BelongsToCreateAssociationMixinOptions extends CreateOptions, BelongsToSetAssociationMixinOptions { }
+export interface BelongsToCreateAssociationMixinOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends
+  CreateOptions<TModel, TInstance>,
+  BelongsToSetAssociationMixinOptions<TInstance> { }
 
 /**
  * The createAssociation mixin applied to models with belongsTo.
@@ -130,16 +132,16 @@ export interface BelongsToCreateAssociationMixinOptions extends CreateOptions, B
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToCreateAssociationMixin<TModel> {
+export interface BelongsToCreateAssociationMixin<TModel extends Model<TInstance>, TInstance extends Instance> {
   /**
    * Create a new instance of the associated model and associate it with this.
    * @param values The values used to create the association.
    * @param options The options passed to `target.create` and `setAssociation`.
    */
   (
-    values?: { [attribute: string]: any },
-    options?: BelongsToCreateAssociationMixinOptions
-  ): Promise<TModel>
+    values?: Partial<TInstance>,
+    options?: BelongsToCreateAssociationMixinOptions<TModel, TInstance>
+  ): Promise<TInstance>
 }
 
 export default BelongsTo;

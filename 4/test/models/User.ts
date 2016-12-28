@@ -10,26 +10,15 @@ import {
 } from 'sequelize';
 import {sequelize} from '../connection';
 
-export class User extends Model {
+interface INst {}
 
-  static associations: {
-    group: BelongsTo
-  };
-
-  id: number;
-  username: string;
+export const User = class User extends Model {
   firstName: string;
-  lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
-
-  // mixins for association (optional)
-  groupId: number;
-  group: UserGroup;
-  getGroup: BelongsToGetAssociationMixin<UserGroup>;
-  setGroup: BelongsToSetAssociationMixin<UserGroup, number>;
-  createGroup: BelongsToCreateAssociationMixin<UserGroup>;
 }
+
+User.find()
+
+const u = new User({firstName: 'hello'});
 
 User.init({
   username: DataTypes.STRING,
@@ -38,7 +27,7 @@ User.init({
 }, { sequelize });
 
 // Hooks
-User.afterFind((users: User[], options: FindOptions) => {
+User.afterFind((users: User[], options: FindOptions<typeof User, User>) => {
   console.log('found');
 });
 

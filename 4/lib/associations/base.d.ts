@@ -1,11 +1,11 @@
 
-import {Model} from '../model';
+import {Model, Instance} from '../model';
 import {ColumnOptions} from '../model';
 
-export abstract class Association {
+export abstract class Association<TSourceModel extends Model<Instance>, TTargetModel extends Model<Instance>> {
   associationType: string;
-  source: typeof Model;
-  target: typeof Model;
+  source: TSourceModel;
+  target: TTargetModel;
   isSelfAssociation: boolean;
   isSingleAssociation: boolean;
   isMultiAssociation: boolean;
@@ -13,7 +13,7 @@ export abstract class Association {
   isAliased: boolean;
   foreignKey: string;
   identifier: string;
-  toInstanceArray(objs: any): Model[];
+  toInstanceArray(objs: any): Instance[];
   inspect(): string;
 }
 
@@ -37,7 +37,7 @@ export interface MultiAssociationAccessors {
 }
 
 /** Foreign Key Options */
-export interface ForeignKeyOptions extends ColumnOptions {
+export interface ForeignKeyOptions extends ColumnOptions<any> {
 
   /** Attribute name for the relation */
   name?: string;
