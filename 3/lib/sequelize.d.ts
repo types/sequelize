@@ -1,4 +1,11 @@
 
+import QueryInterface = require('./query-interface');
+import Model = require('./model');
+
+declare namespace Sequelize {
+
+}
+
 /**
  * This is the main class, the entry point to sequelize. To use it, you just need to
  * import sequelize:

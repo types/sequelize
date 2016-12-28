@@ -1,6 +1,4 @@
 
-
-
 declare namespace Instance {
   /**
    * Options used for Instance.increment method
