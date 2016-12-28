@@ -7,7 +7,20 @@ import {DataType, DataTypes as LibDataTypes} from './lib/data-types';
 import Utils = require('./lib/utils');
 import {Validator} from './lib/utils/validator-extras';
 
-declare module sequelize {
+import {
+  Association,
+  HasOne,
+  HasOneOptions,
+  BelongsTo,
+  BelongsToOptions,
+  HasMany,
+  HasManyOptions,
+  BelongsToMany,
+  BelongsToManyOptions
+} from './lib/associations/index';
+export * from './lib/associations/index';
+
+declare namespace Sequelize {
 
   export type Promise<T> = SequelizePromise<T>;
   export type DataTypes = LibDataTypes;
@@ -58,1704 +71,6 @@ declare module sequelize {
      * @param options See above for possible options
      */
     new (uri: string, options?: Options): Connection;
-  }
-
-  //
-  //  Associations
-  // ~~~~~~~~~~~~~~
-  //
-  //  https://github.com/sequelize/sequelize/tree/v3.4.1/lib/associations
-  //
-
-  /**
-   * The options for the getAssociation mixin of the belongsTo association.
-   * @see BelongsToGetAssociationMixin
-   */
-  export interface BelongsToGetAssociationMixinOptions {
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-  }
-
-  /**
-   * The getAssociation mixin applied to models with belongsTo.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsTo(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttrib>, UserAttrib {
-   *    getRole: Sequelize.BelongsToGetAssociationMixin<RoleInstance>;
-   *    // setRole...
-   *    // createRole...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
-   * @see Instance
-   */
-  export interface BelongsToGetAssociationMixin<TInstance> {
-    /**
-     * Get the associated instance.
-     * @param options The options to use when getting the association.
-     */
-    (options?: BelongsToGetAssociationMixinOptions): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the setAssociation mixin of the belongsTo association.
-   * @see BelongsToSetAssociationMixin
-   */
-  export interface BelongsToSetAssociationMixinOptions {
-    /**
-     * Skip saving this after setting the foreign key if false.
-     */
-    save?: boolean;
-  }
-
-  /**
-   * The setAssociation mixin applied to models with belongsTo.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsTo(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRole...
-   *    setRole: Sequelize.BelongsToSetAssociationMixin<RoleInstance, RoleId>;
-   *    // createRole...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
-   * @see Instance
-   */
-  export interface BelongsToSetAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Set the associated instance.
-     * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
-     * @param options the options passed to `this.save`.
-     */
-    (
-      newAssociation?: TInstance | TInstancePrimaryKey,
-      options?: BelongsToSetAssociationMixinOptions | InstanceSaveOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the createAssociation mixin of the belongsTo association.
-   * @see BelongsToCreateAssociationMixin
-   */
-  export interface BelongsToCreateAssociationMixinOptions { }
-
-  /**
-   * The createAssociation mixin applied to models with belongsTo.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsTo(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRole...
-   *    // setRole...
-   *    createRole: Sequelize.BelongsToCreateAssociationMixin<RoleAttributes>;
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
-   * @see Instance
-   */
-  export interface BelongsToCreateAssociationMixin<TAttributes, TInstance> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options The options passed to `target.create` and `setAssociation`.
-     */
-    (
-      values?: TAttributes,
-      options?: BelongsToCreateAssociationMixinOptions | CreateOptions | BelongsToSetAssociationMixinOptions
-    ): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the getAssociation mixin of the hasOne association.
-   * @see HasOneGetAssociationMixin
-   */
-  export interface HasOneGetAssociationMixinOptions {
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-  }
-
-  /**
-   * The getAssociation mixin applied to models with hasOne.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasOne(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttrib>, UserAttrib {
-   *    getRole: Sequelize.HasOneGetAssociationMixin<RoleInstance>;
-   *    // setRole...
-   *    // createRole...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
-   * @see Instance
-   */
-  export interface HasOneGetAssociationMixin<TInstance> {
-    /**
-     * Get the associated instance.
-     * @param options The options to use when getting the association.
-     */
-    (options?: HasOneGetAssociationMixinOptions): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the setAssociation mixin of the hasOne association.
-   * @see HasOneSetAssociationMixin
-   */
-  export interface HasOneSetAssociationMixinOptions {
-    /**
-     * Skip saving this after setting the foreign key if false.
-     */
-    save?: boolean;
-  }
-
-  /**
-   * The setAssociation mixin applied to models with hasOne.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasOne(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRole...
-   *    setRole: Sequelize.HasOneSetAssociationMixin<RoleInstance, RoleId>;
-   *    // createRole...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
-   * @see Instance
-   */
-  export interface HasOneSetAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Set the associated instance.
-     * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
-     * @param options The options passed to `getAssocation` and `target.save`.
-     */
-    (
-      newAssociation?: TInstance | TInstancePrimaryKey,
-      options?: HasOneSetAssociationMixinOptions | HasOneGetAssociationMixinOptions | InstanceSaveOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the createAssociation mixin of the hasOne association.
-   * @see HasOneCreateAssociationMixin
-   */
-  export interface HasOneCreateAssociationMixinOptions { }
-
-  /**
-   * The createAssociation mixin applied to models with hasOne.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasOne(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRole...
-   *    // setRole...
-   *    createRole: Sequelize.HasOneCreateAssociationMixin<RoleAttributes>;
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-one/
-   * @see Instance
-   */
-  export interface HasOneCreateAssociationMixin<TAttributes, TInstance> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options The options passed to `target.create` and `setAssociation`.
-     */
-    (
-      values?: TAttributes,
-      options?: HasOneCreateAssociationMixinOptions | HasOneSetAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the getAssociations mixin of the hasMany association.
-   * @see HasManyGetAssociationsMixin
-   */
-  export interface HasManyGetAssociationsMixinOptions {
-
-    /**
-     * An optional where clause to limit the associated models.
-     */
-    where?: WhereOptions;
-
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The getAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    getRoles: Sequelize.HasManyGetAssociationsMixin<RoleInstance>;
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyGetAssociationsMixin<TInstance> {
-    /**
-     * Get everything currently associated with this, using an optional where clause.
-     * @param options The options to use when getting the associations.
-     */
-    (options?: HasManyGetAssociationsMixinOptions): SequelizePromise<TInstance[]>
-  }
-
-  /**
-   * The options for the setAssociations mixin of the hasMany association.
-   * @see HasManySetAssociationsMixin
-   */
-  export interface HasManySetAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The setAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    setRoles: Sequelize.HasManySetAssociationsMixin<RoleInstance, RoleId>;
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManySetAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Set the associated models by passing an array of instances or their primary keys.
-     * Everything that it not in the passed array will be un-associated.
-     * @param newAssociations An array of instances or primary key of instances to associate with this. Pass null or undefined to remove all associations.
-     * @param options The options passed to `target.findAll` and `update`.
-     */
-    (
-      newAssociations?: Array<TInstance | TInstancePrimaryKey>,
-      options?: HasManySetAssociationsMixinOptions | FindOptions | InstanceUpdateOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the addAssociations mixin of the hasMany association.
-   * @see HasManyAddAssociationsMixin
-   */
-  export interface HasManyAddAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The addAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    addRoles: Sequelize.HasManyAddAssociationsMixin<RoleInstance, RoleId>;
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyAddAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Associate several instances with this.
-     * @param newAssociations An array of instances or primary key of instances to associate with this.
-     * @param options The options passed to `target.update`.
-     */
-    (
-      newAssociations?: Array<TInstance | TInstancePrimaryKey>,
-      options?: HasManyAddAssociationsMixinOptions | InstanceUpdateOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the addAssociation mixin of the hasMany association.
-   * @see HasManyAddAssociationMixin
-   */
-  export interface HasManyAddAssociationMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-  }
-
-  /**
-   * The addAssociation mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    addRole: Sequelize.HasManyAddAssociationMixin<RoleInstance, RoleId>;
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyAddAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Associate an instance with this.
-     * @param newAssociation An instance or the primary key of an instance to associate with this.
-     * @param options The options passed to `target.update`.
-     */
-    (
-      newAssociation?: TInstance | TInstancePrimaryKey,
-      options?: HasManyAddAssociationMixinOptions | InstanceUpdateOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the createAssociation mixin of the hasMany association.
-   * @see HasManyCreateAssociationMixin
-   */
-  export interface HasManyCreateAssociationMixinOptions { }
-
-  /**
-   * The createAssociation mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    createRole: Sequelize.HasManyCreateAssociationMixin<RoleAttributes>;
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyCreateAssociationMixin<TAttributes, TInstance> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options The options to use when creating the association.
-     */
-    (
-      values?: TAttributes,
-      options?: HasManyCreateAssociationMixinOptions | CreateOptions
-    ): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the removeAssociation mixin of the hasMany association.
-   * @see HasManyRemoveAssociationMixin
-   */
-  export interface HasManyRemoveAssociationMixinOptions { }
-
-  /**
-   * The removeAssociation mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    removeRole: Sequelize.HasManyRemoveAssociationMixin<RoleInstance, RoleId>;
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyRemoveAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Un-associate the instance.
-     * @param oldAssociated The instance or the primary key of the instance to un-associate.
-     * @param options The options passed to `target.update`.
-     */
-    (
-      oldAssociated?: TInstance | TInstancePrimaryKey,
-      options?: HasManyRemoveAssociationMixinOptions | InstanceUpdateOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the removeAssociations mixin of the hasMany association.
-   * @see HasManyRemoveAssociationsMixin
-   */
-  export interface HasManyRemoveAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The removeAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    removeRoles: Sequelize.HasManyRemoveAssociationsMixin<RoleInstance, RoleId>;
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyRemoveAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Un-associate several instances.
-     * @param oldAssociated An array of instances or primary key of instances to un-associate.
-     * @param options The options passed to `target.update`.
-     */
-    (
-      oldAssociateds?: Array<TInstance | TInstancePrimaryKey>,
-      options?: HasManyRemoveAssociationsMixinOptions | InstanceUpdateOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the hasAssociation mixin of the hasMany association.
-   * @see HasManyHasAssociationMixin
-   */
-  export interface HasManyHasAssociationMixinOptions { }
-
-  /**
-   * The hasAssociation mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    hasRole: Sequelize.HasManyHasAssociationMixin<RoleInstance, RoleId>;
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyHasAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Check if an instance is associated with this.
-     * @param target The instance or the primary key of the instance to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (
-      target: TInstance | TInstancePrimaryKey,
-      options?: HasManyHasAssociationMixinOptions | HasManyGetAssociationsMixinOptions
-    ): SequelizePromise<boolean>
-  }
-
-  /**
-   * The options for the hasAssociations mixin of the hasMany association.
-   * @see HasManyHasAssociationsMixin
-   */
-  export interface HasManyHasAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The removeAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles
-   *    // hasRole...
-   *    hasRoles: Sequelize.HasManyHasAssociationsMixin<RoleInstance, RoleId>;
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyHasAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Check if all instances are associated with this.
-     * @param targets An array of instances or primary key of instances to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (
-      targets: Array<TInstance | TInstancePrimaryKey>,
-      options?: HasManyHasAssociationsMixinOptions | HasManyGetAssociationsMixinOptions
-    ): SequelizePromise<boolean>
-  }
-
-  /**
-   * The options for the countAssociations mixin of the hasMany association.
-   * @see HasManyCountAssociationsMixin
-   */
-  export interface HasManyCountAssociationsMixinOptions {
-
-    /**
-     * An optional where clause to limit the associated models.
-     */
-    where?: WhereOptions;
-
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The countAssociations mixin applied to models with hasMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.hasMany(Role);
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    countRoles: Sequelize.HasManyCountAssociationsMixin;
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
-   * @see Instance
-   */
-  export interface HasManyCountAssociationsMixin {
-    /**
-     * Count everything currently associated with this, using an optional where clause.
-     * @param options The options to use when counting the associations.
-     */
-    (options?: HasManyCountAssociationsMixinOptions): SequelizePromise<number>
-  }
-
-  /**
-   * The options for the getAssociations mixin of the belongsToMany association.
-   * @see BelongsToManyGetAssociationsMixin
-   */
-  export interface BelongsToManyGetAssociationsMixinOptions {
-
-    /**
-     * An optional where clause to limit the associated models.
-     */
-    where?: WhereOptions;
-
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The getAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    getRoles: Sequelize.BelongsToManyGetAssociationsMixin<RoleInstance>;
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyGetAssociationsMixin<TInstance> {
-    /**
-     * Get everything currently associated with this, using an optional where clause.
-     * @param options The options to use when getting the associations.
-     */
-    (options?: BelongsToManyGetAssociationsMixinOptions): SequelizePromise<TInstance[]>
-  }
-
-  /**
-   * The options for the setAssociations mixin of the belongsToMany association.
-   * @see BelongsToManySetAssociationsMixin
-   */
-  export interface BelongsToManySetAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The setAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    setRoles: Sequelize.BelongsToManySetAssociationsMixin<RoleInstance, RoleId, UserRoleAttributes>;
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManySetAssociationsMixin<TInstance, TInstancePrimaryKey, TJoinTableAttributes> {
-    /**
-     * Set the associated models by passing an array of instances or their primary keys.
-     * Everything that it not in the passed array will be un-associated.
-     * @param newAssociations An array of instances or primary key of instances to associate with this. Pass null or undefined to remove all associations.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (
-      newAssociations?: Array<TInstance | TInstancePrimaryKey>,
-      options?: BelongsToManySetAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the addAssociations mixin of the belongsToMany association.
-   * @see BelongsToManyAddAssociationsMixin
-   */
-  export interface BelongsToManyAddAssociationsMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The addAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    addRoles: Sequelize.BelongsToManyAddAssociationsMixin<RoleInstance, RoleId, UserRoleAttributes>;
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyAddAssociationsMixin<TInstance, TInstancePrimaryKey, TJoinTableAttributes> {
-    /**
-     * Associate several instances with this.
-     * @param newAssociations An array of instances or primary key of instances to associate with this.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (
-      newAssociations?: Array<TInstance | TInstancePrimaryKey>,
-      options?: BelongsToManyAddAssociationsMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the addAssociation mixin of the belongsToMany association.
-   * @see BelongsToManyAddAssociationMixin
-   */
-  export interface BelongsToManyAddAssociationMixinOptions {
-
-    /**
-     * Run validation for the join model.
-     */
-    validate?: boolean;
-  }
-
-  /**
-   * The addAssociation mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    addRole: Sequelize.BelongsToManyAddAssociationMixin<RoleInstance, RoleId, UserRoleAttributes>;
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyAddAssociationMixin<TInstance, TInstancePrimaryKey, TJoinTableAttributes> {
-    /**
-     * Associate an instance with this.
-     * @param newAssociation An instance or the primary key of an instance to associate with this.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (
-      newAssociation?: TInstance | TInstancePrimaryKey,
-      options?: BelongsToManyAddAssociationMixinOptions | FindOptions | BulkCreateOptions | InstanceUpdateOptions | InstanceDestroyOptions | TJoinTableAttributes
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the createAssociation mixin of the belongsToMany association.
-   * @see BelongsToManyCreateAssociationMixin
-   */
-  export interface BelongsToManyCreateAssociationMixinOptions { }
-
-  /**
-   * The createAssociation mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    createRole: Sequelize.BelongsToManyCreateAssociationMixin<RoleAttributes, UserRoleAttributes>;
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyCreateAssociationMixin<TAttributes, TInstance, TJoinTableAttributes> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options Options passed to `create` and `add`. Can also hold additional attributes for the join table.
-     */
-    (
-      values?: TAttributes,
-      options?: BelongsToManyCreateAssociationMixinOptions | CreateOptions | TJoinTableAttributes
-    ): SequelizePromise<TInstance>
-  }
-
-  /**
-   * The options for the removeAssociation mixin of the belongsToMany association.
-   * @see BelongsToManyRemoveAssociationMixin
-   */
-  export interface BelongsToManyRemoveAssociationMixinOptions { }
-
-  /**
-   * The removeAssociation mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    removeRole: Sequelize.BelongsToManyRemoveAssociationMixin<RoleInstance, RoleId>;
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyRemoveAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Un-associate the instance.
-     * @param oldAssociated The instance or the primary key of the instance to un-associate.
-     * @param options The options passed to `through.destroy`.
-     */
-    (
-      oldAssociated?: TInstance | TInstancePrimaryKey,
-      options?: BelongsToManyRemoveAssociationMixinOptions | InstanceDestroyOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the removeAssociations mixin of the belongsToMany association.
-   * @see BelongsToManyRemoveAssociationsMixin
-   */
-  export interface BelongsToManyRemoveAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The removeAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    removeRoles: Sequelize.BelongsToManyRemoveAssociationsMixin<RoleInstance, RoleId>;
-   *    // hasRole...
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyRemoveAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Un-associate several instances.
-     * @param oldAssociated An array of instances or primary key of instances to un-associate.
-     * @param options The options passed to `through.destroy`.
-     */
-    (
-      oldAssociateds?: Array<TInstance | TInstancePrimaryKey>,
-      options?: BelongsToManyRemoveAssociationsMixinOptions | InstanceDestroyOptions
-    ): SequelizePromise<void>
-  }
-
-  /**
-   * The options for the hasAssociation mixin of the belongsToMany association.
-   * @see BelongsToManyHasAssociationMixin
-   */
-  export interface BelongsToManyHasAssociationMixinOptions { }
-
-  /**
-   * The hasAssociation mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    hasRole: Sequelize.BelongsToManyHasAssociationMixin<RoleInstance, RoleId>;
-   *    // hasRoles...
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyHasAssociationMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Check if an instance is associated with this.
-     * @param target The instance or the primary key of the instance to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (
-      target: TInstance | TInstancePrimaryKey,
-      options?: BelongsToManyHasAssociationMixinOptions | BelongsToManyGetAssociationsMixinOptions
-    ): SequelizePromise<boolean>
-  }
-
-  /**
-   * The options for the hasAssociations mixin of the belongsToMany association.
-   * @see BelongsToManyHasAssociationsMixin
-   */
-  export interface BelongsToManyHasAssociationsMixinOptions {
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The removeAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles
-   *    // hasRole...
-   *    hasRoles: Sequelize.BelongsToManyHasAssociationsMixin<RoleInstance, RoleId>;
-   *    // countRoles...
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyHasAssociationsMixin<TInstance, TInstancePrimaryKey> {
-    /**
-     * Check if all instances are associated with this.
-     * @param targets An array of instances or primary key of instances to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (
-      targets: Array<TInstance | TInstancePrimaryKey>,
-      options?: BelongsToManyHasAssociationsMixinOptions | BelongsToManyGetAssociationsMixinOptions
-    ): SequelizePromise<boolean>
-  }
-
-  /**
-   * The options for the countAssociations mixin of the belongsToMany association.
-   * @see BelongsToManyCountAssociationsMixin
-   */
-  export interface BelongsToManyCountAssociationsMixinOptions {
-
-    /**
-     * An optional where clause to limit the associated models.
-     */
-    where?: WhereOptions;
-
-    /**
-     * Apply a scope on the related model, or remove its default scope by passing false.
-     */
-    scope?: string | boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-  }
-
-  /**
-   * The countAssociations mixin applied to models with belongsToMany.
-   * An example of usage is as follows:
-   *
-   * ```js
-   *
-   * User.belongsToMany(Role, { through: UserRole });
-   *
-   * interface UserInstance extends Sequelize.Instance<UserInstance, UserAttributes>, UserAttributes {
-   *    // getRoles...
-   *    // setRoles...
-   *    // addRoles...
-   *    // addRole...
-   *    // createRole...
-   *    // removeRole...
-   *    // removeRoles...
-   *    // hasRole...
-   *    // hasRoles...
-   *    countRoles: Sequelize.BelongsToManyCountAssociationsMixin;
-   * }
-   * ```
-   *
-   * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
-   * @see Instance
-   */
-  export interface BelongsToManyCountAssociationsMixin {
-    /**
-     * Count everything currently associated with this, using an optional where clause.
-     * @param options The options to use when counting the associations.
-     */
-    (options?: BelongsToManyCountAssociationsMixinOptions): SequelizePromise<number>
-  }
-
-  /**
-   * Foreign Key Options
-   *
-   * @see AssociationOptions
-   */
-  export interface AssociationForeignKeyOptions extends ColumnOptions {
-
-    /**
-     *  Attribute name for the relation
-     */
-    name?: string;
-
-  }
-
-  /**
-   * Options provided when associating models
-   *
-   * @see Association class
-   */
-  export interface AssociationOptions {
-
-    /**
-     * Set to true to run before-/afterDestroy hooks when an associated model is deleted because of a cascade.
-     * For example if `User.hasOne(Profile, {onDelete: 'cascade', hooks:true})`, the before-/afterDestroy hooks
-     * for profile will be called when a user is deleted. Otherwise the profile will be deleted without invoking
-     * any hooks.
-     *
-     * Defaults to false
-     */
-    hooks?: boolean;
-
-    /**
-     * The alias of this model, in singular form. See also the `name` option passed to `sequelize.define`. If
-     * you create multiple associations between the same tables, you should provide an alias to be able to
-     * distinguish between them. If you provide an alias when creating the assocition, you should provide the
-     * same alias when eager loading and when getting assocated models. Defaults to the singularized name of
-     * target
-     */
-    as?: string | { singular: string, plural: string };
-
-    /**
-     * The name of the foreign key in the target table or an object representing the type definition for the
-     * foreign column (see `Sequelize.define` for syntax). When using an object, you can add a `name` property
-     * to set the name of the column. Defaults to the name of source + primary key of source
-     */
-    foreignKey?: string | AssociationForeignKeyOptions;
-
-    /**
-     * What happens when delete occurs.
-     *
-     * Cascade if this is a n:m, and set null if it is a 1:m
-     *
-     * Defaults to 'SET NULL' or 'CASCADE'
-     */
-    onDelete?: string;
-
-    /**
-     * What happens when update occurs
-     *
-     * Defaults to 'CASCADE'
-     */
-    onUpdate?: string;
-
-    /**
-     * Should on update and on delete constraints be enabled on the foreign key.
-     */
-    constraints?: boolean;
-    foreignKeyConstraint?: boolean;
-
-  }
-
-  /**
-   * Options for Association Scope
-   *
-   * @see AssociationOptionsManyToMany
-   */
-  export interface AssociationScope {
-
-    /**
-     * The name of the column that will be used for the associated scope and it's value
-     */
-    [scopeName: string]: any;
-
-  }
-
-  /**
-   * Options provided for many-to-many relationships
-   *
-   * @see AssociationOptionsHasMany
-   * @see AssociationOptionsBelongsToMany
-   */
-  export interface AssociationOptionsManyToMany extends AssociationOptions {
-
-    /**
-     * A key/value set that will be used for association create and find defaults on the target.
-     * (sqlite not supported for N:M)
-     */
-    scope?: AssociationScope;
-
-  }
-
-  /**
-   * Options provided when associating models with hasOne relationship
-   *
-   * @see Association class hasOne method
-   */
-  export interface AssociationOptionsHasOne extends AssociationOptions {
-
-    /**
-     * A string or a data type to represent the identifier in the table
-     */
-    keyType?: DataType;
-
-  }
-
-  /**
-   * Options provided when associating models with belongsTo relationship
-   *
-   * @see Association class belongsTo method
-   */
-  export interface AssociationOptionsBelongsTo extends AssociationOptions {
-
-    /**
-     * The name of the field to use as the key for the association in the target table. Defaults to the primary
-     * key of the target table
-     */
-    targetKey?: string;
-
-    /**
-     * A string or a data type to represent the identifier in the table
-     */
-    keyType?: DataType;
-
-  }
-
-  /**
-   * Options provided when associating models with hasMany relationship
-   *
-   * @see Association class hasMany method
-   */
-  export interface AssociationOptionsHasMany extends AssociationOptionsManyToMany {
-
-    /**
-     * A string or a data type to represent the identifier in the table
-     */
-    keyType?: DataType;
-
-  }
-
-  /**
-   * Options provided when associating models with belongsToMany relationship
-   *
-   * @see Association class belongsToMany method
-   */
-  export interface AssociationOptionsBelongsToMany extends AssociationOptionsManyToMany {
-
-    /**
-     * The name of the table that is used to join source and target in n:m associations. Can also be a
-     * sequelize
-     * model if you want to define the junction table yourself and add extra attributes to it.
-     *
-     * In 3.4.1 version of Sequelize, hasMany's use of through gives an error, and on the other hand through
-     * option for belongsToMany has been made required.
-     *
-     * @see https://github.com/sequelize/sequelize/blob/v3.4.1/lib/associations/has-many.js
-     * @see https://github.com/sequelize/sequelize/blob/v3.4.1/lib/associations/belongs-to-many.js
-     */
-    through: Model<any, any> | string | ThroughOptions;
-
-    /**
-     * The name of the foreign key in the join table (representing the target model) or an object representing
-     * the type definition for the other column (see `Sequelize.define` for syntax). When using an object, you
-     * can add a `name` property to set the name of the colum. Defaults to the name of target + primary key of
-     * target
-     */
-    otherKey?: string | AssociationForeignKeyOptions;
-
-    /**
-     * Should the join model have timestamps
-     */
-    timestamps?: boolean;
-  }
-
-  /**
-   * Used for a association table in n:m associations.
-   *
-   * @see AssociationOptionsBelongsToMany
-   */
-  export interface ThroughOptions {
-
-    /**
-     * The model used to join both sides of the N:M association.
-     */
-    model: Model<any, any>;
-
-    /**
-     * A key/value set that will be used for association create and find defaults on the through model.
-     * (Remember to add the attributes to the through model)
-     */
-    scope?: AssociationScope;
-
-    /**
-     * If true a unique key will be generated from the foreign keys used (might want to turn this off and create
-     * specific unique keys when using scopes)
-     *
-     * Defaults to true
-     */
-    unique?: boolean;
-
-  }
-
-  export interface Association {
-    source: Model<any, any>;
-    target: Model<any, any>;
-    identifier: string;
-    isSingleAssociation: boolean;
-    isMultiAssociation: boolean;
-    foreignKey: string;
-  }
-
-  export interface SingleAssociationAccessors {
-    get: string;
-    set: string;
-    create: string;
-  }
-
-  export interface MultiAssociationAccessors {
-    get: string;
-    set: string;
-    addMultiple: string;
-    add: string;
-    create: string;
-    remove: string;
-    removeMultiple: string;
-    hasSingle: string;
-    hasAll: string;
-    count: string;
-  }
-
-  export interface BelongsToMany extends Association {
-    otherKey: string;
-  }
-  export interface BelongsTo extends Association {}
-  export interface HasMany extends Association {}
-  export interface HasOne extends Association {}
-
-  /**
-   * Creating assocations in sequelize is done by calling one of the belongsTo / hasOne / hasMany functions on a
-   * model (the source), and providing another model as the first argument to the function (the target).
-   *
-   * * hasOne - adds a foreign key to target
-   * * belongsTo - add a foreign key to source
-   * * hasMany - adds a foreign key to target, unless you also specify that target hasMany source, in which case
-   * a
-   * junction table is created with sourceId and targetId
-   *
-   * Creating an association will add a foreign key constraint to the attributes. All associations use `CASCADE`
-   * on update and `SET NULL` on delete, except for n:m, which also uses `CASCADE` on delete.
-   *
-   * When creating associations, you can provide an alias, via the `as` option. This is useful if the same model
-   * is associated twice, or you want your association to be called something other than the name of the target
-   * model.
-   *
-   * As an example, consider the case where users have many pictures, one of which is their profile picture. All
-   * pictures have a `userId`, but in addition the user model also has a `profilePictureId`, to be able to easily
-   * load the user's profile picture.
-   *
-   * ```js
-   * User.hasMany(Picture)
-   * User.belongsTo(Picture, { as: 'ProfilePicture', constraints: false })
-   *
-   * user.getPictures() // gets you all pictures
-   * user.getProfilePicture() // gets you only the profile picture
-   *
-   * User.findAll({
-   *   where: ...,
-   *   include: [
-   *     { model: Picture }, // load all pictures
-   *     { model: Picture, as: 'ProfilePicture' }, // load the profile picture. Notice that the spelling must be
-   * the exact same as the one in the association
-   *   ]
-   * })
-   * ```
-   * To get full control over the foreign key column added by sequelize, you can use the `foreignKey` option. It
-   * can either be a string, that specifies the name, or and object type definition,
-   * equivalent to those passed to `sequelize.define`.
-   *
-   * ```js
-   * User.hasMany(Picture, { foreignKey: 'uid' })
-   * ```
-   *
-   * The foreign key column in Picture will now be called `uid` instead of the default `userId`.
-   *
-   * ```js
-   * User.hasMany(Picture, {
-   *   foreignKey: {
-   *     name: 'uid',
-   *     allowNull: false
-   *   }
-   * })
-   * ```
-   *
-   * This specifies that the `uid` column can not be null. In most cases this will already be covered by the
-   * foreign key costraints, which sequelize creates automatically, but can be useful in case where the foreign
-   * keys are disabled, e.g. due to circular references (see `constraints: false` below).
-   *
-   * When fetching associated models, you can limit your query to only load some models. These queries are
-   * written
-   * in the same way as queries to `find`/`findAll`. To only get pictures in JPG, you can do:
-   *
-   * ```js
-   * user.getPictures({
-   *   where: {
-   *     format: 'jpg'
-   *   }
-   * })
-   * ```
-   *
-   * There are several ways to update and add new assoications. Continuing with our example of users and
-   * pictures:
-   * ```js
-   * user.addPicture(p) // Add a single picture
-   * user.setPictures([p1, p2]) // Associate user with ONLY these two picture, all other associations will be
-   * deleted user.addPictures([p1, p2]) // Associate user with these two pictures, but don't touch any current
-   * associations
-   * ```
-   *
-   * You don't have to pass in a complete object to the association functions, if your associated model has a
-   * single primary key:
-   *
-   * ```js
-   * user.addPicture(req.query.pid) // Here pid is just an integer, representing the primary key of the picture
-   * ```
-   *
-   * In the example above we have specified that a user belongs to his profile picture. Conceptually, this might
-   * not make sense, but since we want to add the foreign key to the user model this is the way to do it.
-   *
-   * Note how we also specified `constraints: false` for profile picture. This is because we add a foreign key
-   * from user to picture (profilePictureId), and from picture to user (userId). If we were to add foreign keys
-   * to both, it would create a cyclic dependency, and sequelize would not know which table to create first,
-   * since user depends on picture, and picture depends on user. These kinds of problems are detected by
-   * sequelize before the models are synced to the database, and you will get an error along the lines of `Error:
-   * Cyclic dependency found. 'users' is dependent of itself`. If you encounter this, you should either disable
-   * some constraints, or rethink your associations completely.
-   *
-   * @see Sequelize.Model
-   */
-  export interface Associations {
-
-    /**
-     * Creates an association between this (the source) and the provided target. The foreign key is added
-     * on the target.
-     *
-     * Example: `User.hasOne(Profile)`. This will add userId to the profile table.
-     *
-     * @param target The model that will be associated with hasOne relationship
-     * @param options Options for the association
-     */
-    hasOne(target: Model<any, any>, options?: AssociationOptionsHasOne): HasOne;
-
-    /**
-     * Creates an association between this (the source) and the provided target. The foreign key is added on the
-     * source.
-     *
-     * Example: `Profile.belongsTo(User)`. This will add userId to the profile table.
-     *
-     * @param target The model that will be associated with hasOne relationship
-     * @param options Options for the association
-     */
-    belongsTo(target: Model<any, any>, options?: AssociationOptionsBelongsTo): BelongsTo;
-
-    /**
-     * Create an association that is either 1:m or n:m.
-     *
-     * ```js
-     * // Create a 1:m association between user and project
-     * User.hasMany(Project)
-     * ```
-     * ```js
-     * // Create a n:m association between user and project
-     * User.hasMany(Project)
-     * Project.hasMany(User)
-     * ```
-     * By default, the name of the join table will be source+target, so in this case projectsusers. This can be
-     * overridden by providing either a string or a Model as `through` in the options. If you use a through
-     * model with custom attributes, these attributes can be set when adding / setting new associations in two
-     * ways. Consider users and projects from before with a join table that stores whether the project has been
-     * started yet:
-     * ```js
-     * var UserProjects = sequelize.define('userprojects', {
-     *   started: Sequelize.BOOLEAN
-     * })
-     * User.hasMany(Project, { through: UserProjects })
-     * Project.hasMany(User, { through: UserProjects })
-     * ```
-     * ```js
-     * jan.addProject(homework, { started: false }) // The homework project is not started yet
-     * jan.setProjects([makedinner, doshopping], { started: true}) // Both shopping and dinner have been
-     * started
-     * ```
-     *
-     * If you want to set several target instances, but with different attributes you have to set the
-     * attributes on the instance, using a property with the name of the through model:
-     *
-     * ```js
-     * p1.userprojects {
-     *   started: true
-     * }
-     * user.setProjects([p1, p2], {started: false}) // The default value is false, but p1 overrides that.
-     * ```
-     *
-     * Similarily, when fetching through a join table with custom attributes, these attributes will be
-     * available as an object with the name of the through model.
-     * ```js
-     * user.getProjects().then(function (projects) {
-     *   var p1 = projects[0]
-     *   p1.userprojects.started // Is this project started yet?
-     * })
-     * ```
-     *
-     * @param target The model that will be associated with hasOne relationship
-     * @param options Options for the association
-     */
-    hasMany(target: Model<any, any>, options?: AssociationOptionsHasMany): HasMany;
-
-    /**
-     * Create an N:M association with a join table
-     *
-     * ```js
-     * User.belongsToMany(Project)
-     * Project.belongsToMany(User)
-     * ```
-     * By default, the name of the join table will be source+target, so in this case projectsusers. This can be
-     * overridden by providing either a string or a Model as `through` in the options.
-     *
-     * If you use a through model with custom attributes, these attributes can be set when adding / setting new
-     * associations in two ways. Consider users and projects from before with a join table that stores whether
-     * the project has been started yet:
-     * ```js
-     * var UserProjects = sequelize.define('userprojects', {
-     *   started: Sequelize.BOOLEAN
-     * })
-     * User.belongsToMany(Project, { through: UserProjects })
-     * Project.belongsToMany(User, { through: UserProjects })
-     * ```
-     * ```js
-     * jan.addProject(homework, { started: false }) // The homework project is not started yet
-     * jan.setProjects([makedinner, doshopping], { started: true}) // Both shopping and dinner has been started
-     * ```
-     *
-     * If you want to set several target instances, but with different attributes you have to set the
-     * attributes on the instance, using a property with the name of the through model:
-     *
-     * ```js
-     * p1.userprojects {
-     *   started: true
-     * }
-     * user.setProjects([p1, p2], {started: false}) // The default value is false, but p1 overrides that.
-     * ```
-     *
-     * Similarily, when fetching through a join table with custom attributes, these attributes will be
-     * available as an object with the name of the through model.
-     * ```js
-     * user.getProjects().then(function (projects) {
-     *   var p1 = projects[0]
-     *   p1.userprojects.started // Is this project started yet?
-     * })
-     * ```
-     *
-     * @param target The model that will be associated with hasOne relationship
-     * @param options Options for the association
-     *
-     */
-    belongsToMany(target: Model<any, any>, options: AssociationOptionsBelongsToMany): BelongsToMany;
-
   }
 
   //
@@ -2082,376 +397,35 @@ declare module sequelize {
    * beforeDestroy, beforeUpdate, afterCreate, afterDestroy, afterUpdate, afterBulkCreate, afterBulkDestroy and
    * afterBulkUpdate.
    */
-  export interface HooksDefineOptions<TInstance> {
+  export interface HooksOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
-    beforeValidate?: (instance: TInstance, options: Object, fn?: Function) => any;
-    afterValidate?: (instance: TInstance, options: Object, fn?: Function) => any;
-    beforeCreate?: (attributes: TInstance, options: CreateOptions, fn?: Function) => any;
-    afterCreate?: (attributes: TInstance, options: CreateOptions, fn?: Function) => any;
-    beforeDestroy?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
-    beforeDelete?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
-    afterDestroy?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
-    afterDelete?: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => any;
-    beforeUpdate?: (instance: TInstance, options: InstanceUpdateOptions, fn?: Function) => any;
-    afterUpdate?: (instance: TInstance, options: InstanceUpdateOptions, fn?: Function) => any;
-    beforeBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => any;
-    afterBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => any;
-    beforeBulkDestroy?: (options: DestroyOptions, fn?: Function) => any;
-    beforeBulkDelete?: (options: DestroyOptions, fn?: Function) => any;
-    afterBulkDestroy?: (options: DestroyOptions, fn?: Function) => any;
-    afterBulkDelete?: (options: DestroyOptions, fn?: Function) => any;
-    beforeBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
-    afterBulkUpdate?: (options: UpdateOptions, fn?: Function) => any;
-    beforeFind?: (options: FindOptions, fn?: Function) => any;
-    beforeCount?: (options: CountOptions, fn?: Function) => any;
-    beforeFindAfterExpandIncludeAll?: (options: FindOptions, fn?: Function) => any;
-    beforeFindAfterOptions?: (options: FindOptions, fn?: Function) => any;
-    afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
-      fn?: Function) => any;
+    beforeValidate?: (instance: TInstance, options: Object) => any;
+    afterValidate?: (instance: TInstance, options: Object) => any;
+    beforeCreate?: (attributes: TInstance, options: CreateOptions<TModel, TInstance>) => any;
+    afterCreate?: (attributes: TInstance, options: CreateOptions<TModel, TInstance>) => any;
+    beforeDestroy?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+    beforeDelete?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+    afterDestroy?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+    afterDelete?: (instance: TInstance, options: InstanceDestroyOptions) => any;
+    beforeUpdate?: (instance: TInstance, options: InstanceUpdateOptions<TInstance>) => any;
+    afterUpdate?: (instance: TInstance, options: InstanceUpdateOptions<TInstance>) => any;
+    beforeBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions<TInstance>) => any;
+    afterBulkCreate?: (instances: Array<TInstance>, options: BulkCreateOptions<TInstance>) => any;
+    beforeBulkDestroy?: (options: DestroyOptions<TInstance>) => any;
+    beforeBulkDelete?: (options: DestroyOptions<TInstance>) => any;
+    afterBulkDestroy?: (options: DestroyOptions<TInstance>) => any;
+    afterBulkDelete?: (options: DestroyOptions<TInstance>) => any;
+    beforeBulkUpdate?: (options: UpdateOptions<TInstance>) => any;
+    afterBulkUpdate?: (options: UpdateOptions<TInstance>) => any;
+    beforeFind?: (options: FindOptions<TModel, TInstance>) => any;
+    beforeCount?: (options: CountOptions<TModel, TInstance>) => any;
+    beforeFindAfterExpandIncludeAll?: (options: FindOptions<TModel, TInstance>) => any;
+    beforeFindAfterOptions?: (options: FindOptions<TModel, TInstance>) => any;
+    afterFind?: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions<TModel, TInstance>) => any;
     beforeSync?: (options: SyncOptions) => any;
     afterSync?: (options: SyncOptions) => any;
     beforeBulkSync?: (options: SyncOptions) => any;
     afterBulkSync?: (options: SyncOptions) => any;
-  }
-
-  /**
-   * Hooks are function that are called before and after  (bulk-) creation/updating/deletion and validation.
-   * Hooks can be added to you models in three ways:
-   *
-   * 1. By specifying them as options in `sequelize.define`
-   * 2. By calling `hook()` with a string and your hook handler function
-   * 3. By calling the function with the same name as the hook you want
-   *
-   * ```js
-   * // Method 1
-   * sequelize.define(name, { attributes }, {
-   *   hooks: {
-   *     beforeBulkCreate: function () {
-   *       // can be a single function
-   *     },
-   *     beforeValidate: [
-   *       function () {},
-   *       function() {} // Or an array of several
-   *     ]
-   *   }
-   * })
-   *
-   * // Method 2
-   * Model.hook('afterDestroy', function () {})
-   *
-   * // Method 3
-   * Model.afterBulkUpdate(function () {})
-   * ```
-   *
-   * @see Sequelize.define
-   */
-  export interface Hooks<TInstance> {
-
-    /**
-     * Add a hook to the model
-     *
-     * @param hookType
-     * @param name Provide a name for the hook function. It can be used to remove the hook later or to order
-     *     hooks based on some sort of priority system in the future.
-     * @param fn The hook function
-     *
-     * @alias hook
-     */
-    addHook(hookType: string, name: string, fn: Function): Hooks<TInstance>;
-    addHook(hookType: string, fn: Function): Hooks<TInstance>;
-    hook(hookType: string, name: string, fn: Function): Hooks<TInstance>;
-    hook(hookType: string, fn: Function): Hooks<TInstance>;
-
-    /**
-     * Remove hook from the model
-     *
-     * @param hookType
-     * @param name
-     */
-    removeHook(hookType: string, name: string): Hooks<TInstance>;
-
-    /**
-     * Check whether the mode has any hooks of this type
-     *
-     * @param hookType
-     *
-     * @alias hasHooks
-     */
-    hasHook(hookType: string): boolean;
-    hasHooks(hookType: string): boolean;
-
-    /**
-     * A hook that is run before validation
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     */
-    beforeValidate(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    beforeValidate(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after validation
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     */
-    afterValidate(name: string,
-      fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-    afterValidate(fn: (instance: TInstance, options: Object, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before creating a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with attributes, options
-     */
-    beforeCreate(name: string,
-      fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
-    beforeCreate(fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after creating a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with attributes, options
-     */
-    afterCreate(name: string,
-      fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
-    afterCreate(fn: (attributes: TInstance, options: CreateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before destroying a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     * @alias beforeDelete
-     */
-    beforeDestroy(name: string,
-      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    beforeDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    beforeDelete(name: string,
-      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    beforeDelete(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after destroying a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     * @alias afterDelete
-     */
-    afterDestroy(name: string,
-      fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    afterDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    afterDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-    afterDelete(fn: (instance: TInstance, options: InstanceDestroyOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before updating a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     */
-    beforeUpdate(name: string,
-      fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
-    beforeUpdate(fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after updating a single instance
-     *
-     * @param name
-     * @param fn A callback function that is called with instance, options
-     */
-    afterUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
-    afterUpdate(fn: (instance: TInstance, options: UpdateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before creating instances in bulk
-     *
-     * @param name
-     * @param fn A callback function that is called with instances, options
-     */
-    beforeBulkCreate(name: string,
-      fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
-    beforeBulkCreate(fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after creating instances in bulk
-     *
-     * @param name
-     * @param fn A callback function that is called with instances, options
-     * @name afterBulkCreate
-     */
-    afterBulkCreate(name: string,
-      fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
-    afterBulkCreate(fn: (instances: Array<TInstance>, options: BulkCreateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before destroying instances in bulk
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     *
-     * @alias beforeBulkDelete
-     */
-    beforeBulkDestroy(name: string, fn: (options: BulkCreateOptions, fn?: Function) => void): void;
-    beforeBulkDestroy(fn: (options: BulkCreateOptions, fn?: Function) => void): void;
-    beforeBulkDelete(name: string, fn: (options: BulkCreateOptions, fn?: Function) => void): void;
-    beforeBulkDelete(fn: (options: BulkCreateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after destroying instances in bulk
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     *
-     * @alias afterBulkDelete
-     */
-    afterBulkDestroy(name: string, fn: (options: DestroyOptions, fn?: Function) => void): void;
-    afterBulkDestroy(fn: (options: DestroyOptions, fn?: Function) => void): void;
-    afterBulkDelete(name: string, fn: (options: DestroyOptions, fn?: Function) => void): void;
-    afterBulkDelete(fn: (options: DestroyOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after updating instances in bulk
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    beforeBulkUpdate(name: string, fn: (options: UpdateOptions, fn?: Function) => void): void;
-    beforeBulkUpdate(fn: (options: UpdateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after updating instances in bulk
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    afterBulkUpdate(name: string, fn: (options: UpdateOptions, fn?: Function) => void): void;
-    afterBulkUpdate(fn: (options: UpdateOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before a find (select) query
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    beforeFind(name: string, fn: (options: FindOptions, fn?: Function) => void): void;
-    beforeFind(fn: (options: FindOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before a count query
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    beforeCount(name: string, fn: (options: CountOptions, fn?: Function) => void): void;
-    beforeCount(fn: (options: CountOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    beforeFindAfterExpandIncludeAll(name: string,
-      fn: (options: FindOptions, fn?: Function) => void): void;
-    beforeFindAfterExpandIncludeAll(fn: (options: FindOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before a find (select) query, after all option parsing is complete
-     *
-     * @param name
-     * @param fn   A callback function that is called with options
-     */
-    beforeFindAfterOptions(name: string, fn: (options: FindOptions, fn?: Function) => void): void;
-    beforeFindAfterOptions(fn: (options: FindOptions, fn?: Function) => void): void;
-
-    /**
-     * A hook that is run after a find (select) query
-     *
-     * @param name
-     * @param fn   A callback function that is called with instance(s), options
-     */
-    afterFind(name: string,
-      fn: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
-        fn?: Function) => void): void;
-    afterFind(fn: (instancesOrInstance: Array<TInstance> | TInstance, options: FindOptions,
-      fn?: Function) => void): void;
-
-    /**
-     * A hook that is run before a define call
-     *
-     * @param name
-     * @param fn   A callback function that is called with attributes, options
-     */
-    beforeDefine(name: string, fn: (attributes: DefineAttributes, options: DefineOptions<any>) => void): void;
-    beforeDefine(fn: (attributes: DefineAttributes, options: DefineOptions<any>) => void): void;
-
-    /**
-     * A hook that is run after a define call
-     *
-     * @param name
-     * @param fn   A callback function that is called with factory
-     */
-    afterDefine(name: string, fn: (model: Model<TInstance, any>) => void): void;
-    afterDefine(fn: (model: Model<TInstance, any>) => void): void;
-
-    /**
-     * A hook that is run before Sequelize() call
-     *
-     * @param name
-     * @param fn   A callback function that is called with config, options
-     */
-    beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
-    beforeInit(fn: (config: Object, options: Object) => void): void;
-
-    /**
-     * A hook that is run after Sequelize() call
-     *
-     * @param name
-     * @param fn   A callback function that is called with sequelize
-     */
-    afterInit(name: string, fn: (sequelize: Connection) => void): void;
-    afterInit(fn: (sequelize: Connection) => void): void;
-
-    /**
-     * A hook that is run before sequelize.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
-     * @name beforeBulkSync
-     */
-    beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
-    beforeBulkSync(fn: (options: SyncOptions) => any): void;
-
-    /**
-     * A hook that is run after sequelize.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
-     * @name afterBulkSync
-     */
-    afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
-    afterBulkSync(fn: (options: SyncOptions) => any): void;
-
-    /**
-     * A hook that is run before Model.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to Model.sync
-     * @name beforeSync
-     */
-    beforeSync(name: string, fn: (options: SyncOptions) => any): void;
-    beforeSync(fn: (options: SyncOptions) => any): void;
-
-    /**
-     * A hook that is run after Model.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to Model.sync
-     * @name afterSync
-     */
-    afterSync(name: string, fn: (options: SyncOptions) => any): void;
-    afterSync(fn: (options: SyncOptions) => any): void;
-
   }
 
   //
@@ -2464,7 +438,7 @@ declare module sequelize {
   /**
    * Options used for Instance.increment method
    */
-  export interface InstanceIncrementDecrementOptions {
+  export interface IncrementDecrementOptions<TInstance extends Instance> {
 
     /**
      * The number to increment by
@@ -2486,7 +460,7 @@ declare module sequelize {
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
   }
 
@@ -2532,12 +506,12 @@ declare module sequelize {
   /**
    * Options used for Instance.update method
    */
-  export interface InstanceUpdateOptions extends InstanceSaveOptions, InstanceSetOptions {
+  export interface InstanceUpdateOptions<TInstance extends Instance> extends InstanceSaveOptions<TInstance>, InstanceSetOptions {
 
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
   }
 
@@ -2561,13 +535,13 @@ declare module sequelize {
   /**
    * Options used for Instance.save method
    */
-  export interface InstanceSaveOptions {
+  export interface InstanceSaveOptions<TInstance extends Instance> {
 
     /**
      * An optional array of strings, representing database columns. If fields is provided, only those columns
      * will be validated and saved.
      */
-    fields?: Array<string>;
+    fields?: Array<keyof TInstance>;
 
     /**
      * If true, the updatedAt timestamp will not be updated.
@@ -2592,7 +566,6 @@ declare module sequelize {
      * Transaction to run the query in
      */
     transaction?: Transaction;
-
   }
 
   /**
@@ -2616,19 +589,14 @@ declare module sequelize {
    *
    * @see Sequelize.define for more information about getters and setters
    */
-  export interface Instance<TInstance, TAttributes> {
+  export interface Instance {
+
+    Model: ModelStatic<this>;
 
     /**
      * Returns true if this instance has not yet been persisted to the database
      */
     isNewRecord: boolean;
-
-    /**
-     * Returns the Model the instance was created from.
-     *
-     * @see Model
-     */
-    Model: Model<TInstance, TAttributes>;
 
     /**
      * A reference to the sequelize instance
@@ -2638,17 +606,17 @@ declare module sequelize {
     /**
      * Get an object representing the query for this instance, use with `options.where`
      */
-    where(): Object;
+    where(): WhereOptions<this>;
 
     /**
      * Get the value of the underlying data value
      */
-    getDataValue(key: string): any;
+    getDataValue<K extends keyof this>(key: K): this[K];
 
     /**
      * Update the underlying data value
      */
-    setDataValue(key: string, value: any): void;
+    setDataValue<K extends keyof this>(key: K, value: this[K]): void;
 
     /**
      * If no key is given, returns all values of the instance, also invoking virtual getters.
@@ -2658,8 +626,8 @@ declare module sequelize {
      *
      * @param options.plain If set to true, included instances will be returned as plain objects
      */
-    get(options?: { plain?: boolean, clone?: boolean }): TAttributes;
-    get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
+    get(options?: { plain?: boolean, clone?: boolean }): { [K in keyof this]: this[K] };
+    get<K extends keyof this>(key: K, options?: { plain?: boolean, clone?: boolean }): this[K];
 
     /**
      * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -2685,10 +653,10 @@ declare module sequelize {
      * @param options.raw If set to true, field and virtual setters will be ignored
      * @param options.reset Clear all previously set data values
      */
-    set(key: string, value: any, options?: InstanceSetOptions): TInstance;
-    set(keys: Object, options?: InstanceSetOptions): TInstance;
-    setAttributes(key: string, value: any, options?: InstanceSetOptions): TInstance;
-    setAttributes(keys: Object, options?: InstanceSetOptions): TInstance;
+    set<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+    set(keys: Partial<this>, options?: SetOptions): this;
+    setAttributes<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+    setAttributes(keys: Partial<this>, options?: SetOptions): this;
 
     /**
      * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -2700,14 +668,14 @@ declare module sequelize {
      *
      * If changed is called without an argument and no keys have changed, it will return `false`.
      */
-    changed(key: string): boolean;
-    changed(key: string, dirty: boolean): void;
-    changed(): boolean | Array<string>;
+    changed(key: keyof this): boolean;
+    changed(key: keyof this, dirty: boolean): void;
+    changed(): boolean | Array<keyof this>;
 
     /**
      * Returns the previous value for key from `_previousDataValues`.
      */
-    previous(key: string): any;
+    previous<K extends keyof this>(key: K): this[K];
 
     /**
      * Validate this instance, and if the validation passes, persist it to the database.
@@ -2716,7 +684,7 @@ declare module sequelize {
      * called with an instance of `Sequelize.ValidationError`. This error will have a property for each of the
      * fields for which validation failed, with the error message for that field.
      */
-    save(options?: InstanceSaveOptions): SequelizePromise<TInstance>;
+    save(options?: InstanceSaveOptions<this>): Promise<this>;
 
     /**
      * Refresh the current instance in-place, i.e. update the object with current data from the DB and return
@@ -2724,7 +692,7 @@ declare module sequelize {
      * return a new instance. With this method, all references to the Instance are updated with the new data
      * and no new objects are created.
      */
-    reload(options?: FindOptions): SequelizePromise<TInstance>;
+    reload(options?: FindOptions<Model<this>, this>): Promise<this>;
 
     /**
      * Validate the attribute of this instance according to validation rules set in the model definition.
@@ -2734,26 +702,26 @@ declare module sequelize {
      *
      * @param options.skip An array of strings. All properties that are in this array will not be validated
      */
-    validate(options?: { skip?: Array<string> }): SequelizePromise<ValidationError>;
+    validate(options?: { skip?: string[] }): Promise<void>;
 
     /**
      * This is the same as calling `set` and then calling `save`.
      */
-    update(key: string, value: any, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
-    update(keys: Object, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
-    updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
-    updateAttributes(keys: Object, options?: InstanceUpdateOptions): SequelizePromise<TInstance>;
+    update<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions<this>): Promise<this>;
+    update(keys: Partial<this>, options?: InstanceUpdateOptions<this>): Promise<this>;
+    updateAttributes<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions<this>): Promise<this>;
+    updateAttributes(keys: Partial<this>, options?: InstanceUpdateOptions<this>): Promise<this>;
 
     /**
      * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
      * either be completely deleted, or have its deletedAt timestamp set to the current time.
      */
-    destroy(options?: InstanceDestroyOptions): SequelizePromise<void>;
+    destroy(options?: InstanceDestroyOptions): Promise<void>;
 
     /**
      * Restore the row corresponding to this instance. Only available for paranoid models.
      */
-    restore(options?: InstanceRestoreOptions): SequelizePromise<void>;
+    restore(options?: InstanceRestoreOptions): Promise<void>;
 
     /**
      * Increment the value of one or more columns. This is done in the database, which means it does not use
@@ -2775,8 +743,7 @@ declare module sequelize {
      *               If an array is provided, the same is true for each column.
      *               If and object is provided, each column is incremented by the value given.
      */
-    increment(fields: string | Array<string> | Object,
-      options?: InstanceIncrementDecrementOptions): SequelizePromise<TInstance>;
+    increment(fields: keyof this | (keyof this)[] | { [K in keyof this]?: number }, options?: IncrementDecrementOptions<this>): Promise<this>;
 
     /**
      * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2798,25 +765,23 @@ declare module sequelize {
      *               If an array is provided, the same is true for each column.
      *               If and object is provided, each column is decremented by the value given
      */
-    decrement(fields: string | Array<string> | Object,
-      options?: InstanceIncrementDecrementOptions): SequelizePromise<TInstance>;
+    decrement(fields: keyof this | (keyof this)[] | { [K in keyof this]?: number }, options?: IncrementDecrementOptions<this>): Promise<this>;
 
     /**
      * Check whether all values of this and `other` Instance are the same
      */
-    equals(other: Instance<any, any>): boolean;
+    equals(other: this): boolean;
 
     /**
      * Check if this is eqaul to one of `others` by calling equals
      */
-    equalsOneOf(others: Array<Instance<any, any>>): boolean;
+    equalsOneOf(others: this[]): boolean;
 
     /**
      * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
      * values gotten from the DB, and apply all custom getters.
      */
-    toJSON(): TAttributes;
-
+    toJSON(): { [K in keyof this]: this[K] };
   }
 
   //
@@ -2856,7 +821,7 @@ declare module sequelize {
     /**
      * A function that gets executed while running the query to log the sql.
      */
-    logging?: Function | boolean
+    logging?: boolean | Function;
 
   }
 
@@ -2878,20 +843,28 @@ declare module sequelize {
 
   /**
    * The type accepted by every `where` option
+   *
    * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
    */
-  export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | where | Array<string | number>;
+  export type WhereOptions<TInstance extends Instance> =
+    WhereAttributeHash<TInstance>
+    | AndOperator<TInstance, keyof TInstance>
+    | OrOperator<TInstance, keyof TInstance>
+    | where
+    | Array<string | number>;
 
-  export interface WhereSubqueryOperators {
-    /**
-     * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
-     *
-     * _PG only_
-     */
-    $any?: Array<string | number>;
+  /**
+   * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+   *
+   * _PG only_
+   */
+  export interface AnyOperator {
+    $any: Array<string | number>;
+  }
 
-    /** Undocumented? */
-    $all?: Array<string | number>;
+  /** Undocumented? */
+  export interface AllOperator {
+    $all: Array<string | number>;
   }
 
   /**
@@ -2899,45 +872,52 @@ declare module sequelize {
    *
    * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
    */
-  export interface WhereOperators extends WhereSubqueryOperators {
+  export interface WhereOperators<TInstance extends Instance, K extends keyof TInstance> {
+
+    /**
+     * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+     *
+     * _PG only_
+     */
+    $any?: Array<TInstance[K]>;
 
     /** Example: `$gte: 6,` becomes `>= 6` */
-    $gte?: number | string | Date;
+    $gte?: TInstance[K];
 
     /** Example: `$lt: 10,` becomes `< 10` */
-    $lt?: number | string | Date;
+    $lt?: TInstance[K];
 
     /** Example: `$lte: 10,` becomes `<= 10` */
-    $lte?: number | string | Date;
+    $lte?: TInstance[K];
 
     /** Example: `$ne: 20,` becomes `!= 20` */
-    $ne?: string | number | WhereOperators;
+    $ne?: TInstance[K];
 
     /** Example: `$not: true,` becomes `IS NOT TRUE` */
-    $not?: boolean | string | number | WhereOperators;
+    $not?: TInstance[K] | WhereOperators<TInstance, K>;
 
     /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
-    $between?: [number, number];
+    $between?: [TInstance[K], TInstance[K]];
 
     /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
-    $in?: Array<string | number> | literal;
+    $in?: Array<TInstance[K]> | literal;
 
     /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
-    $notIn?: Array<string | number> | literal;
+    $notIn?: Array<TInstance[K]> | literal;
 
     /**
      * Examples:
      *  - `$like: '%hat',` becomes `LIKE '%hat'`
      *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
      */
-    $like?: string | WhereSubqueryOperators;
+    $like?: string | AnyOperator | AllOperator;
 
     /**
      * Examples:
      *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
      *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
      */
-    $notLike?: string | WhereSubqueryOperators;
+    $notLike?: string | AnyOperator | AllOperator;
 
     /**
      * case insensitive PG only
@@ -2946,7 +926,7 @@ declare module sequelize {
      *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
      *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
      */
-    $ilike?: string | WhereSubqueryOperators;
+    $ilike?: string | AnyOperator | AllOperator;
 
     /**
      * case insensitive PG only
@@ -2955,7 +935,7 @@ declare module sequelize {
      *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
      *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
      */
-    $iLike?: string | WhereSubqueryOperators;
+    $iLike?: string | AnyOperator | AllOperator;
 
     /**
      * PG array overlap operator
@@ -2979,7 +959,7 @@ declare module sequelize {
     $contained?: any[];
 
     /** Example: `$gt: 6,` becomes `> 6` */
-    $gt?: number | string | Date;
+    $gt?: TInstance[K];
 
     /**
      * PG only
@@ -2988,24 +968,20 @@ declare module sequelize {
      *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
      *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
      */
-    $notILike?: string | WhereSubqueryOperators;
+    $notILike?: string | AnyOperator | AllOperator;
 
     /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
     $notBetween?: [number, number];
-
-    /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
-    $and?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
-
-    /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
-    $or?: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash | where>;
   }
 
-  export interface OrOperator {
-    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+  export interface OrOperator<TInstance extends Instance, K extends keyof TInstance> {
+    $or: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
   }
 
-  export interface AndOperator {
-    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+  export interface AndOperator<TInstance extends Instance, K extends keyof TInstance> {
+    $and: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
   }
 
   /**
@@ -3017,24 +993,9 @@ declare module sequelize {
   }
 
   /**
-   * Used for the right hand side of WhereAttributeHash.
-   * WhereAttributeHash is in there for JSON columns.
-   */
-  export type WhereValue =
-    string // literal value
-    | number // literal value
-    | WhereOperators
-    | WhereAttributeHash // for JSON columns
-    | col // reference another column
-    | AndOperator
-    | OrOperator
-    | WhereGeometryOptions
-    | Array<string | number>; // implicit $or
-
-  /**
    * A hash of attributes to describe your search.
    */
-  export interface WhereAttributeHash {
+  export type WhereAttributeHash<TInstance extends Instance> = {
     /**
      * Possible key values:
      * - A simple attribute name
@@ -3046,37 +1007,47 @@ declare module sequelize {
      *         }
      *       }
      */
-    [field: string]: WhereValue;
+    [K in keyof TInstance]?:
+      TInstance[K] // literal value
+      | WhereOperators<TInstance, K>
+      | col // reference another column
+      | OrOperator<TInstance, K>
+      | AndOperator<TInstance, K>
+      | WhereGeometryOptions
+      | Array<string | number>; // implicit $or;
   }
 
   /**
    * Through options for Include Options
    */
-  export interface IncludeThroughOptions {
+  export interface IncludeThroughOptions<TThroughInstance extends Instance> {
 
     /**
      * Filter on the join model for belongsToMany relations
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TThroughInstance>;
 
     /**
      * A list of attributes to select from the join model for belongsToMany relations
      */
-    attributes?: FindAttributeOptions;
+    attributes?: FindAttributeOptions<TThroughInstance>;
 
   }
 
-  export type Includeable = Model<any, any> | Association | IncludeOptions;
+  export type Includeable<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> =
+    Model<Instance> // An associated model
+    | Association<TSourceModel, Model<Instance>> // An association between the source model and an associated model
+    | IncludeOptions<TSourceModel, TSourceInstance>;
 
   /**
    * Complex include options
    */
-  export interface IncludeOptions {
+  export interface IncludeOptions<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> {
 
     /**
      * The model you want to eagerly load
      */
-    model?: Model<any, any>;
+    model?: TSourceModel;
 
     /**
      * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
@@ -3087,18 +1058,18 @@ declare module sequelize {
     /**
      * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
      */
-    association?: Association;
+    association?: Association<TSourceModel, Model<Instance>>;
 
     /**
      * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
      * unless you explicitly set `required: false`
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TSourceInstance>;
 
     /**
      * A list of attributes to select from the child model
      */
-    attributes?: FindAttributeOptions;
+    attributes?: FindAttributeOptions<TSourceInstance>;
 
     /**
      * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
@@ -3119,35 +1090,34 @@ declare module sequelize {
     /**
      * Through Options
      */
-    through?: IncludeThroughOptions;
+    through?: IncludeThroughOptions<any>;
 
     /**
      * Load further nested related models
      */
-    include?: Includeable[];
+    include?: Includeable<TSourceModel, TSourceInstance>[];
 
     /**
      * Order include. Only available when setting `separate` to true.
      */
-    order?: Order;
-
+    order?: Order<TSourceInstance>;
   }
 
-  export type OrderItem =
-    string | fn | col | literal |
-    [string | col | fn | literal, string] |
-    [Model<any, any> | { model: Model<any, any>, as: string }, string, string] |
-    [Model<any, any>, Model<any, any>, string, string];
-  export type Order = string | fn | col | literal | OrderItem[];
+  export type OrderItem<TInstance extends Instance> =
+    keyof TInstance | fn | col | literal |
+    [keyof TInstance | col | fn | literal, string] |
+    [Model<TInstance> | { model: Model<TInstance>, as: string }, string, string] |
+    [Model<TInstance>, Model<TInstance>, string, string];
+  export type Order<TInstance extends Instance> = string | fn | col | literal | OrderItem<TInstance>[];
 
-  export type FindAttributeOptions =
-    Array<string | [string | literal | fn, string]> |
+  export type FindAttributeOptions<TInstance extends Instance> =
+    Array<keyof TInstance | [keyof TInstance | literal | fn, string]> |
     {
-      exclude: Array<string>;
-      include?: Array<string | [string | literal | fn, string]>;
+      exclude: Array<keyof TInstance>;
+      include?: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
     } | {
-      exclude?: Array<string>;
-      include: Array<string | [string | literal | fn, string]>;
+      exclude?: Array<keyof TInstance>;
+      include: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
     };
 
   /**
@@ -3155,11 +1125,11 @@ declare module sequelize {
    *
    * A hash of options to describe the scope of the search
    */
-  export interface FindOptions {
+  export interface FindOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
     /**
      * A hash of attributes to describe your search. See above for examples.
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
     /**
      * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
@@ -3167,7 +1137,7 @@ declare module sequelize {
      * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
      * have in the returned instance
      */
-    attributes?: FindAttributeOptions;
+    attributes?: FindAttributeOptions<TInstance>;
 
     /**
      * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
@@ -3181,7 +1151,7 @@ declare module sequelize {
      * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
      * the as attribute when eager loading Y).
      */
-    include?: Includeable[];
+    include?: Includeable<TModel, TInstance>[];
 
     /**
      * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
@@ -3189,7 +1159,7 @@ declare module sequelize {
      * first element is the column / function to order by, the second is the direction. For example:
      * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
      */
-    order?: Order;
+    order?: Order<TInstance>;
 
     /**
      * GROUP BY in sql
@@ -3216,7 +1186,7 @@ declare module sequelize {
      * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
      * locks with joins. See [transaction.LOCK for an example](transaction#lock)
      */
-    lock?: string | { level: string, of: Model<any, any> };
+    lock?: string | { level: string, of: Model<Instance> };
 
     /**
      * Return raw result. See sequelize.query for more information.
@@ -3231,24 +1201,24 @@ declare module sequelize {
     /**
      * having ?!?
      */
-    having?: WhereOptions;
+    having?: WhereAttributeHash<TInstance>;
 
   }
 
   /**
    * Options for Model.count method
    */
-  export interface CountOptions {
+  export interface CountOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
     /**
      * A hash of search attributes.
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
     /**
      * Include options. See `find` for details
      */
-    include?: Includeable[];
+    include?: Includeable<TModel, TInstance>[];
 
     /**
      * Apply COUNT(DISTINCT(col))
@@ -3258,7 +1228,7 @@ declare module sequelize {
     /**
      * Used in conjustion with `group`
      */
-    attributes?: FindAttributeOptions;
+    attributes?: FindAttributeOptions<TInstance>;
 
     /**
      * GROUP BY in sql
@@ -3273,12 +1243,12 @@ declare module sequelize {
     transaction?: Transaction;
   }
 
-  export interface FindAndCountOptions extends CountOptions, FindOptions { }
+  export interface FindAndCountOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends CountOptions<TModel, TInstance>, FindOptions<TModel, TInstance> { }
 
   /**
    * Options for Model.build method
    */
-  export interface BuildOptions {
+  export interface BuildOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
     /**
      * If set to true, values will ignore field and virtual setters.
@@ -3295,19 +1265,19 @@ declare module sequelize {
      *
      * TODO: See set
      */
-    include?: Includeable[];
+    include?: Includeable<TModel, TInstance>[];
 
   }
 
   /**
    * Options for Model.create method
    */
-  export interface CreateOptions extends BuildOptions {
+  export interface CreateOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends BuildOptions<TModel, TInstance> {
 
     /**
      * If set, only columns matching those in fields will be saved
      */
-    fields?: Array<string>;
+    fields?: Array<keyof TInstance>;
 
     /**
      * On Duplicate
@@ -3332,17 +1302,17 @@ declare module sequelize {
   /**
    * Options for Model.findOrInitialize method
    */
-  export interface FindOrInitializeOptions<TAttributes> {
+  export interface FindOrInitializeOptions<TInstance extends Instance> {
 
     /**
      * A hash of search attributes.
      */
-    where: WhereOptions;
+    where: WhereOptions<TInstance>;
 
     /**
      * Default values to use if building a new instance
      */
-    defaults?: TAttributes;
+    defaults?: Partial<TInstance>;
 
     /**
      * Transaction to run query under
@@ -3357,26 +1327,9 @@ declare module sequelize {
   }
 
   /**
-   * Options for Model.findCreateFind method
-   */
-  export interface FindCreateFindOptions<TAttributes> {
-
-    /**
-     * A hash of search attributes.
-     */
-    where: WhereOptions;
-
-    /**
-     * Default values to use if building a new instance
-     */
-    defaults?: TAttributes;
-
-  }
-
-  /**
    * Options for Model.upsert method
    */
-  export interface UpsertOptions {
+  export interface UpsertOptions<TInstance extends Instance> {
     /**
      * Run validations before the row is inserted
      */
@@ -3385,7 +1338,7 @@ declare module sequelize {
     /**
      * The fields to insert / update. Defaults to all fields
      */
-    fields?: Array<string>;
+    fields?: Array<keyof TInstance>;
 
     /**
      * Transaction to run query under
@@ -3411,12 +1364,12 @@ declare module sequelize {
   /**
    * Options for Model.bulkCreate method
    */
-  export interface BulkCreateOptions {
+  export interface BulkCreateOptions<TInstance extends Instance> {
 
     /**
      * Fields to insert (defaults to all fields)
      */
-    fields?: Array<string>;
+    fields?: Array<keyof TInstance>;
 
     /**
      * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
@@ -3458,20 +1411,6 @@ declare module sequelize {
      */
     logging?: boolean | Function;
 
-    /**
-     * Append RETURNING * to get back auto generated values (Postgres only)
-     */
-    returning?: boolean;
-
-    /**
-     * An optional parameter to specify the schema search_path (Postgres only)
-     */
-    searchPath?: string;
-
-    /**
-     * Print query execution time in milliseconds when logging SQL.
-     */
-    benchmark?: boolean;
   }
 
   /**
@@ -3495,12 +1434,7 @@ declare module sequelize {
     /**
      * A function that gets executed while running the query to log the sql.
      */
-    logging?: boolean | ((sql: string) => any);
-
-    /**
-     * Filter the destroy
-     */
-    where?: WhereOptions;
+    logging?: boolean | Function;
 
     /**
      * Run before / after bulk destroy hooks?
@@ -3533,7 +1467,7 @@ declare module sequelize {
   /**
    * Options used for Model.destroy
    */
-  export interface DestroyOptions extends TruncateOptions {
+  export interface DestroyOptions<TInstance extends Instance> extends TruncateOptions {
 
     /**
      * If set to true, dialects that support it will use TRUNCATE instead of DELETE FROM. If a table is
@@ -3541,17 +1475,21 @@ declare module sequelize {
      */
     truncate?: boolean;
 
+    /**
+     * Filter the destroy
+     */
+    where?: WhereOptions<TInstance>;
   }
 
   /**
    * Options for Model.restore
    */
-  export interface RestoreOptions {
+  export interface RestoreOptions<TInstance extends Instance> {
 
     /**
      * Filter the restore
      */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
     /**
      * Run before / after bulk restore hooks?
@@ -3584,17 +1522,17 @@ declare module sequelize {
   /**
    * Options used for Model.update
    */
-  export interface UpdateOptions {
+  export interface UpdateOptions<TInstance extends Instance> {
 
     /**
      * Options to describe the scope of the search.
      */
-    where: WhereOptions;
+    where: WhereOptions<TInstance>;
 
     /**
      * Fields to update (defaults to all fields)
      */
-    fields?: Array<string>;
+    fields?: Array<keyof TInstance>;
 
     /**
      * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
@@ -3651,9 +1589,9 @@ declare module sequelize {
   /**
    * Options used for Model.aggregate
    */
-  export interface AggregateOptions extends QueryOptions {
+  export interface AggregateOptions<TInstance extends Instance> extends QueryOptions {
     /** A hash of search attributes. */
-    where?: WhereOptions;
+    where?: WhereOptions<TInstance>;
 
     /**
      * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
@@ -3665,12 +1603,14 @@ declare module sequelize {
     distinct?: boolean;
   }
 
-  /**
-   * A Model represents a table in the database. Sometimes you might also see it referred to as model, or simply
-   * as factory. This class should _not_ be instantiated directly, it is created using `sequelize.define`, and
-   * already created models can be loaded using `sequelize.import`
-   */
-  export interface Model<TInstance, TAttributes> extends Hooks<TInstance>, Associations {
+  export interface ModelStatic<TInstance extends Instance> {
+    new (): Model<TInstance>;
+    prototype: Model<TInstance>
+  }
+
+  export interface Model<TInstance extends Instance> {
+
+    name: string;
 
     /** The name of the database table */
     tableName: string;
@@ -3686,27 +1626,30 @@ declare module sequelize {
     associations: any;
 
     /**
-     * The options that the model was defined with
+     * The options that the model was initialized with
      */
-    options: DefineOptions<TInstance>;
+    options: DefineOptions<this, TInstance>;
 
     /**
      * The attributes of the model
      */
-    rawAttributes: { [attribute: string]: DefineAttributeColumnOptions };
+    rawAttributes: { [K in keyof TInstance]: DefineAttributeColumnOptions<TInstance, TInstance[K]> };
 
     /**
      * The attributes of the model
      */
-    attributes: { [attribute: string]: DefineAttributeColumnOptions };
+    attributes: { [K in keyof TInstance]: DefineAttributeColumnOptions<TInstance, TInstance[K]> };
 
     /**
-     * The Instance class
+     * Builds a new model instance.
+     * @param values an object of key value pairs
      */
+    new (values?: Partial<TInstance>, options?: BuildOptions<this, TInstance>): TInstance;
+
     Instance: {
-      new (): TInstance, // for instanceof checks
+      new (): TInstance,
       prototype: TInstance
-    };
+    }
 
     /**
      * Remove attribute from model definition
@@ -3719,14 +1662,14 @@ declare module sequelize {
      * Sync this Model to the DB, that is create the table. Upon success, the callback will be called with the
      * model instance (this)
      */
-    sync(options?: SyncOptions): SequelizePromise<Model<TInstance, TAttributes>>;
+    sync(options?: SyncOptions): Promise<this>;
 
     /**
      * Drop the table represented by this Model
      *
      * @param options
      */
-    drop(options?: DropOptions): SequelizePromise<void>;
+    drop(options?: DropOptions): Promise<void>;
 
     /**
      * Apply a schema to this model. For postgres, this will actually place the schema in front of the table
@@ -3737,7 +1680,7 @@ declare module sequelize {
      * @param schema The name of the schema
      * @param options
      */
-    schema(schema: string, options?: SchemaOptions): Model<TInstance, TAttributes>;
+    schema(schema: string, options?: SchemaOptions): this;
 
     /**
      * Get the tablename of the model, taking schema into account. The method will return The name as a string
@@ -3749,7 +1692,7 @@ declare module sequelize {
      *     subscribers_1, subscribers_2)
      * @param options.logging=false A function that gets executed while running the query to log the sql.
      */
-    getTableName(options?: { logging: Function }): string | Object;
+    getTableName(options?: { logging: Function }): string | { tableName: string, schema: string, delimiter: string };
 
     /**
      * Apply a scope created in `define` to the model. First let's look at how to create scopes:
@@ -3798,7 +1741,7 @@ declare module sequelize {
      * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
      *     model will clear the previous scope.
      */
-    scope(options?: string | Array<string> | ScopeOptions | WhereOptions): Model<TInstance, TAttributes>;
+    scope(options?: string | string[] | ScopeOptions | WhereAttributeHash<TInstance>): this;
 
     /**
      * Search for multiple instances.
@@ -3862,22 +1805,22 @@ declare module sequelize {
      *
      * @see    {Sequelize#query}
      */
-    findAll(options?: FindOptions): SequelizePromise<Array<TInstance>>;
-    all(optionz?: FindOptions): SequelizePromise<Array<TInstance>>;
+    findAll(options?: FindOptions<this, TInstance>): Promise<TInstance[]>;
+    all(optionz?: FindOptions<this, TInstance>): Promise<TInstance[]>;
 
     /**
      * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
      * always be called with a single instance.
      */
-    findById(identifier?: number | string, options?: FindOptions): SequelizePromise<TInstance>;
-    findByPrimary(identifier?: number | string, options?: FindOptions): SequelizePromise<TInstance>;
+    findById(identifier?: number | string, options?: FindOptions<this, TInstance>): Promise<TInstance>;
+    findByPrimary(identifier?: number | string, options?: FindOptions<this, TInstance>): Promise<TInstance>;
 
     /**
      * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
      * instance.
      */
-    findOne(options?: FindOptions): SequelizePromise<TInstance>;
-    find(optionz?: FindOptions): SequelizePromise<TInstance>;
+    findOne(options?: FindOptions<this, TInstance>): Promise<TInstance>;
+    find(optionz?: FindOptions<this, TInstance>): Promise<TInstance>;
 
     /**
      * Run an aggregation method on the specified field
@@ -3888,15 +1831,14 @@ declare module sequelize {
      * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
      *     which case the complete data result is returned.
      */
-    aggregate<T>(field: string, aggregateFunction: string, options?: AggregateOptions): SequelizePromise<T>;
-    aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): SequelizePromise<number>;
+    aggregate(field: string, aggregateFunction: string, options?: AggregateOptions<TInstance>): Promise<number>;
 
     /**
      * Count the number of records matching the provided where clause.
      *
      * If you provide an `include` option, the number of matching associations will be counted instead.
      */
-    count(options?: CountOptions): SequelizePromise<number>;
+    count(options?: CountOptions<this, TInstance>): Promise<number>;
 
     /**
      * Find all the rows matching your query, within a specified offset / limit, and get the total number of
@@ -3933,45 +1875,45 @@ declare module sequelize {
      * without
      * profiles will be counted
      */
-    findAndCount(options?: FindAndCountOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
-    findAndCountAll(options?: FindAndCountOptions): SequelizePromise<{ rows: Array<TInstance>, count: number }>;
+    findAndCount(options?: FindAndCountOptions<this, TInstance>): Promise<{ rows: TInstance[], count: number }>;
+    findAndCountAll(options?: FindAndCountOptions<this, TInstance>): Promise<{ rows: TInstance[], count: number }>;
 
     /**
      * Find the maximum value of field
      */
-    max(field: string, options?: AggregateOptions): SequelizePromise<any>;
+    max(field: string, options?: AggregateOptions<TInstance>): Promise<any>;
 
     /**
      * Find the minimum value of field
      */
-    min(field: string, options?: AggregateOptions): SequelizePromise<any>;
+    min(field: string, options?: AggregateOptions<TInstance>): Promise<any>;
 
     /**
      * Find the sum of field
      */
-    sum(field: string, options?: AggregateOptions): SequelizePromise<number>;
+    sum(field: string, options?: AggregateOptions<TInstance>): Promise<number>;
 
     /**
      * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
      */
-    build(record?: TAttributes, options?: BuildOptions): TInstance;
+    build(record?: Partial<TInstance>, options?: BuildOptions<this, TInstance>): TInstance;
 
     /**
      * Undocumented bulkBuild
      */
-    bulkBuild(records: Array<TAttributes>, options?: BuildOptions): Array<TInstance>;
+    bulkBuild(records: Partial<TInstance>[], options?: BuildOptions<this, TInstance>): TInstance;
 
     /**
      * Builds a new model instance and calls save on it.
      */
-    create(values?: TAttributes, options?: CreateOptions): SequelizePromise<TInstance>;
+    create(values?: Partial<TInstance>, options?: CreateOptions<this, TInstance>): Promise<TInstance[]>;
 
     /**
      * Find a row that matches the query, or build (but don't save) the row if none is found.
      * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
      */
-    findOrInitialize(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
-    findOrBuild(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
+    findOrInitialize(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
+    findOrBuild(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
 
     /**
      * Find a row that matches the query, or build and save the row if none is found
@@ -3984,9 +1926,7 @@ declare module sequelize {
      * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
      * will be created instead, and any unique constraint violation will be handled internally.
      */
-    findOrCreate(options: FindOrInitializeOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
-
-    findCreateFind(options: FindCreateFindOptions<TAttributes>): SequelizePromise<[TInstance, boolean]>;
+    findOrCreate(options: FindOrInitializeOptions<TInstance>): Promise<TInstance>;
 
     /**
      * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -4007,8 +1947,8 @@ declare module sequelize {
      * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
      * whether the row was inserted or not.
      */
-    upsert(values: TAttributes, options?: UpsertOptions): SequelizePromise<boolean>;
-    insertOrUpdate(values: TAttributes, options?: UpsertOptions): SequelizePromise<boolean>;
+    upsert(values: Partial<TInstance>, options?: UpsertOptions<TInstance>): Promise<boolean>;
+    insertOrUpdate(values: Partial<TInstance>, options?: UpsertOptions<TInstance>): Promise<boolean>;
 
     /**
      * Create and insert multiple instances in bulk.
@@ -4021,43 +1961,460 @@ declare module sequelize {
      *
      * @param records List of objects (key/value pairs) to create instances from
      */
-    bulkCreate(records: Array<TAttributes>, options?: BulkCreateOptions): SequelizePromise<Array<TInstance>>;
+    bulkCreate(records: Partial<TInstance[]>, options?: BulkCreateOptions<TInstance>): Promise<TInstance[]>;
 
     /**
      * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
      */
-    truncate(options?: TruncateOptions): SequelizePromise<void>;
+    truncate(options?: TruncateOptions): Promise<void>;
 
     /**
      * Delete multiple instances, or set their deletedAt timestamp to the current time if `paranoid` is enabled.
      *
      * @return Promise<number> The number of destroyed rows
      */
-    destroy(options?: DestroyOptions): SequelizePromise<number>;
+    destroy(options?: DestroyOptions<TInstance>): Promise<number>;
 
     /**
      * Restore multiple instances if `paranoid` is enabled.
      */
-    restore(options?: RestoreOptions): SequelizePromise<void>;
+    restore(options?: RestoreOptions<TInstance>): Promise<void>;
 
     /**
      * Update multiple instances that match the where options. The promise returns an array with one or two
      * elements. The first element is always the number of affected rows, while the second element is the actual
      * affected rows (only supported in postgres with `options.returning` true.)
      */
-    update(values: TAttributes, options: UpdateOptions): SequelizePromise<[number, Array<TInstance>]>;
+    update(values: Partial<TInstance>, options: UpdateOptions<TInstance>): Promise<[number, TInstance[]]>;
 
     /**
      * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
      * their types.
      */
-    describe(): SequelizePromise<Object>;
+    describe(): Promise<{ [K in keyof TInstance]: any }>;
 
     /**
      * Unscope the model
      */
-    unscoped(): Model<TInstance, TAttributes>;
+    unscoped(): this;
 
+    /**
+     * Add a hook to the model
+     *
+     * @param hookType
+     * @param name Provide a name for the hook function. It can be used to remove the hook later or to order
+     *     hooks based on some sort of priority system in the future.
+     * @param fn The hook function
+     *
+     * @alias hook
+     */
+    addHook(hookType: string, name: string, fn: Function): this;
+    addHook(hookType: string, fn: Function): this;
+    hook(hookType: string, name: string, fn: Function): this;
+    hook(hookType: string, fn: Function): this;
+
+    /**
+     * Remove hook from the model
+     *
+     * @param hookType
+     * @param name
+     */
+    removeHook(hookType: string, name: string): this;
+
+    /**
+     * Check whether the mode has any hooks of this type
+     *
+     * @param hookType
+     *
+     * @alias hasHooks
+     */
+    hasHook(hookType: string): boolean;
+    hasHooks(hookType: string): boolean;
+
+    /**
+     * A hook that is run before validation
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    beforeValidate(name: string, fn: (instance: TInstance, options: Object) => void): void;
+    beforeValidate(fn: (instance: TInstance, options: Object) => void): void;
+
+    /**
+     * A hook that is run after validation
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    afterValidate(name: string, fn: (instance: TInstance, options: Object) => void): void;
+    afterValidate(fn: (instance: TInstance, options: Object) => void): void;
+
+    /**
+     * A hook that is run before creating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with attributes, options
+     */
+    beforeCreate(name: string, fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+    beforeCreate(fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run after creating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with attributes, options
+     */
+    afterCreate(name: string, fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+    afterCreate(fn: (attributes: TInstance, options: CreateOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run before destroying a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     * @alias beforeDelete
+     */
+    beforeDestroy(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    beforeDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    beforeDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    beforeDelete(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+
+    /**
+     * A hook that is run after destroying a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     * @alias afterDelete
+     */
+    afterDestroy(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    afterDestroy(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    afterDelete(name: string, fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+    afterDelete(fn: (instance: TInstance, options: InstanceDestroyOptions) => void): void;
+
+    /**
+     * A hook that is run before updating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    beforeUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+    beforeUpdate(fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run after updating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    afterUpdate(name: string, fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+    afterUpdate(fn: (instance: TInstance, options: UpdateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run before creating instances in bulk
+     *
+     * @param name
+     * @param fn A callback function that is called with instances, options
+     */
+    beforeBulkCreate(name: string, fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+    beforeBulkCreate(fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run after creating instances in bulk
+     *
+     * @param name
+     * @param fn A callback function that is called with instances, options
+     * @name afterBulkCreate
+     */
+    afterBulkCreate(name: string, fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+    afterBulkCreate(fn: (instances: this[], options: BulkCreateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run before destroying instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     *
+     * @alias beforeBulkDelete
+     */
+    beforeBulkDestroy(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+    beforeBulkDestroy(fn: (options: DestroyOptions<TInstance>) => void): void;
+    beforeBulkDelete(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+    beforeBulkDelete(fn: (options: DestroyOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run after destroying instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     *
+     * @alias afterBulkDelete
+     */
+    afterBulkDestroy(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+    afterBulkDestroy(fn: (options: DestroyOptions<TInstance>) => void): void;
+    afterBulkDelete(name: string, fn: (options: DestroyOptions<TInstance>) => void): void;
+    afterBulkDelete(fn: (options: DestroyOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run after updating instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeBulkUpdate(name: string, fn: (options: UpdateOptions<TInstance>) => void): void;
+    beforeBulkUpdate(fn: (options: UpdateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run after updating instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    afterBulkUpdate(name: string, fn: (options: UpdateOptions<TInstance>) => void): void;
+    afterBulkUpdate(fn: (options: UpdateOptions<TInstance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFind(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+    beforeFind(fn: (options: FindOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run before a count query
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeCount(name: string, fn: (options: CountOptions<this, TInstance>) => void): void;
+    beforeCount(fn: (options: CountOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFindAfterExpandIncludeAll(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+    beforeFindAfterExpandIncludeAll(fn: (options: FindOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query, after all option parsing is complete
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFindAfterOptions(name: string, fn: (options: FindOptions<this, TInstance>) => void): void;
+    beforeFindAfterOptions(fn: (options: FindOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run after a find (select) query
+     *
+     * @param name
+     * @param fn   A callback function that is called with instance(s), options
+     */
+    afterFind(name: string, fn: (instancesOrinstance: TInstance[] | TInstance, options: FindOptions<this, TInstance>, fn?: Function) => void): void;
+    afterFind(fn: (instancesOrinstance: TInstance[] | TInstance, options: FindOptions<this, TInstance>,
+      fn?: Function) => void): void;
+
+    /**
+     * A hook that is run before a define call
+     *
+     * @param name
+     * @param fn   A callback function that is called with attributes, options
+     */
+    beforeDefine(name: string, fn: (attributes: DefineAttributes<TInstance>, options: DefineOptions<this, TInstance>) => void): void;
+    beforeDefine(fn: (attributes: DefineAttributes<TInstance>, options: DefineOptions<this, TInstance>) => void): void;
+
+    /**
+     * A hook that is run after a define call
+     *
+     * @param name
+     * @param fn   A callback function that is called with factory
+     */
+    afterDefine(name: string, fn: (model: this) => void): void;
+    afterDefine(fn: (model: this) => void): void;
+
+    /**
+     * A hook that is run before Sequelize() call
+     *
+     * @param name
+     * @param fn   A callback function that is called with config, options
+     */
+    beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
+    beforeInit(fn: (config: Object, options: Object) => void): void;
+
+    /**
+     * A hook that is run after Sequelize() call
+     *
+     * @param name
+     * @param fn   A callback function that is called with sequelize
+     */
+    afterInit(name: string, fn: (sequelize: Connection) => void): void;
+    afterInit(fn: (sequelize: Connection) => void): void;
+
+    /**
+     * A hook that is run before sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name beforeBulkSync
+     */
+    beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name afterBulkSync
+     */
+    afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run before Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name beforeSync
+     */
+    beforeSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name afterSync
+     */
+    afterSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * Creates an association between this (the source) and the provided target. The foreign key is added
+     * on the target.
+     *
+     * Example: `User.hasOne(Profile)`. This will add userId to the profile table.
+     *
+     * @param target The model that will be associated with hasOne relationship
+     * @param options Options for the association
+     */
+    hasOne<TTarget extends Model<Instance>>(target: TTarget, options?: HasOneOptions): HasOne<this, TTarget>;
+
+    /**
+     * Creates an association between this (the source) and the provided target. The foreign key is added on the
+     * source.
+     *
+     * Example: `Profile.belongsTo(User)`. This will add userId to the profile table.
+     *
+     * @param target The model that will be associated with hasOne relationship
+     * @param options Options for the association
+     */
+    belongsTo<TTarget extends Model<Instance>>(target: TTarget, options?: BelongsToOptions): BelongsTo<this, TTarget>;
+
+    /**
+     * Create an association that is either 1:m or n:m.
+     *
+     * ```js
+     * // Create a 1:m association between user and project
+     * User.hasMany(Project)
+     * ```
+     * ```js
+     * // Create a n:m association between user and project
+     * User.hasMany(Project)
+     * Project.hasMany(User)
+     * ```
+     * By default, the name of the join table will be source+target, so in this case projectsusers. This can be
+     * overridden by providing either a string or a Model as `through` in the options. If you use a through
+     * model with custom attributes, these attributes can be set when adding / setting new associations in two
+     * ways. Consider users and projects from before with a join table that stores whether the project has been
+     * started yet:
+     * ```js
+     * var UserProjects = sequelize.define('userprojects', {
+     *   started: Sequelize.BOOLEAN
+     * })
+     * User.hasMany(Project, { through: UserProjects })
+     * Project.hasMany(User, { through: UserProjects })
+     * ```
+     * ```js
+     * jan.addProject(homework, { started: false }) // The homework project is not started yet
+     * jan.setProjects([makedinner, doshopping], { started: true}) // Both shopping and dinner have been
+     * started
+     * ```
+     *
+     * If you want to set several target instances, but with different attributes you have to set the
+     * attributes on the instance, using a property with the name of the through model:
+     *
+     * ```js
+     * p1.userprojects {
+     *   started: true
+     * }
+     * user.setProjects([p1, p2], {started: false}) // The default value is false, but p1 overrides that.
+     * ```
+     *
+     * Similarily, when fetching through a join table with custom attributes, these attributes will be
+     * available as an object with the name of the through model.
+     * ```js
+     * user.getProjects().then(function (projects) {
+     *   var p1 = projects[0]
+     *   p1.userprojects.started // Is this project started yet?
+     * })
+     * ```
+     *
+     * @param target The model that will be associated with hasOne relationship
+     * @param options Options for the association
+     */
+    hasMany<TTarget extends Model<Instance>>(target: TTarget, options?: HasManyOptions): HasMany<this, TTarget>;
+
+    /**
+     * Create an N:M association with a join table
+     *
+     * ```js
+     * User.belongsToMany(Project)
+     * Project.belongsToMany(User)
+     * ```
+     * By default, the name of the join table will be source+target, so in this case projectsusers. This can be
+     * overridden by providing either a string or a Model as `through` in the options.
+     *
+     * If you use a through model with custom attributes, these attributes can be set when adding / setting new
+     * associations in two ways. Consider users and projects from before with a join table that stores whether
+     * the project has been started yet:
+     * ```js
+     * var UserProjects = sequelize.define('userprojects', {
+     *   started: Sequelize.BOOLEAN
+     * })
+     * User.belongsToMany(Project, { through: UserProjects })
+     * Project.belongsToMany(User, { through: UserProjects })
+     * ```
+     * ```js
+     * jan.addProject(homework, { started: false }) // The homework project is not started yet
+     * jan.setProjects([makedinner, doshopping], { started: true}) // Both shopping and dinner has been started
+     * ```
+     *
+     * If you want to set several target instances, but with different attributes you have to set the
+     * attributes on the instance, using a property with the name of the through model:
+     *
+     * ```js
+     * p1.userprojects {
+     *   started: true
+     * }
+     * user.setProjects([p1, p2], {started: false}) // The default value is false, but p1 overrides that.
+     * ```
+     *
+     * Similarily, when fetching through a join table with custom attributes, these attributes will be
+     * available as an object with the name of the through model.
+     * ```js
+     * user.getProjects().then(function (projects) {
+     *   var p1 = projects[0]
+     *   p1.userprojects.started // Is this project started yet?
+     * })
+     * ```
+     *
+     * @param target The model that will be associated with hasOne relationship
+     * @param options Options for the association
+     *
+     */
+    belongsToMany<TTarget extends Model<Instance>>(target: TTarget, options: BelongsToManyOptions): BelongsToMany<this, TTarget>;
   }
 
   //
@@ -4161,7 +2518,7 @@ declare module sequelize {
      * @param attributes    Hash of attributes, key is attribute name, value is data type
      * @param options       Table options.
      */
-    createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes,
+    createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes<any>,
       options?: QueryInterfaceCreateTableOptions): SequelizePromise<void>;
 
     /**
@@ -4205,25 +2562,25 @@ declare module sequelize {
     /**
      * Adds a new column to a table
      */
-    addColumn(table: string, key: string, attribute: DefineAttributeColumnOptions | DataType,
+    addcolumn(table: string, key: string, attribute: DefineAttributeColumnOptions<any, any> | DataType,
       options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Removes a column from a table
      */
-    removeColumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
+    removecolumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Changes a column
      */
-    changeColumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
-      dataTypeOrOptions?: DataType | DefineAttributeColumnOptions,
+    changecolumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
+      dataTypeOrOptions?: DataType | DefineAttributeColumnOptions<any, any>,
       options?: QueryInterfaceOptions): SequelizePromise<void>;
 
     /**
      * Renames a column
      */
-    renameColumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
+    renamecolumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
       attrNameAfter: string,
       options?: QueryInterfaceOptions): SequelizePromise<void>;
 
@@ -4261,13 +2618,13 @@ declare module sequelize {
     /**
      * Inserts a new record
      */
-    insert(instance: Instance<any, any>, tableName: string, values: Object,
+    insert(instance: Instance, tableName: string, values: Object,
       options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Inserts or Updates a record in the database
      */
-    upsert(tableName: string, values: Object, updateValues: Object, model: Model<any, any>,
+    upsert(tableName: string, values: Object, updateValues: Object, model: Model<any>,
       options?: QueryOptions): SequelizePromise<Object>;
 
     /**
@@ -4279,7 +2636,7 @@ declare module sequelize {
     /**
      * Updates a row
      */
-    update(instance: Instance<any, any>, tableName: string, values: Object, identifier: Object,
+    update(instance: Instance, tableName: string, values: Object, identifier: Object,
       options?: QueryOptions): SequelizePromise<Object>;
 
     /**
@@ -4291,31 +2648,31 @@ declare module sequelize {
     /**
      * Deletes a row
      */
-    delete(instance: Instance<any, any>, tableName: string, identifier: Object,
+    delete(instance: Instance, tableName: string, identifier: Object,
       options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Deletes multiple rows at once
      */
     bulkDelete(tableName: string, identifier: Object, options?: QueryOptions,
-      model?: Model<any, any>): SequelizePromise<Object>;
+      model?: Model<any>): SequelizePromise<Object>;
 
     /**
      * Returns selected rows
      */
-    select(model: Model<any, any>, tableName: string, options?: QueryOptions): SequelizePromise<Array<Object>>;
+    select(model: Model<any>, tableName: string, options?: QueryOptions): SequelizePromise<Array<Object>>;
 
     /**
      * Increments a row value
      */
-    increment(instance: Instance<any, any>, tableName: string, values: Object, identifier: Object,
+    increment(instance: Instance, tableName: string, values: Object, identifier: Object,
       options?: QueryOptions): SequelizePromise<Object>;
 
     /**
      * Selects raw without parsing the string into an object
      */
     rawSelect(tableName: string, options: QueryOptions, attributeSelector: string | Array<string>,
-      model?: Model<any, any>): SequelizePromise<Array<string>>;
+      model?: Model<any>): SequelizePromise<Array<string>>;
 
     /**
      * Postgres only. Creates a trigger on specified table to call the specified function with supplied
@@ -4440,11 +2797,8 @@ declare module sequelize {
 
   /**
    * General column options
-   *
-   * @see Define
-   * @see AssociationForeignKeyOptions
    */
-  export interface ColumnOptions {
+  export interface ColumnOptions<TColumn> {
 
     /**
      * If false, the column will have a NOT NULL constraint, and a not null validation will be run before an
@@ -4460,21 +2814,20 @@ declare module sequelize {
     /**
      * A literal default value, a JavaScript function, or an SQL function (see `sequelize.fn`)
      */
-    defaultValue?: any;
-
+    defaultValue?: TColumn | fn | literal;
   }
 
   /**
    * References options for the column's attributes
    *
-   * @see AttributeColumnOptions
+   * @see AttributecolumnOptions
    */
   export interface DefineAttributeColumnReferencesOptions {
 
     /**
      * If this column references another table, provide it here as a Model, or a string
      */
-    model?: string | Model<any, any>;
+    model?: string | Model<any>;
 
     /**
      * The column of the foreign table that this column references
@@ -4492,10 +2845,8 @@ declare module sequelize {
 
   /**
    * Column options for the model schema attributes
-   *
-   * @see Attributes
    */
-  export interface DefineAttributeColumnOptions extends ColumnOptions {
+  export interface DefineAttributeColumnOptions<TInstance extends Instance, TAttribute> extends ColumnOptions<TAttribute> {
 
     /**
      * A string or a data type
@@ -4545,13 +2896,13 @@ declare module sequelize {
      * Provide a custom getter for this column. Use `this.getDataValue(String)` to manipulate the underlying
      * values.
      */
-    get?: () => any;
+    get?: (this: TInstance) => TAttribute;
 
     /**
      * Provide a custom setter for this column. Use `this.setDataValue(String, Value)` to manipulate the
      * underlying values.
      */
-    set?: (val: any) => void;
+    set?: (this: TInstance, val: TAttribute) => void;
 
     /**
      * An object of validations to execute for this column every time the model is saved. Can be either the
@@ -4576,22 +2927,19 @@ declare module sequelize {
      *   })
      * ```
      */
-    values?: Array<string>;
+    values?: TAttribute[];
 
   }
 
   /**
    * Interface for Attributes provided for a column
-   *
-   * @see Sequelize.define
    */
-  export interface DefineAttributes {
+  export type DefineAttributes<TInstance extends Instance> = {
 
     /**
      * The description of a database column
      */
-    [name: string]: DataType | DefineAttributeColumnOptions;
-
+    [K in keyof TInstance]: DataType | DefineAttributeColumnOptions<TInstance, TInstance[K]>;
   }
 
   /**
@@ -4654,12 +3002,12 @@ declare module sequelize {
     /**
      * A sequelize instance used to build the return instance
      */
-    instance?: Instance<any, any>;
+    instance?: Instance;
 
     /**
      * A sequelize model used to build the returned model instances (used to be called callee)
      */
-    model?: Model<any, any>;
+    model?: Model<any>;
 
     // TODO: force, cascade
 
@@ -4858,10 +3206,8 @@ declare module sequelize {
 
   /**
    * Interface for indexes property in DefineOptions
-   *
-   * @see DefineOptions
    */
-  export interface DefineIndexesOptions {
+  export interface DefineIndexesOptions<TInstance extends Instance> {
 
     /**
      * The name of the index. Defaults to model name + _ + fields concatenated
@@ -4899,14 +3245,12 @@ declare module sequelize {
      * (field name), `length` (create a prefix index of length chars), `order` (the direction the column
      * should be sorted in), `collate` (the collation (sort order) for the column)
      */
-    fields?: Array<string | { attribute: string, length: number, order: string, collate: string }>
+    fields?: Array<keyof TInstance | { attribute: keyof TInstance, length: number, order: string, collate: string }>
 
   }
 
   /**
    * Interface for name property in DefineOptions
-   *
-   * @see DefineOptions
    */
   export interface DefineNameOptions {
 
@@ -4927,8 +3271,8 @@ declare module sequelize {
    *
    * @see DefineOptions
    */
-  export interface DefineGetterMethodsOptions {
-    [name: string]: () => any;
+  export type DefineGetterMethodsOptions<TInstance extends Instance> = {
+    [K in keyof TInstance]: () => TInstance[K];
   }
 
   /**
@@ -4936,8 +3280,8 @@ declare module sequelize {
    *
    * @see DefineOptions
    */
-  export interface DefineSetterMethodsOptions {
-    [name: string]: (val: any) => void;
+  export type DefineSetterMethodsOptions<TInstance extends Instance> = {
+    [K in keyof TInstance]: (val: TInstance[K]) => void;
   }
 
   /**
@@ -4945,12 +3289,12 @@ declare module sequelize {
    *
    * @see DefineOptions
    */
-  export interface DefineScopeOptions {
+  export interface DefineScopeOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
     /**
      * Name of the scope and it's query
      */
-    [scopeName: string]: FindOptions | Function;
+    [scopeName: string]: FindOptions<TModel, TInstance> | ((...args: any[]) => FindOptions<TModel, TInstance>);
 
   }
 
@@ -4959,19 +3303,19 @@ declare module sequelize {
    *
    * @see Sequelize.define
    */
-  export interface DefineOptions<TInstance> {
+  export interface DefineOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
 
     /**
      * Define the default search scope to use for this model. Scopes have the same form as the options passed to
      * find / findAll.
      */
-    defaultScope?: FindOptions;
+    defaultScope?: FindOptions<TModel, TInstance>;
 
     /**
      * More scopes, defined in the same way as defaultScope above. See `Model.scope` for more information about
      * how scopes are defined, and what you can do with them
      */
-    scopes?: DefineScopeOptions;
+    scopes?: DefineScopeOptions<TModel, TInstance>;
 
     /**
      * Don't persits null values. This means that all columns with null values will not be saved.
@@ -5019,7 +3363,7 @@ declare module sequelize {
     /**
      * Indexes for the provided database table
      */
-    indexes?: Array<DefineIndexesOptions>;
+    indexes?: DefineIndexesOptions<TInstance>[];
 
     /**
      * Override the name of the createdAt column if a string is provided, or disable it if false. Timestamps
@@ -5052,7 +3396,7 @@ declare module sequelize {
      * does not match a column, this function will act as a virtual getter, that can fetch multiple other
      * values
      */
-    getterMethods?: DefineGetterMethodsOptions;
+    getterMethods?: DefineGetterMethodsOptions<TInstance>;
 
     /**
      * Provide setter functions that work like those defined per column. If you provide a setter method with
@@ -5061,21 +3405,21 @@ declare module sequelize {
      * does not match a column, this function will act as a virtual setter, that can act on and set other
      * values, but will not be persisted
      */
-    setterMethods?: DefineSetterMethodsOptions;
+    setterMethods?: DefineSetterMethodsOptions<TInstance>;
 
     /**
      * Provide functions that are added to each instance (DAO). If you override methods provided by sequelize,
      * you can access the original method using `this.constructor.super_.prototype`, e.g.
      * `this.constructor.super_.prototype.toJSON.apply(this, arguments)`
      */
-    instanceMethods?: Object;
+    instanceMethods?: { [K in keyof TInstance]: (this: TInstance, ...args: any[]) => any };
 
     /**
      * Provide functions that are added to the model (Model). If you override methods provided by sequelize,
      * you can access the original method using `this.constructor.prototype`, e.g.
      * `this.constructor.prototype.find.apply(this, arguments)`
      */
-    classMethods?: Object;
+    classMethods?: { [K in keyof TModel]: (this: TModel, ...args: any[]) => any };
 
     schema?: string;
 
@@ -5105,7 +3449,7 @@ declare module sequelize {
      * afterBulkCreate, afterBulkDestory and afterBulkUpdate. See Hooks for more information about hook
      * functions and their signatures. Each property can either be a function, or an array of functions.
      */
-    hooks?: HooksDefineOptions<TInstance>;
+    hooks?: HooksOptions<TModel, TInstance>;
 
     /**
      * An object of model wide validations. Validations have access to all model values via `this`. If the
@@ -5255,7 +3599,7 @@ declare module sequelize {
     /**
      * Default options for model definitions. See sequelize.define for options
      */
-    define?: DefineOptions<any>;
+    define?: DefineOptions<any, any>;
 
     /**
      * Default options for sequelize.query
@@ -5265,7 +3609,7 @@ declare module sequelize {
     /**
      * Default options for sequelize.set
      */
-    set?: SetOptions;
+    set?: InstanceSetOptions;
 
     /**
      * Default options for sequelize.sync
@@ -5371,7 +3715,7 @@ declare module sequelize {
      * simply as factory. This class should not be instantiated directly, it is created using sequelize.define,
      * and already created models can be loaded using sequelize.import
      */
-    Model: Model<any, any>;
+    Model: ModelStatic<Instance>;
 
     /**
      * A reference to the sequelize transaction class. Use this to access isolationLevels when creating a
@@ -5387,7 +3731,10 @@ declare module sequelize {
     /**
      * A reference to the sequelize instance class.
      */
-    Instance: Instance<any, any>;
+    Instance: {
+      new (): Instance;
+      prototype: Instance;
+    }
 
     /**
      * Creates a object representing a database function. This can be used in search queries, both in where and
@@ -5435,14 +3782,14 @@ declare module sequelize {
      *
      * @param args Each argument will be joined by AND
      */
-    and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
+    and<TInstance extends Instance, K extends keyof TInstance>(...args: Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>): AndOperator<TInstance, K>;
 
     /**
      * An OR query
      *
      * @param args Each argument will be joined by OR
      */
-    or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
+    or<TInstance extends Instance, K extends keyof TInstance>(...args: Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>): OrOperator<TInstance, K>;
 
     /**
      * Creates an object representing nested where conditions for postgres's json data-type.
@@ -5472,9 +3819,10 @@ declare module sequelize {
      * @param logic The condition. Can be both a simply type, or a further condition (`.or`, `.and`, `.literal`
      *     etc.)
      */
-    where(attr: Object, comparator: string, logic: string | Object): where;
-    where(attr: Object, logic: string | Object): where;
-    condition(attr: Object, logic: string | Object): where;
+    where(attr: DefineAttributeColumnOptions<any, any> | fn | col | literal, comparator: string, logic: any): where;
+    where(attr: DefineAttributeColumnOptions<any, any> | fn | col | literal, logic: any): where;
+    condition(attr: Object, logic: any): where;
+
 
   }
 
@@ -5492,7 +3840,7 @@ declare module sequelize {
    * should also be installed in your project. You don't need to import it however, as
    * sequelize will take care of that.
    */
-  export interface Connection extends SequelizeStaticAndInstance, Hooks<any> {
+  export interface Connection extends SequelizeStaticAndInstance {
     /**
      * A reference to Sequelize constructor from sequelize. Useful for accessing DataTypes, Errors etc.
      */
@@ -5560,15 +3908,18 @@ declare module sequelize {
      * @param options    These options are merged with the default define options provided to the Sequelize
      *                   constructor
      */
-    define<TInstance, TAttributes>(modelName: string, attributes: DefineAttributes,
-      options?: DefineOptions<TInstance>): Model<TInstance, TAttributes>;
+    define<TModel extends Model<TInstance>, TInstance extends Instance>(
+      modelName: string,
+      attributes: DefineAttributes<TInstance>,
+      options?: DefineOptions<TModel, TInstance>
+    ): TModel;
 
     /**
      * Fetch a Model which is already defined
      *
      * @param modelName The name of a model defined with Sequelize.define
      */
-    model<TInstance, TAttributes>(modelName: string): Model<TInstance, TAttributes>;
+    model<TModel extends Model<Instance>>(modelName: TModel['name']): TModel;
 
     /**
      * Checks whether a model with the given name is defined
@@ -5593,10 +3944,10 @@ declare module sequelize {
      * @param defineFunction An optional function that provides model definitions. Useful if you do not
      *     want to use the module root as the define function
      */
-    import<TInstance, TAttributes>(
+    import<TModel>(
       path: string,
-      defineFunction?: (sequelize: Connection, dataTypes: DataTypes) => Model<TInstance, TAttributes>
-    ): Model<TInstance, TAttributes>;
+      defineFunction?: (sequelize: Connection, dataTypes: DataTypes) => TModel
+    ): TModel;
 
     /**
      * Execute a query on the DB, with the posibility to bypass all the sequelize goodness.
@@ -5705,7 +4056,7 @@ declare module sequelize {
      * @param {Boolean|function} [options.transaction]
      * @param {Boolean|function} [options.logging] A function that logs sql queries, or false for no logging
      */
-    truncate(options?: DestroyOptions): SequelizePromise<any>;
+    truncate(options?: TruncateOptions): SequelizePromise<any>;
 
     /**
      * Drop all tables defined through this sequelize instance. This is done by calling Model.drop on each model
@@ -5786,6 +4137,290 @@ declare module sequelize {
      */
     databaseVersion(): SequelizePromise<string>;
 
+    // ------------------------------------------ Hooks -------------------------------------------------------------
+
+    /**
+     * Add a hook to the model
+     *
+     * @param hookType
+     * @param name Provide a name for the hook function. It can be used to remove the hook later or to order
+     *     hooks based on some sort of priority system in the future.
+     * @param fn The hook function
+     *
+     * @alias hook
+     */
+    addHook(hookType: string, name: string, fn: Function): typeof Sequelize;
+    addHook(hookType: string, fn: Function): typeof Sequelize;
+    hook(hookType: string, name: string, fn: Function): typeof Sequelize;
+    hook(hookType: string, fn: Function): typeof Sequelize;
+
+    /**
+     * Remove hook from the model
+     *
+     * @param hookType
+     * @param name
+     */
+    removeHook(hookType: string, name: string): typeof Sequelize;
+
+    /**
+     * Check whether the mode has any hooks of this type
+     *
+     * @param hookType
+     *
+     * @alias hasHooks
+     */
+    hasHook(hookType: string): boolean;
+    hasHooks(hookType: string): boolean;
+
+    /**
+     * A hook that is run before validation
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    beforeValidate(name: string, fn: (instance: Instance, options: Object) => void): void;
+    beforeValidate(fn: (instance: Instance, options: Object) => void): void;
+
+    /**
+     * A hook that is run after validation
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    afterValidate(name: string, fn: (instance: Instance, options: Object) => void): void;
+    afterValidate(fn: (instance: Instance, options: Object) => void): void;
+
+    /**
+     * A hook that is run before creating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with attributes, options
+     */
+    beforeCreate(name: string, fn: (attributes: Instance, options: CreateOptions<Model<Instance>, Instance>) => void): void;
+    beforeCreate(fn: (attributes: Instance, options: CreateOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run after creating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with attributes, options
+     */
+    afterCreate(name: string, fn: (attributes: Instance, options: CreateOptions<Model<Instance>, Instance>) => void): void;
+    afterCreate(fn: (attributes: Instance, options: CreateOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run before destroying a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     * @alias beforeDelete
+     */
+    beforeDestroy(name: string, fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    beforeDestroy(fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    beforeDelete(name: string, fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    beforeDelete(fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+
+    /**
+     * A hook that is run after destroying a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     * @alias afterDelete
+     */
+    afterDestroy(name: string, fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    afterDestroy(fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    afterDelete(name: string, fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+    afterDelete(fn: (instance: Instance, options: InstanceDestroyOptions) => void): void;
+
+    /**
+     * A hook that is run before updating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    beforeUpdate(name: string, fn: (instance: Instance, options: UpdateOptions<Instance>) => void): void;
+    beforeUpdate(fn: (instance: Instance, options: UpdateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run after updating a single instance
+     *
+     * @param name
+     * @param fn A callback function that is called with instance, options
+     */
+    afterUpdate(name: string, fn: (instance: Instance, options: UpdateOptions<Instance>) => void): void;
+    afterUpdate(fn: (instance: Instance, options: UpdateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run before creating instances in bulk
+     *
+     * @param name
+     * @param fn A callback function that is called with instances, options
+     */
+    beforeBulkCreate(name: string, fn: (instances: Instance[], options: BulkCreateOptions<Instance>) => void): void;
+    beforeBulkCreate(fn: (instances: Instance[], options: BulkCreateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run after creating instances in bulk
+     *
+     * @param name
+     * @param fn A callback function that is called with instances, options
+     * @name afterBulkCreate
+     */
+    afterBulkCreate(name: string, fn: (instances: Instance[], options: BulkCreateOptions<Instance>) => void): void;
+    afterBulkCreate(fn: (instances: Instance[], options: BulkCreateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run before destroying instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     *
+     * @alias beforeBulkDelete
+     */
+    beforeBulkDestroy(name: string, fn: (options: BulkCreateOptions<Instance>) => void): void;
+    beforeBulkDestroy(fn: (options: BulkCreateOptions<Instance>) => void): void;
+    beforeBulkDelete(name: string, fn: (options: BulkCreateOptions<Instance>) => void): void;
+    beforeBulkDelete(fn: (options: BulkCreateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run after destroying instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     *
+     * @alias afterBulkDelete
+     */
+    afterBulkDestroy(name: string, fn: (options: DestroyOptions<Instance>) => void): void;
+    afterBulkDestroy(fn: (options: DestroyOptions<Instance>) => void): void;
+    afterBulkDelete(name: string, fn: (options: DestroyOptions<Instance>) => void): void;
+    afterBulkDelete(fn: (options: DestroyOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run after updating instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeBulkUpdate(name: string, fn: (options: UpdateOptions<Instance>) => void): void;
+    beforeBulkUpdate(fn: (options: UpdateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run after updating instances in bulk
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    afterBulkUpdate(name: string, fn: (options: UpdateOptions<Instance>) => void): void;
+    afterBulkUpdate(fn: (options: UpdateOptions<Instance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFind(name: string, fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+    beforeFind(fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query, after any { include: {all: ...} } options are expanded
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFindAfterExpandIncludeAll(name: string, fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+    beforeFindAfterExpandIncludeAll(fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run before a find (select) query, after all option parsing is complete
+     *
+     * @param name
+     * @param fn   A callback function that is called with options
+     */
+    beforeFindAfterOptions(name: string, fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+    beforeFindAfterOptions(fn: (options: FindOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run after a find (select) query
+     *
+     * @param name
+     * @param fn   A callback function that is called with instance(s), options
+     */
+    afterFind(name: string, fn: (instancesOrInstance: Instance[] | Instance, options: FindOptions<Model<Instance>, Instance>, fn?: Function) => void): void;
+    afterFind(fn: (instancesOrInstance: Instance[] | Instance, options: FindOptions<Model<Instance>, Instance>,
+      fn?: Function) => void): void;
+
+    /**
+     * A hook that is run before a define call
+     *
+     * @param name
+     * @param fn   A callback function that is called with attributes, options
+     */
+    beforeDefine(name: string, fn: (attributes: DefineAttributes<Instance>, options: DefineOptions<Model<Instance>, Instance>) => void): void;
+    beforeDefine(fn: (attributes: DefineAttributes<Instance>, options: DefineOptions<Model<Instance>, Instance>) => void): void;
+
+    /**
+     * A hook that is run after a define call
+     *
+     * @param name
+     * @param fn   A callback function that is called with factory
+     */
+    afterDefine(name: string, fn: (model: Model<Instance>) => void): void;
+    afterDefine(fn: (model: Model<Instance>) => void): void;
+
+    /**
+     * A hook that is run before Sequelize() call
+     *
+     * @param name
+     * @param fn   A callback function that is called with config, options
+     */
+    beforeInit(name: string, fn: (config: Object, options: Object) => void): void;
+    beforeInit(fn: (config: Object, options: Object) => void): void;
+
+    /**
+     * A hook that is run after Sequelize() call
+     *
+     * @param name
+     * @param fn   A callback function that is called with sequelize
+     */
+    afterInit(name: string, fn: (sequelize: Connection) => void): void;
+    afterInit(fn: (sequelize: Connection) => void): void;
+
+    /**
+     * A hook that is run before sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name beforeBulkSync
+     */
+    beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after sequelize.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @name afterBulkSync
+     */
+    afterBulkSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterBulkSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run before Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name beforeSync
+     */
+    beforeSync(name: string, fn: (options: SyncOptions) => any): void;
+    beforeSync(fn: (options: SyncOptions) => any): void;
+
+    /**
+     * A hook that is run after Model.sync call
+     * @param {String}   name
+     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @name afterSync
+     */
+    afterSync(name: string, fn: (options: SyncOptions) => any): void;
+    afterSync(fn: (options: SyncOptions) => any): void;
   }
 
   //
@@ -6059,5 +4694,5 @@ declare module sequelize {
   }
 }
 
-declare var sequelize: sequelize.Static;
-export = sequelize;
+declare const Sequelize: Sequelize.Sequelize;
+export = Sequelize;
