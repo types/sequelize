@@ -1,137 +1,135 @@
 
-declare namespace Instance {
-  /**
-   * Options used for Instance.increment method
-   */
-  export interface IncrementDecrementOptions<TInstance extends Instance> {
-
-    /**
-     * The number to increment by
-     *
-     * Defaults to 1
-     */
-    by?: number;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * A hash of attributes to describe your search. See above for examples.
-     */
-    where?: WhereOptions<TInstance>;
-
-  }
+/**
+ * Options used for Instance.increment method
+ */
+export interface IncrementDecrementOptions<TInstance extends Instance> {
 
   /**
-   * Options used for Instance.restore method
+   * The number to increment by
+   *
+   * Defaults to 1
    */
-  export interface InstanceRestoreOptions {
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-  }
+  by?: number;
 
   /**
-   * Options used for Instance.destroy method
+   * A function that gets executed while running the query to log the sql.
    */
-  export interface InstanceDestroyOptions {
-
-    /**
-     * If set to true, paranoid models will actually be deleted
-     */
-    force?: boolean;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Transaction to run the query in
-     */
-    transaction?: Transaction;
-
-  }
+  logging?: boolean | Function;
 
   /**
-   * Options used for Instance.update method
+   * Transaction to run query under
    */
-  export interface InstanceUpdateOptions<TInstance extends Instance> extends InstanceSaveOptions<TInstance>, InstanceSetOptions {
-
-    /**
-     * A hash of attributes to describe your search. See above for examples.
-     */
-    where?: WhereOptions<TInstance>;
-
-  }
+  transaction?: Transaction;
 
   /**
-   * Options used for Instance.set method
+   * A hash of attributes to describe your search. See above for examples.
    */
-  export interface InstanceSetOptions {
+  where?: WhereOptions<TInstance>;
 
-    /**
-     * If set to true, field and virtual setters will be ignored
-     */
-    raw?: boolean;
+}
 
-    /**
-     * Clear all previously set data values
-     */
-    reset?: boolean;
-
-  }
+/**
+ * Options used for Instance.restore method
+ */
+export interface InstanceRestoreOptions {
 
   /**
-   * Options used for Instance.save method
+   * A function that gets executed while running the query to log the sql.
    */
-  export interface InstanceSaveOptions<TInstance extends Instance> {
+  logging?: boolean | Function;
 
-    /**
-     * An optional array of strings, representing database columns. If fields is provided, only those columns
-     * will be validated and saved.
-     */
-    fields?: Array<keyof TInstance>;
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
 
-    /**
-     * If true, the updatedAt timestamp will not be updated.
-     *
-     * Defaults to false
-     */
-    silent?: boolean;
+}
 
-    /**
-     * If false, validations won't be run.
-     *
-     * Defaults to true
-     */
-    validate?: boolean;
+/**
+ * Options used for Instance.destroy method
+ */
+export interface InstanceDestroyOptions {
 
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
+  /**
+   * If set to true, paranoid models will actually be deleted
+   */
+  force?: boolean;
 
-    /**
-     * Transaction to run the query in
-     */
-    transaction?: Transaction;
-  }
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * Transaction to run the query in
+   */
+  transaction?: Transaction;
+
+}
+
+/**
+ * Options used for Instance.update method
+ */
+export interface InstanceUpdateOptions<TInstance extends Instance> extends InstanceSaveOptions<TInstance>, InstanceSetOptions {
+
+  /**
+   * A hash of attributes to describe your search. See above for examples.
+   */
+  where?: WhereOptions<TInstance>;
+
+}
+
+/**
+ * Options used for Instance.set method
+ */
+export interface InstanceSetOptions {
+
+  /**
+   * If set to true, field and virtual setters will be ignored
+   */
+  raw?: boolean;
+
+  /**
+   * Clear all previously set data values
+   */
+  reset?: boolean;
+
+}
+
+/**
+ * Options used for Instance.save method
+ */
+export interface InstanceSaveOptions<TInstance extends Instance> {
+
+  /**
+   * An optional array of strings, representing database columns. If fields is provided, only those columns
+   * will be validated and saved.
+   */
+  fields?: Array<keyof TInstance>;
+
+  /**
+   * If true, the updatedAt timestamp will not be updated.
+   *
+   * Defaults to false
+   */
+  silent?: boolean;
+
+  /**
+   * If false, validations won't be run.
+   *
+   * Defaults to true
+   */
+  validate?: boolean;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * Transaction to run the query in
+   */
+  transaction?: Transaction;
 }
 
 /**
@@ -155,7 +153,7 @@ declare namespace Instance {
  *
  * @see Sequelize.define for more information about getters and setters
  */
-declare class Instance {
+export class Instance {
 
   Model: ModelStatic<this>;
 
@@ -350,4 +348,4 @@ declare class Instance {
   toJSON(): { [K in keyof this]: this[K] };
 }
 
-export = Instance;
+export default Instance;

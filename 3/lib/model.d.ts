@@ -1,833 +1,824 @@
 
 import Instance = require('./instance');
 
-declare namespace Model {
-  //
-  //  Model
-  // ~~~~~~~
-  //
-  //  https://github.com/sequelize/sequelize/blob/v3.4.1/lib/model.js
-  //
+/**
+ * Options to pass to Model on drop
+ */
+export interface DropOptions {
 
   /**
-   * Options to pass to Model on drop
+   * Also drop all objects depending on this table, such as views. Only works in postgres
    */
-  export interface DropOptions {
-
-    /**
-     * Also drop all objects depending on this table, such as views. Only works in postgres
-     */
-    cascade?: boolean;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-  }
+  cascade?: boolean;
 
   /**
-   * Schema Options provided for applying a schema to a model
+   * A function that gets executed while running the query to log the sql.
    */
-  export interface SchemaOptions {
+  logging?: boolean | Function;
 
-    /**
-     * The character(s) that separates the schema name from the table name
-     */
-    schemaDelimeter?: string,
+}
 
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-  }
+/**
+ * Schema Options provided for applying a schema to a model
+ */
+export interface SchemaOptions {
 
   /**
-   * Scope Options for Model.scope
+   * The character(s) that separates the schema name from the table name
    */
-  export interface ScopeOptions {
-
-    /**
-     * The scope(s) to apply. Scopes can either be passed as consecutive arguments, or as an array of arguments.
-     * To apply simple scopes and scope functions with no arguments, pass them as strings. For scope function,
-     * pass an object, with a `method` property. The value can either be a string, if the method does not take
-     * any arguments, or an array, where the first element is the name of the method, and consecutive elements
-     * are arguments to that method. Pass null to remove all scopes, including the default.
-     */
-    method: string | Array<any>;
-
-  }
+  schemaDelimeter?: string,
 
   /**
-   * The type accepted by every `where` option
-   *
-   * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
+   * A function that gets executed while running the query to log the sql.
    */
-  export type WhereOptions<TInstance extends Instance> =
-    WhereAttributeHash<TInstance>
-    | AndOperator<TInstance, keyof TInstance>
-    | OrOperator<TInstance, keyof TInstance>
-    | where
-    | Array<string | number>;
+  logging?: boolean | Function;
+
+}
+
+/**
+ * Scope Options for Model.scope
+ */
+export interface ScopeOptions {
+
+  /**
+   * The scope(s) to apply. Scopes can either be passed as consecutive arguments, or as an array of arguments.
+   * To apply simple scopes and scope functions with no arguments, pass them as strings. For scope function,
+   * pass an object, with a `method` property. The value can either be a string, if the method does not take
+   * any arguments, or an array, where the first element is the name of the method, and consecutive elements
+   * are arguments to that method. Pass null to remove all scopes, including the default.
+   */
+  method: string | Array<any>;
+
+}
+
+/**
+ * The type accepted by every `where` option
+ *
+ * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
+ */
+export type WhereOptions<TInstance extends Instance> =
+  WhereAttributeHash<TInstance>
+  | AndOperator<TInstance, keyof TInstance>
+  | OrOperator<TInstance, keyof TInstance>
+  | where
+  | Array<string | number>;
+
+/**
+ * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+ *
+ * _PG only_
+ */
+export interface AnyOperator {
+  $any: Array<string | number>;
+}
+
+/** Undocumented? */
+export interface AllOperator {
+  $all: Array<string | number>;
+}
+
+/**
+ * Operators that can be used in WhereOptions
+ *
+ * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
+ */
+export interface WhereOperators<TInstance extends Instance, K extends keyof TInstance> {
 
   /**
    * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
    *
    * _PG only_
    */
-  export interface AnyOperator {
-    $any: Array<string | number>;
-  }
+  $any?: Array<TInstance[K]>;
 
-  /** Undocumented? */
-  export interface AllOperator {
-    $all: Array<string | number>;
-  }
+  /** Example: `$gte: 6,` becomes `>= 6` */
+  $gte?: TInstance[K];
+
+  /** Example: `$lt: 10,` becomes `< 10` */
+  $lt?: TInstance[K];
+
+  /** Example: `$lte: 10,` becomes `<= 10` */
+  $lte?: TInstance[K];
+
+  /** Example: `$ne: 20,` becomes `!= 20` */
+  $ne?: TInstance[K];
+
+  /** Example: `$not: true,` becomes `IS NOT TRUE` */
+  $not?: TInstance[K] | WhereOperators<TInstance, K>;
+
+  /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
+  $between?: [TInstance[K], TInstance[K]];
+
+  /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
+  $in?: Array<TInstance[K]> | literal;
+
+  /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
+  $notIn?: Array<TInstance[K]> | literal;
 
   /**
-   * Operators that can be used in WhereOptions
+   * Examples:
+   *  - `$like: '%hat',` becomes `LIKE '%hat'`
+   *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
+   */
+  $like?: string | AnyOperator | AllOperator;
+
+  /**
+   * Examples:
+   *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
+   *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
+   */
+  $notLike?: string | AnyOperator | AllOperator;
+
+  /**
+   * case insensitive PG only
    *
-   * See http://docs.sequelizejs.com/en/v3/docs/querying/#operators
+   * Examples:
+   *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+   *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
    */
-  export interface WhereOperators<TInstance extends Instance, K extends keyof TInstance> {
-
-    /**
-     * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
-     *
-     * _PG only_
-     */
-    $any?: Array<TInstance[K]>;
-
-    /** Example: `$gte: 6,` becomes `>= 6` */
-    $gte?: TInstance[K];
-
-    /** Example: `$lt: 10,` becomes `< 10` */
-    $lt?: TInstance[K];
-
-    /** Example: `$lte: 10,` becomes `<= 10` */
-    $lte?: TInstance[K];
-
-    /** Example: `$ne: 20,` becomes `!= 20` */
-    $ne?: TInstance[K];
-
-    /** Example: `$not: true,` becomes `IS NOT TRUE` */
-    $not?: TInstance[K] | WhereOperators<TInstance, K>;
-
-    /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
-    $between?: [TInstance[K], TInstance[K]];
-
-    /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
-    $in?: Array<TInstance[K]> | literal;
-
-    /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
-    $notIn?: Array<TInstance[K]> | literal;
-
-    /**
-     * Examples:
-     *  - `$like: '%hat',` becomes `LIKE '%hat'`
-     *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
-     */
-    $like?: string | AnyOperator | AllOperator;
-
-    /**
-     * Examples:
-     *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
-     *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
-     */
-    $notLike?: string | AnyOperator | AllOperator;
-
-    /**
-     * case insensitive PG only
-     *
-     * Examples:
-     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
-     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
-     */
-    $ilike?: string | AnyOperator | AllOperator;
-
-    /**
-     * case insensitive PG only
-     *
-     * Examples:
-     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
-     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
-     */
-    $iLike?: string | AnyOperator | AllOperator;
-
-    /**
-     * PG array overlap operator
-     *
-     * Example: `$overlap: [1, 2]` becomes `&& [1, 2]`
-     */
-    $overlap?: [number, number];
-
-    /**
-     * PG array contains operator
-     *
-     * Example: `$contains: [1, 2]` becomes `@> [1, 2]`
-     */
-    $contains?: any[];
-
-    /**
-     * PG array contained by operator
-     *
-     * Example: `$contained: [1, 2]` becomes `<@ [1, 2]`
-     */
-    $contained?: any[];
-
-    /** Example: `$gt: 6,` becomes `> 6` */
-    $gt?: TInstance[K];
-
-    /**
-     * PG only
-     *
-     * Examples:
-     *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
-     *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
-     */
-    $notILike?: string | AnyOperator | AllOperator;
-
-    /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
-    $notBetween?: [number, number];
-  }
-
-  /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
-  export interface OrOperator<TInstance extends Instance, K extends keyof TInstance> {
-    $or: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
-  }
-
-  /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
-  export interface AndOperator<TInstance extends Instance, K extends keyof TInstance> {
-    $and: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
-  }
+  $ilike?: string | AnyOperator | AllOperator;
 
   /**
-   * Where Geometry Options
-   */
-  export interface WhereGeometryOptions {
-    type: string;
-    coordinates: Array<Array<number> | number>;
-  }
-
-  /**
-   * A hash of attributes to describe your search.
-   */
-  export type WhereAttributeHash<TInstance extends Instance> = {
-    /**
-     * Possible key values:
-     * - A simple attribute name
-     * - A nested key for JSON columns
-     *
-     *       {
-     *         "meta.audio.length": {
-     *           $gt: 20
-     *         }
-     *       }
-     */
-    [K in keyof TInstance]?:
-      TInstance[K] // literal value
-      | WhereOperators<TInstance, K>
-      | col // reference another column
-      | OrOperator<TInstance, K>
-      | AndOperator<TInstance, K>
-      | WhereGeometryOptions
-      | Array<string | number>; // implicit $or;
-  }
-
-  /**
-   * Through options for Include Options
-   */
-  export interface IncludeThroughOptions<TThroughInstance extends Instance> {
-
-    /**
-     * Filter on the join model for belongsToMany relations
-     */
-    where?: WhereOptions<TThroughInstance>;
-
-    /**
-     * A list of attributes to select from the join model for belongsToMany relations
-     */
-    attributes?: FindAttributeOptions<TThroughInstance>;
-
-  }
-
-  export type Includeable<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> =
-    Model<Instance> // An associated model
-    | Association<TSourceModel, Model<Instance>> // An association between the source model and an associated model
-    | IncludeOptions<TSourceModel, TSourceInstance>;
-
-  /**
-   * Complex include options
-   */
-  export interface IncludeOptions<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> {
-
-    /**
-     * The model you want to eagerly load
-     */
-    model?: TSourceModel;
-
-    /**
-     * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
-     * `belongsTo`, this should be the singular name, and for `hasMany`, it should be the plural
-     */
-    as?: string;
-
-    /**
-     * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
-     */
-    association?: Association<TSourceModel, Model<Instance>>;
-
-    /**
-     * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
-     * unless you explicitly set `required: false`
-     */
-    where?: WhereOptions<TSourceInstance>;
-
-    /**
-     * A list of attributes to select from the child model
-     */
-    attributes?: FindAttributeOptions<TSourceInstance>;
-
-    /**
-     * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
-     * matching children. True if `include.where` is set, false otherwise.
-     */
-    required?: boolean;
-
-    /**
-     * Limit include. Only available when setting `separate` to true.
-     */
-    limit?: number;
-
-    /**
-     * Run include in separate queries.
-     */
-    separate?: boolean;
-
-    /**
-     * Through Options
-     */
-    through?: IncludeThroughOptions<any>;
-
-    /**
-     * Load further nested related models
-     */
-    include?: Includeable<TSourceModel, TSourceInstance>[];
-
-    /**
-     * Order include. Only available when setting `separate` to true.
-     */
-    order?: Order<TSourceInstance>;
-  }
-
-  export type OrderItem<TInstance extends Instance> =
-    keyof TInstance | fn | col | literal |
-    [keyof TInstance | col | fn | literal, string] |
-    [Model<TInstance> | { model: Model<TInstance>, as: string }, string, string] |
-    [Model<TInstance>, Model<TInstance>, string, string];
-  export type Order<TInstance extends Instance> = string | fn | col | literal | OrderItem<TInstance>[];
-
-  export type FindAttributeOptions<TInstance extends Instance> =
-    Array<keyof TInstance | [keyof TInstance | literal | fn, string]> |
-    {
-      exclude: Array<keyof TInstance>;
-      include?: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
-    } | {
-      exclude?: Array<keyof TInstance>;
-      include: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
-    };
-
-  /**
-   * Options that are passed to any model creating a SELECT query
+   * case insensitive PG only
    *
-   * A hash of options to describe the scope of the search
+   * Examples:
+   *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
+   *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
    */
-  export interface FindOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
-    /**
-     * A hash of attributes to describe your search. See above for examples.
-     */
-    where?: WhereOptions<TInstance>;
-
-    /**
-     * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
-     * two elements - the first is the name of the attribute in the DB (or some kind of expression such as
-     * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
-     * have in the returned instance
-     */
-    attributes?: FindAttributeOptions<TInstance>;
-
-    /**
-     * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
-     * be returned. Only applies if `options.paranoid` is true for the model.
-     */
-    paranoid?: boolean;
-
-    /**
-     * A list of associations to eagerly load using a left join. Supported is either
-     * `{ include: [ Model1, Model2, ...]}` or `{ include: [{ model: Model1, as: 'Alias' }]}`.
-     * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
-     * the as attribute when eager loading Y).
-     */
-    include?: Includeable<TModel, TInstance>[];
-
-    /**
-     * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
-     * several columns / functions to order by. Each element can be further wrapped in a two-element array. The
-     * first element is the column / function to order by, the second is the direction. For example:
-     * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
-     */
-    order?: Order<TInstance>;
-
-    /**
-     * GROUP BY in sql
-     */
-    group?: GroupOption;
-
-    /**
-     * Limit the results
-     */
-    limit?: number;
-
-    /**
-     * Skip the results;
-     */
-    offset?: number;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * Lock the selected rows. Possible options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE.
-     * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
-     * locks with joins. See [transaction.LOCK for an example](transaction#lock)
-     */
-    lock?: string | { level: string, of: Model<Instance> };
-
-    /**
-     * Return raw result. See sequelize.query for more information.
-     */
-    raw?: boolean;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * having ?!?
-     */
-    having?: WhereAttributeHash<TInstance>;
-
-  }
+  $iLike?: string | AnyOperator | AllOperator;
 
   /**
-   * Options for Model.count method
+   * PG array overlap operator
+   *
+   * Example: `$overlap: [1, 2]` becomes `&& [1, 2]`
    */
-  export interface CountOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
-
-    /**
-     * A hash of search attributes.
-     */
-    where?: WhereOptions<TInstance>;
-
-    /**
-     * Include options. See `find` for details
-     */
-    include?: Includeable<TModel, TInstance>[];
-
-    /**
-     * Apply COUNT(DISTINCT(col))
-     */
-    distinct?: boolean;
-
-    /**
-     * Used in conjustion with `group`
-     */
-    attributes?: FindAttributeOptions<TInstance>;
-
-    /**
-     * GROUP BY in sql
-     */
-    group?: GroupOption;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    transaction?: Transaction;
-  }
-
-  export interface FindAndCountOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends CountOptions<TModel, TInstance>, FindOptions<TModel, TInstance> { }
+  $overlap?: [number, number];
 
   /**
-   * Options for Model.build method
+   * PG array contains operator
+   *
+   * Example: `$contains: [1, 2]` becomes `@> [1, 2]`
    */
-  export interface BuildOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
-
-    /**
-     * If set to true, values will ignore field and virtual setters.
-     */
-    raw?: boolean;
-
-    /**
-     * Is this record new
-     */
-    isNewRecord?: boolean;
-
-    /**
-     * an array of include options - Used to build prefetched/included model instances. See `set`
-     *
-     * TODO: See set
-     */
-    include?: Includeable<TModel, TInstance>[];
-
-  }
+  $contains?: any[];
 
   /**
-   * Options for Model.create method
+   * PG array contained by operator
+   *
+   * Example: `$contained: [1, 2]` becomes `<@ [1, 2]`
    */
-  export interface CreateOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends BuildOptions<TModel, TInstance> {
+  $contained?: any[];
 
-    /**
-     * If set, only columns matching those in fields will be saved
-     */
-    fields?: Array<keyof TInstance>;
-
-    /**
-     * On Duplicate
-     */
-    onDuplicate?: string;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    silent?: boolean;
-
-    returning?: boolean;
-  }
+  /** Example: `$gt: 6,` becomes `> 6` */
+  $gt?: TInstance[K];
 
   /**
-   * Options for Model.findOrInitialize method
+   * PG only
+   *
+   * Examples:
+   *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
+   *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
    */
-  export interface FindOrInitializeOptions<TInstance extends Instance> {
+  $notILike?: string | AnyOperator | AllOperator;
 
-    /**
-     * A hash of search attributes.
-     */
-    where: WhereOptions<TInstance>;
-
-    /**
-     * Default values to use if building a new instance
-     */
-    defaults?: Partial<TInstance>;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-  }
-
-  /**
-   * Options for Model.upsert method
-   */
-  export interface UpsertOptions<TInstance extends Instance> {
-    /**
-     * Run validations before the row is inserted
-     */
-    validate?: boolean;
-
-    /**
-     * The fields to insert / update. Defaults to all fields
-     */
-    fields?: Array<keyof TInstance>;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * An optional parameter to specify the schema search_path (Postgres only)
-     */
-    searchPath?: string;
-
-    /**
-     * Print query execution time in milliseconds when logging SQL.
-     */
-    benchmark?: boolean;
-  }
-
-  /**
-   * Options for Model.bulkCreate method
-   */
-  export interface BulkCreateOptions<TInstance extends Instance> {
-
-    /**
-     * Fields to insert (defaults to all fields)
-     */
-    fields?: Array<keyof TInstance>;
-
-    /**
-     * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
-     * fails validation
-     */
-    validate?: boolean;
-
-    /**
-     * Run before / after bulk create hooks?
-     */
-    hooks?: boolean;
-
-    /**
-     * Run before / after create hooks for each individual Instance? BulkCreate hooks will still be run if
-     * options.hooks is true.
-     */
-    individualHooks?: boolean;
-
-    /**
-     * Ignore duplicate values for primary keys? (not supported by postgres)
-     *
-     * Defaults to false
-     */
-    ignoreDuplicates?: boolean;
-
-    /**
-     * Fields to update if row key already exists (on duplicate key update)? (only supported by mysql &
-     * mariadb). By default, all fields are updated.
-     */
-    updateOnDuplicate?: Array<string>;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-  }
-
-  /**
-   * The options passed to Model.destroy in addition to truncate
-   */
-  export interface TruncateOptions {
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-    /**
-     * Only used in conjuction with TRUNCATE. Truncates  all tables that have foreign-key references to the
-     * named table, or to any tables added to the group due to CASCADE.
-     *
-     * Defaults to false;
-     */
-    cascade?: boolean;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Run before / after bulk destroy hooks?
-     */
-    hooks?: boolean;
-
-    /**
-     * If set to true, destroy will SELECT all records matching the where parameter and will execute before /
-     * after destroy hooks on each row
-     */
-    individualHooks?: boolean;
-
-    /**
-     * How many rows to delete
-     */
-    limit?: number;
-
-    /**
-     * Delete instead of setting deletedAt to current timestamp (only applicable if `paranoid` is enabled)
-     */
-    force?: boolean;
-
-    /**
-     * Only used in conjunction with `truncate`.
-     * Automatically restart sequences owned by columns of the truncated table
-     */
-    restartIdentity?: boolean;
-  }
-
-  /**
-   * Options used for Model.destroy
-   */
-  export interface DestroyOptions<TInstance extends Instance> extends TruncateOptions {
-
-    /**
-     * If set to true, dialects that support it will use TRUNCATE instead of DELETE FROM. If a table is
-     * truncated the where and limit options are ignored
-     */
-    truncate?: boolean;
-
-    /**
-     * Filter the destroy
-     */
-    where?: WhereOptions<TInstance>;
-  }
-
-  /**
-   * Options for Model.restore
-   */
-  export interface RestoreOptions<TInstance extends Instance> {
-
-    /**
-     * Filter the restore
-     */
-    where?: WhereOptions<TInstance>;
-
-    /**
-     * Run before / after bulk restore hooks?
-     */
-    hooks?: boolean;
-
-    /**
-     * If set to true, restore will find all records within the where parameter and will execute before / after
-     * bulkRestore hooks on each row
-     */
-    individualHooks?: boolean;
-
-    /**
-     * How many rows to undelete
-     */
-    limit?: number;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-  }
-
-  /**
-   * Options used for Model.update
-   */
-  export interface UpdateOptions<TInstance extends Instance> {
-
-    /**
-     * Options to describe the scope of the search.
-     */
-    where: WhereOptions<TInstance>;
-
-    /**
-     * Fields to update (defaults to all fields)
-     */
-    fields?: Array<keyof TInstance>;
-
-    /**
-     * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
-     * fails validation.
-     *
-     * Defaults to true
-     */
-    validate?: boolean;
-
-    /**
-     * Run before / after bulk update hooks?
-     *
-     * Defaults to true
-     */
-    hooks?: boolean;
-
-    /**
-     * Whether or not to update the side effects of any virtual setters.
-     *
-     * Defaults to true
-     */
-    sideEffects?: boolean;
-
-    /**
-     * Run before / after update hooks?. If true, this will execute a SELECT followed by individual UPDATEs.
-     * A select is needed, because the row data needs to be passed to the hooks
-     *
-     * Defaults to false
-     */
-    individualHooks?: boolean;
-
-    /**
-     * Return the affected rows (only for postgres)
-     */
-    returning?: boolean;
-
-    /**
-     * How many rows to update (only for mysql and mariadb)
-     */
-    limit?: number;
-
-    /**
-     * A function that gets executed while running the query to log the sql.
-     */
-    logging?: boolean | Function;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
-
-  }
-
-  /**
-   * Options used for Model.aggregate
-   */
-  export interface AggregateOptions<TInstance extends Instance> extends QueryOptions {
-    /** A hash of search attributes. */
-    where?: WhereOptions<TInstance>;
-
-    /**
-     * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
-     * otherwise defaults to float.
-     */
-    dataType?: DataType;
-
-    /** Applies DISTINCT to the field being aggregated over */
-    distinct?: boolean;
-  }
-
-  export interface ModelStatic<TInstance extends Instance> {
-    new (): Model<TInstance>;
-    prototype: Model<TInstance>
-  }
+  /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
+  $notBetween?: [number, number];
 }
 
-declare class Model<TInstance extends Instance> {
+/** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+export interface OrOperator<TInstance extends Instance, K extends keyof TInstance> {
+  $or: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
+}
+
+/** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+export interface AndOperator<TInstance extends Instance, K extends keyof TInstance> {
+  $and: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
+}
+
+/**
+ * Where Geometry Options
+ */
+export interface WhereGeometryOptions {
+  type: string;
+  coordinates: Array<Array<number> | number>;
+}
+
+/**
+ * A hash of attributes to describe your search.
+ */
+export type WhereAttributeHash<TInstance extends Instance> = {
+  /**
+   * Possible key values:
+   * - A simple attribute name
+   * - A nested key for JSON columns
+   *
+   *       {
+   *         "meta.audio.length": {
+   *           $gt: 20
+   *         }
+   *       }
+   */
+  [K in keyof TInstance]?:
+    TInstance[K] // literal value
+    | WhereOperators<TInstance, K>
+    | col // reference another column
+    | OrOperator<TInstance, K>
+    | AndOperator<TInstance, K>
+    | WhereGeometryOptions
+    | Array<string | number>; // implicit $or;
+}
+
+/**
+ * Through options for Include Options
+ */
+export interface IncludeThroughOptions<TThroughInstance extends Instance> {
+
+  /**
+   * Filter on the join model for belongsToMany relations
+   */
+  where?: WhereOptions<TThroughInstance>;
+
+  /**
+   * A list of attributes to select from the join model for belongsToMany relations
+   */
+  attributes?: FindAttributeOptions<TThroughInstance>;
+
+}
+
+export type Includeable<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> =
+  Model<Instance> // An associated model
+  | Association<TSourceModel, Model<Instance>> // An association between the source model and an associated model
+  | IncludeOptions<TSourceModel, TSourceInstance>;
+
+/**
+ * Complex include options
+ */
+export interface IncludeOptions<TSourceModel extends Model<TSourceInstance>, TSourceInstance extends Instance> {
+
+  /**
+   * The model you want to eagerly load
+   */
+  model?: TSourceModel;
+
+  /**
+   * The alias of the relation, in case the model you want to eagerly load is aliassed. For `hasOne` /
+   * `belongsTo`, this should be the singular name, and for `hasMany`, it should be the plural
+   */
+  as?: string;
+
+  /**
+   * The association you want to eagerly load. (This can be used instead of providing a model/as pair)
+   */
+  association?: Association<TSourceModel, Model<Instance>>;
+
+  /**
+   * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
+   * unless you explicitly set `required: false`
+   */
+  where?: WhereOptions<TSourceInstance>;
+
+  /**
+   * A list of attributes to select from the child model
+   */
+  attributes?: FindAttributeOptions<TSourceInstance>;
+
+  /**
+   * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
+   * matching children. True if `include.where` is set, false otherwise.
+   */
+  required?: boolean;
+
+  /**
+   * Limit include. Only available when setting `separate` to true.
+   */
+  limit?: number;
+
+  /**
+   * Run include in separate queries.
+   */
+  separate?: boolean;
+
+  /**
+   * Through Options
+   */
+  through?: IncludeThroughOptions<any>;
+
+  /**
+   * Load further nested related models
+   */
+  include?: Includeable<TSourceModel, TSourceInstance>[];
+
+  /**
+   * Order include. Only available when setting `separate` to true.
+   */
+  order?: Order<TSourceInstance>;
+}
+
+export type OrderItem<TInstance extends Instance> =
+  keyof TInstance | fn | col | literal |
+  [keyof TInstance | col | fn | literal, string] |
+  [Model<TInstance> | { model: Model<TInstance>, as: string }, string, string] |
+  [Model<TInstance>, Model<TInstance>, string, string];
+export type Order<TInstance extends Instance> = string | fn | col | literal | OrderItem<TInstance>[];
+
+export type FindAttributeOptions<TInstance extends Instance> =
+  Array<keyof TInstance | [keyof TInstance | literal | fn, string]> |
+  {
+    exclude: Array<keyof TInstance>;
+    include?: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
+  } | {
+    exclude?: Array<keyof TInstance>;
+    include: Array<keyof TInstance | [keyof TInstance | literal | fn, string]>;
+  };
+
+/**
+ * Options that are passed to any model creating a SELECT query
+ *
+ * A hash of options to describe the scope of the search
+ */
+export interface FindOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
+  /**
+   * A hash of attributes to describe your search. See above for examples.
+   */
+  where?: WhereOptions<TInstance>;
+
+  /**
+   * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
+   * two elements - the first is the name of the attribute in the DB (or some kind of expression such as
+   * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
+   * have in the returned instance
+   */
+  attributes?: FindAttributeOptions<TInstance>;
+
+  /**
+   * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
+   * be returned. Only applies if `options.paranoid` is true for the model.
+   */
+  paranoid?: boolean;
+
+  /**
+   * A list of associations to eagerly load using a left join. Supported is either
+   * `{ include: [ Model1, Model2, ...]}` or `{ include: [{ model: Model1, as: 'Alias' }]}`.
+   * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
+   * the as attribute when eager loading Y).
+   */
+  include?: Includeable<TModel, TInstance>[];
+
+  /**
+   * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
+   * several columns / functions to order by. Each element can be further wrapped in a two-element array. The
+   * first element is the column / function to order by, the second is the direction. For example:
+   * `order: [['name', 'DESC']]`. In this way the column will be escaped, but the direction will not.
+   */
+  order?: Order<TInstance>;
+
+  /**
+   * GROUP BY in sql
+   */
+  group?: GroupOption;
+
+  /**
+   * Limit the results
+   */
+  limit?: number;
+
+  /**
+   * Skip the results;
+   */
+  offset?: number;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * Lock the selected rows. Possible options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE.
+   * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
+   * locks with joins. See [transaction.LOCK for an example](transaction#lock)
+   */
+  lock?: string | { level: string, of: Model<Instance> };
+
+  /**
+   * Return raw result. See sequelize.query for more information.
+   */
+  raw?: boolean;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * having ?!?
+   */
+  having?: WhereAttributeHash<TInstance>;
+
+}
+
+/**
+ * Options for Model.count method
+ */
+export interface CountOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
+
+  /**
+   * A hash of search attributes.
+   */
+  where?: WhereOptions<TInstance>;
+
+  /**
+   * Include options. See `find` for details
+   */
+  include?: Includeable<TModel, TInstance>[];
+
+  /**
+   * Apply COUNT(DISTINCT(col))
+   */
+  distinct?: boolean;
+
+  /**
+   * Used in conjustion with `group`
+   */
+  attributes?: FindAttributeOptions<TInstance>;
+
+  /**
+   * GROUP BY in sql
+   */
+  group?: GroupOption;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  transaction?: Transaction;
+}
+
+export interface FindAndCountOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends CountOptions<TModel, TInstance>, FindOptions<TModel, TInstance> { }
+
+/**
+ * Options for Model.build method
+ */
+export interface BuildOptions<TModel extends Model<TInstance>, TInstance extends Instance> {
+
+  /**
+   * If set to true, values will ignore field and virtual setters.
+   */
+  raw?: boolean;
+
+  /**
+   * Is this record new
+   */
+  isNewRecord?: boolean;
+
+  /**
+   * an array of include options - Used to build prefetched/included model instances. See `set`
+   *
+   * TODO: See set
+   */
+  include?: Includeable<TModel, TInstance>[];
+
+}
+
+/**
+ * Options for Model.create method
+ */
+export interface CreateOptions<TModel extends Model<TInstance>, TInstance extends Instance> extends BuildOptions<TModel, TInstance> {
+
+  /**
+   * If set, only columns matching those in fields will be saved
+   */
+  fields?: Array<keyof TInstance>;
+
+  /**
+   * On Duplicate
+   */
+  onDuplicate?: string;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  silent?: boolean;
+
+  returning?: boolean;
+}
+
+/**
+ * Options for Model.findOrInitialize method
+ */
+export interface FindOrInitializeOptions<TInstance extends Instance> {
+
+  /**
+   * A hash of search attributes.
+   */
+  where: WhereOptions<TInstance>;
+
+  /**
+   * Default values to use if building a new instance
+   */
+  defaults?: Partial<TInstance>;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+}
+
+/**
+ * Options for Model.upsert method
+ */
+export interface UpsertOptions<TInstance extends Instance> {
+  /**
+   * Run validations before the row is inserted
+   */
+  validate?: boolean;
+
+  /**
+   * The fields to insert / update. Defaults to all fields
+   */
+  fields?: Array<keyof TInstance>;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * An optional parameter to specify the schema search_path (Postgres only)
+   */
+  searchPath?: string;
+
+  /**
+   * Print query execution time in milliseconds when logging SQL.
+   */
+  benchmark?: boolean;
+}
+
+/**
+ * Options for Model.bulkCreate method
+ */
+export interface BulkCreateOptions<TInstance extends Instance> {
+
+  /**
+   * Fields to insert (defaults to all fields)
+   */
+  fields?: Array<keyof TInstance>;
+
+  /**
+   * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
+   * fails validation
+   */
+  validate?: boolean;
+
+  /**
+   * Run before / after bulk create hooks?
+   */
+  hooks?: boolean;
+
+  /**
+   * Run before / after create hooks for each individual Instance? BulkCreate hooks will still be run if
+   * options.hooks is true.
+   */
+  individualHooks?: boolean;
+
+  /**
+   * Ignore duplicate values for primary keys? (not supported by postgres)
+   *
+   * Defaults to false
+   */
+  ignoreDuplicates?: boolean;
+
+  /**
+   * Fields to update if row key already exists (on duplicate key update)? (only supported by mysql &
+   * mariadb). By default, all fields are updated.
+   */
+  updateOnDuplicate?: Array<string>;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+}
+
+/**
+ * The options passed to Model.destroy in addition to truncate
+ */
+export interface TruncateOptions {
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+  /**
+   * Only used in conjuction with TRUNCATE. Truncates  all tables that have foreign-key references to the
+   * named table, or to any tables added to the group due to CASCADE.
+   *
+   * Defaults to false;
+   */
+  cascade?: boolean;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * Run before / after bulk destroy hooks?
+   */
+  hooks?: boolean;
+
+  /**
+   * If set to true, destroy will SELECT all records matching the where parameter and will execute before /
+   * after destroy hooks on each row
+   */
+  individualHooks?: boolean;
+
+  /**
+   * How many rows to delete
+   */
+  limit?: number;
+
+  /**
+   * Delete instead of setting deletedAt to current timestamp (only applicable if `paranoid` is enabled)
+   */
+  force?: boolean;
+
+  /**
+   * Only used in conjunction with `truncate`.
+   * Automatically restart sequences owned by columns of the truncated table
+   */
+  restartIdentity?: boolean;
+}
+
+/**
+ * Options used for Model.destroy
+ */
+export interface DestroyOptions<TInstance extends Instance> extends TruncateOptions {
+
+  /**
+   * If set to true, dialects that support it will use TRUNCATE instead of DELETE FROM. If a table is
+   * truncated the where and limit options are ignored
+   */
+  truncate?: boolean;
+
+  /**
+   * Filter the destroy
+   */
+  where?: WhereOptions<TInstance>;
+}
+
+/**
+ * Options for Model.restore
+ */
+export interface RestoreOptions<TInstance extends Instance> {
+
+  /**
+   * Filter the restore
+   */
+  where?: WhereOptions<TInstance>;
+
+  /**
+   * Run before / after bulk restore hooks?
+   */
+  hooks?: boolean;
+
+  /**
+   * If set to true, restore will find all records within the where parameter and will execute before / after
+   * bulkRestore hooks on each row
+   */
+  individualHooks?: boolean;
+
+  /**
+   * How many rows to undelete
+   */
+  limit?: number;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+}
+
+/**
+ * Options used for Model.update
+ */
+export interface UpdateOptions<TInstance extends Instance> {
+
+  /**
+   * Options to describe the scope of the search.
+   */
+  where: WhereOptions<TInstance>;
+
+  /**
+   * Fields to update (defaults to all fields)
+   */
+  fields?: Array<keyof TInstance>;
+
+  /**
+   * Should each row be subject to validation before it is inserted. The whole insert will fail if one row
+   * fails validation.
+   *
+   * Defaults to true
+   */
+  validate?: boolean;
+
+  /**
+   * Run before / after bulk update hooks?
+   *
+   * Defaults to true
+   */
+  hooks?: boolean;
+
+  /**
+   * Whether or not to update the side effects of any virtual setters.
+   *
+   * Defaults to true
+   */
+  sideEffects?: boolean;
+
+  /**
+   * Run before / after update hooks?. If true, this will execute a SELECT followed by individual UPDATEs.
+   * A select is needed, because the row data needs to be passed to the hooks
+   *
+   * Defaults to false
+   */
+  individualHooks?: boolean;
+
+  /**
+   * Return the affected rows (only for postgres)
+   */
+  returning?: boolean;
+
+  /**
+   * How many rows to update (only for mysql and mariadb)
+   */
+  limit?: number;
+
+  /**
+   * A function that gets executed while running the query to log the sql.
+   */
+  logging?: boolean | Function;
+
+  /**
+   * Transaction to run query under
+   */
+  transaction?: Transaction;
+
+}
+
+/**
+ * Options used for Model.aggregate
+ */
+export interface AggregateOptions<TInstance extends Instance> extends QueryOptions {
+  /** A hash of search attributes. */
+  where?: WhereOptions<TInstance>;
+
+  /**
+   * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
+   * otherwise defaults to float.
+   */
+  dataType?: DataType;
+
+  /** Applies DISTINCT to the field being aggregated over */
+  distinct?: boolean;
+}
+
+export interface ModelStatic<TInstance extends Instance> {
+  new (): Model<TInstance>;
+  prototype: Model<TInstance>
+}
+
+export class Model<TInstance extends Instance> {
 
   name: string;
 
@@ -1636,4 +1627,4 @@ declare class Model<TInstance extends Instance> {
   belongsToMany<TTarget extends Model<Instance>>(target: TTarget, options: BelongsToManyOptions): BelongsToMany<this, TTarget>;
 }
 
-export = Model;
+export default Model;

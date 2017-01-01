@@ -1,6 +1,7 @@
 
-  import {Model, Instance} from '../../index';
-  import {ColumnOptions} from '../../index';
+  import {Model} from '../model';
+  import {Instance} from '../instance';
+  import {ColumnOptions} from '../sequelize';
 
   export abstract class Association<TSourceModel extends Model<Instance>, TTargetModel extends Model<Instance>> {
     associationType: string;

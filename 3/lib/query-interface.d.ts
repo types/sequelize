@@ -1,62 +1,52 @@
 
-import Sequelize = require('./sequelize');
-import Instance = require('./instance');
-import SequelizePromise = require('./promise');
-import Model = require('./model');
+import {Sequelize} from './sequelize';
+import {Instance} from './instance';
+import {Promise as SequelizePromise} from './promise';
+import {Model} from './model';
 
+/**
+ * Most of the methods accept options and use only the logger property of the options. That's why the most used
+ * interface type for options in a method is separated here as another interface.
+ */
+export interface QueryInterfaceOptions {
+  /** A function that receives the sql query, e.g. console.log */
+  logging?: Function;
+}
 
-declare namespace QueryInterface {
-  //
-  //  Query Interface
-  // ~~~~~~~~~~~~~~~~~
-  //
-  //  https://github.com/sequelize/sequelize/blob/v3.4.1/lib/query-interface.js
-  //
+export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
+  engine?: string;
+  charset?: string;
+}
 
-  /**
-   * Most of the methods accept options and use only the logger property of the options. That's why the most used
-   * interface type for options in a method is separated here as another interface.
-   */
-  export interface QueryInterfaceOptions {
-    /** A function that receives the sql query, e.g. console.log */
-    logging?: Function;
-  }
+export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
+  cascade?: boolean;
+  force?: boolean;
+}
 
-  export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
-    engine?: string;
-    charset?: string;
-  }
+export interface QueryInterfaceDropAllTablesOptions extends QueryInterfaceOptions {
+  skip?: string[];
+}
 
-  export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
-    cascade?: boolean;
-    force?: boolean;
-  }
+export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
+  indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
 
-  export interface QueryInterfaceDropAllTablesOptions extends QueryInterfaceOptions {
-    skip?: string[];
-  }
+  /** The name of the index. Default is __ */
+  indexName?: string;
 
-  export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
-    indicesType?: 'UNIQUE'|'FULLTEXT'|'SPATIAL';
+  /** For FULLTEXT columns set your parser */
+  parser?: string;
 
-    /** The name of the index. Default is __ */
-    indexName?: string;
-
-    /** For FULLTEXT columns set your parser */
-    parser?: string;
-
-    /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
-    indexType?: string;
-  }
+  /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
+  indexType?: string;
 }
 
 /**
  * The interface that Sequelize uses to talk to all databases.
  *
- * This interface is available through sequelize.QueryInterface. It should not be commonly used, but it's
+ * This interface is available through sequelize. It should not be commonly used, but it's
  * referenced anyway, so it can be used.
  */
-declare class QueryInterface {
+export class QueryInterface {
 
   /**
    * Returns the dialect-specific sql generator.
@@ -75,19 +65,19 @@ declare class QueryInterface {
    *
    * @param schema The schema to query. Applies only to Postgres.
    */
-  createSchema(schema?: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+  createSchema(schema?: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Drops the specified schema (table).
    *
    * @param schema The schema to query. Applies only to Postgres.
    */
-  dropSchema(schema?: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+  dropSchema(schema?: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Drops all tables.
    */
-  dropAllSchemas(options?: QueryInterface.QueryInterfaceDropAllTablesOptions): SequelizePromise<void>;
+  dropAllSchemas(options?: QueryInterfaceDropAllTablesOptions): SequelizePromise<void>;
 
   /**
    * Queries all table names in the database.
@@ -99,7 +89,7 @@ declare class QueryInterface {
   /**
    * Return database version
    */
-  databaseVersion(options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<string>;
+  databaseVersion(options?: QueryInterfaceOptions): SequelizePromise<string>;
 
   /**
    * Creates a table with specified attributes.
@@ -109,7 +99,7 @@ declare class QueryInterface {
    * @param options       Table options.
    */
   createTable(tableName: string | { schema?: string, tableName?: string }, attributes: DefineAttributes<any>,
-    options?: QueryInterface.QueryInterfaceCreateTableOptions): SequelizePromise<void>;
+    options?: QueryInterfaceCreateTableOptions): SequelizePromise<void>;
 
   /**
    * Drops the specified table.
@@ -117,14 +107,14 @@ declare class QueryInterface {
    * @param tableName Table name.
    * @param options   Query options, particularly "force".
    */
-  dropTable(tableName: string, options?: QueryInterface.QueryInterfaceDropTableOptions): SequelizePromise<void>;
+  dropTable(tableName: string, options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
   /**
    * Drops all tables.
    *
    * @param options
    */
-  dropAllTables(options?: QueryInterface.QueryInterfaceDropTableOptions): SequelizePromise<void>;
+  dropAllTables(options?: QueryInterfaceDropTableOptions): SequelizePromise<void>;
 
   /**
    * Drops all defined enums
@@ -136,7 +126,7 @@ declare class QueryInterface {
   /**
    * Renames a table
    */
-  renameTable(before: string, after: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+  renameTable(before: string, after: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Returns all tables
@@ -153,42 +143,42 @@ declare class QueryInterface {
    * Adds a new column to a table
    */
   addcolumn(table: string, key: string, attribute: DefineAttributeColumnOptions<any, any> | DataType,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Removes a column from a table
    */
-  removecolumn(table: string, attribute: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+  removecolumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Changes a column
    */
   changecolumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
     dataTypeOrOptions?: DataType | DefineAttributeColumnOptions<any, any>,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Renames a column
    */
   renamecolumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
     attrNameAfter: string,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Adds a new index to a table
    */
-  addIndex(tableName: string, attributes: string[], options?: QueryInterface.QueryInterfaceIndexOptions,
+  addIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions,
     rawTablename?: string): SequelizePromise<void>;
-  addIndex(tableName: string, options: QueryInterface.QueryInterfaceIndexOptions & { fields: string[] },
+  addIndex(tableName: string, options: QueryInterfaceIndexOptions & { fields: string[] },
     rawTablename?: string): SequelizePromise<void>;
 
   /**
    * Removes an index of a table
    */
   removeIndex(tableName: string, indexName: string,
-    options?: QueryInterface.QueryInterfaceIndexOptions): SequelizePromise<void>;
+    options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
   removeIndex(tableName: string, attributes: string[],
-    options?: QueryInterface.QueryInterfaceIndexOptions): SequelizePromise<void>;
+    options?: QueryInterfaceIndexOptions): SequelizePromise<void>;
 
   /**
    * Shows the index of a table
@@ -203,7 +193,7 @@ declare class QueryInterface {
   /**
    * Returns all foreign key constraints of a table
    */
-  getForeignKeysForTables(tableNames: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<Object>;
+  getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): SequelizePromise<Object>;
 
   /**
    * Inserts a new record
@@ -270,18 +260,18 @@ declare class QueryInterface {
    */
   createTrigger(tableName: string, triggerName: string, timingType: string, fireOnArray: Array<any>,
     functionName: string, functionParams: Array<any>, optionsArray: Array<string>,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Postgres only. Drops the specified trigger.
    */
-  dropTrigger(tableName: string, triggerName: string, options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+  dropTrigger(tableName: string, triggerName: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Postgres only. Renames a trigger
    */
   renameTrigger(tableName: string, oldTriggerName: string, newTriggerName: string,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Postgres only. Create a function
@@ -293,13 +283,13 @@ declare class QueryInterface {
    * Postgres only. Drops a function
    */
   dropFunction(functionName: string, params: Array<any>,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Postgres only. Rename a function
    */
   renameFunction(oldFunctionName: string, params: Array<any>, newFunctionName: string,
-    options?: QueryInterface.QueryInterfaceOptions): SequelizePromise<void>;
+    options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Escape an identifier (e.g. a table or attribute name). If force is true, the identifier will be quoted
@@ -355,4 +345,4 @@ declare class QueryInterface {
 
 }
 
-export = QueryInterface;
+export default QueryInterface;
