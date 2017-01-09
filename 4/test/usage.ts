@@ -12,7 +12,7 @@ async function test(): Promise<void> {
   new User({firstName: 'John'});
   
   const group = await Group.create({name: 'Test Group'}) as Group;
-  await group.setUsers([group]);
+  await group.setUsers([user]);
 
   const user2 = await User.create({firstName: 'John', groupId: 1}) as User;
 }
