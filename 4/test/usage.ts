@@ -1,5 +1,6 @@
 
 import {User, Group} from './models/User';
+import {UserGroup} from './models/UserGroup';
 
 async function test(): Promise<void> {
 
@@ -11,7 +12,7 @@ async function test(): Promise<void> {
   new User();
   new User({firstName: 'John'});
   
-  const group = await Group.create({name: 'Test Group'}) as Group;
+  const group = await UserGroup.create({name: 'Test Group'}) as Group;
   await group.setUsers([user]);
 
   const user2 = await User.create({firstName: 'John', groupId: 1}) as User;
