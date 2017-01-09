@@ -10,7 +10,9 @@ async function test(): Promise<void> {
 
   new User();
   new User({firstName: 'John'});
+  
+  const group = await Group.create({name: 'Test Group'}) as Group;
+  await group.setUsers([group]);
 
   const user2 = await User.create({firstName: 'John', groupId: 1}) as User;
-  await User.findAndCountAll({ distinct: true });
 }
