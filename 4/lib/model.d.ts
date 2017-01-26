@@ -1952,8 +1952,8 @@ export abstract class Model {
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize(options: FindOrInitializeOptions): Promise<Model>;
-  static findOrBuild(options: FindOrInitializeOptions): Promise<Model>;
+  static findOrInitialize(options: FindOrInitializeOptions): Promise<[Model,boolean]>;
+  static findOrBuild(options: FindOrInitializeOptions): Promise<[Model,boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -1966,7 +1966,7 @@ export abstract class Model {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate(options: FindOrInitializeOptions): Promise<Model>;
+  static findOrCreate(options: FindOrInitializeOptions): Promise<[Model,boolean]>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
