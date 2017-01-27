@@ -23,7 +23,8 @@ import {fn, literal, col, where, json, cast} from './utils';
 import {Hooks, HooksOptions} from './hooks';
 import {Deferrable} from './deferrable';
 import {Promise as SequelizePromise} from './promise';
-import {DataType, DataTypes} from './data-types';
+import {DataType, DataTypes as IDataTypes} from './data-types';
+import * as DataTypes from './data-types';
 import {Transaction, TransactionOptions, TransactionStatic} from './transaction';
 import {FindOptions} from './model';
 import {ValidationError} from './errors';
@@ -1076,7 +1077,7 @@ export class Sequelize {
    */
   import<TModel>(
     path: string,
-    defineFunction?: (sequelize: Sequelize, dataTypes: DataTypes) => TModel
+    defineFunction?: (sequelize: Sequelize, dataTypes: typeof DataTypes) => TModel
   ): TModel;
 
   /**
@@ -2348,7 +2349,7 @@ export interface SequelizeStaticAndInstance extends Errors {
 /**
  * Sequelize methods available only for the static class ( basically this is the constructor and some extends )
  */
-export interface Static extends SequelizeStaticAndInstance, DataTypes {
+export interface Static extends SequelizeStaticAndInstance, IDataTypes {
 
   /**
    * Instantiate sequelize with name of database, username and password
@@ -2508,7 +2509,7 @@ export interface Connection extends SequelizeStaticAndInstance, Hooks<any, any> 
    */
   import<TInstance extends Instance>(
     path: string,
-    defineFunction?: (sequelize: Connection, dataTypes: DataTypes) => Model<TInstance>
+    defineFunction?: (sequelize: Connection, dataTypes: typeof DataTypes) => Model<TInstance>
   ): Model<TInstance>;
 
   /**
