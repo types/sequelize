@@ -4,7 +4,8 @@
 export * from './lib/associations/index';
 export * from './lib/utils/parameter-validator';
 export * from './lib/utils/validator-extras';
-export * from './lib/data-types';
+import * as DataTypes from './lib/data-types';
+export {DataTypes};
 export * from './lib/deferrable';
 export * from './lib/errors';
 export * from './lib/hooks';
