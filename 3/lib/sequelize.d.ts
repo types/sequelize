@@ -174,7 +174,7 @@ export type DefineAttributes<TInstance extends Instance> = {
   /**
    * The description of a database column
    */
-  [K in keyof TInstance]: DataType | DefineAttributeColumnOptions<TInstance, TInstance[K]>;
+  [K in keyof TInstance]?: DataType | DefineAttributeColumnOptions<TInstance, TInstance[K]>;
 }
 
 /**

@@ -144,25 +144,25 @@ export class QueryInterface {
   /**
    * Adds a new column to a table
    */
-  addcolumn(table: string, key: string, attribute: DefineAttributeColumnOptions<any, any> | DataType,
+  addColumn(table: string, key: string, attribute: DefineAttributeColumnOptions<any, any> | DataType,
     options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Removes a column from a table
    */
-  removecolumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
+  removeColumn(table: string, attribute: string, options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Changes a column
    */
-  changecolumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
+  changeColumn(tableName: string | { schema?: string, tableName?: string }, attributeName: string,
     dataTypeOrOptions?: DataType | DefineAttributeColumnOptions<any, any>,
     options?: QueryInterfaceOptions): SequelizePromise<void>;
 
   /**
    * Renames a column
    */
-  renamecolumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
+  renameColumn(tableName: string | { schema?: string, tableName?: string }, attrNameBefore: string,
     attrNameAfter: string,
     options?: QueryInterfaceOptions): SequelizePromise<void>;
 

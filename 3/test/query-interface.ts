@@ -1,31 +1,31 @@
-import * as Sequelize from 'sequelize';
+import {QueryInterface, DataTypes} from 'sequelize';
 
-let queryInterface: Sequelize.QueryInterface;
+let queryInterface: QueryInterface;
 
 queryInterface.createTable(
   'nameOfTheNewTable',
   {
     id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     createdAt: {
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     updatedAt: {
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
-    attr1: Sequelize.STRING,
-    attr2: Sequelize.INTEGER,
+    attr1: DataTypes.STRING,
+    attr2: DataTypes.INTEGER,
     attr3: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false
     },
     //foreign key usage
     attr4: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         references: {
             model: 'another_table_name',
             key: 'id'
@@ -51,7 +51,7 @@ queryInterface.showAllTables().then(function(tableNames) {})
 queryInterface.describeTable('Person').then(function(attributes) {
   /*
     attributes will be something like:
- 
+
     {
       name: {
         type:         'VARCHAR(255)', // this will be 'CHARACTER VARYING' for pg!
@@ -70,16 +70,16 @@ queryInterface.describeTable('Person').then(function(attributes) {
 queryInterface.addColumn(
   'nameOfAnExistingTable',
   'nameOfTheNewAttribute',
-  Sequelize.STRING
+  DataTypes.STRING
 );
- 
+
 // or
- 
+
 queryInterface.addColumn(
   'nameOfAnExistingTable',
   'nameOfTheNewAttribute',
   {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   }
 );
@@ -90,7 +90,7 @@ queryInterface.changeColumn(
   'nameOfAnExistingTable',
   'nameOfAnExistingAttribute',
   {
-    type: Sequelize.FLOAT,
+    type: DataTypes.FLOAT,
     allowNull: false,
     defaultValue: 0.0
   }

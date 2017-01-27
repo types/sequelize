@@ -1,20 +1,25 @@
-import * as Sequelize from 'sequelize';
+import {Errors, Validator, QueryTypes, DataTypes, Connection, Sequelize, Instance, Model} from 'sequelize';
 
 const sequelize = new Sequelize('str');
 
-var s: Sequelize.Connection;
-var e: typeof Sequelize.Error;
+var s: Connection;
+var e: typeof Errors;
 
-var v: typeof Sequelize.Validator;
-var qt: typeof Sequelize.QueryTypes;
-var dt: Sequelize.DataTypes;
+var v: Validator;
+var qt: QueryTypes;
+var dt: typeof DataTypes;
 // var dt: typeof Sequelize.DataTypes; // Should give an error. It's not a value but an interface.
 
-var i: typeof Sequelize.Instance;
+var i: typeof Instance;
 
-const Something = sequelize.define('', {});
-const User = sequelize.define('', {});
-const Company = sequelize.define('', {});
+interface SomethingInstance extends Instance {
+  id: number;
+  username: string;
+}
+
+const Something = sequelize.define<Model<SomethingInstance>, SomethingInstance>('', { username: DataTypes.TEXT });
+const User = sequelize.define<Model<SomethingInstance>, SomethingInstance>('', {});
+const Company = sequelize.define<Model<SomethingInstance>, SomethingInstance>('', {});
 
 Something.findOne({
   order: [

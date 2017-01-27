@@ -66,6 +66,7 @@ export type WhereOptions<TInstance extends Instance> =
   WhereAttributeHash<TInstance>
   | AndOperator<TInstance, keyof TInstance>
   | OrOperator<TInstance, keyof TInstance>
+  | NotOperator<TInstance, keyof TInstance>
   | where
   | Array<string | number>;
 
@@ -108,9 +109,6 @@ export interface WhereOperators<TInstance extends Instance, K extends keyof TIns
 
   /** Example: `$ne: 20,` becomes `!= 20` */
   $ne?: TInstance[K];
-
-  /** Example: `$not: true,` becomes `IS NOT TRUE` */
-  $not?: TInstance[K] | WhereOperators<TInstance, K>;
 
   /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
   $between?: [TInstance[K], TInstance[K]];
@@ -198,6 +196,11 @@ export interface OrOperator<TInstance extends Instance, K extends keyof TInstanc
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator<TInstance extends Instance, K extends keyof TInstance> {
   $and: WhereOperators<TInstance, K> | WhereAttributeHash<TInstance> | Array<WhereOperators<TInstance, K> | WhereAttributeHash<TInstance>>;
+}
+
+/** Example: `$not: true,` becomes `IS NOT TRUE` */
+export interface NotOperator<TInstance extends Instance, K extends keyof TInstance> {
+  $not?: TInstance[K] | WhereOperators<TInstance, K>;
 }
 
 /**

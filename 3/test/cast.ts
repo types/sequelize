@@ -2,11 +2,8 @@ import {Model, Instance, Connection} from 'sequelize';
 
 let sequelize: Connection;
 
-interface Thing {
-  id?: number;
-}
-interface ThingInstance extends Instance<ThingInstance, Thing> {
+interface ThingInstance extends Instance {
   id: number;
 }
-let Thing: Model<ThingInstance, Thing> = sequelize.define<ThingInstance, Thing>('thing', {});
-Thing = sequelize.model<ThingInstance, Thing>('thing');
+let Thing: Model<ThingInstance> = sequelize.define<ThingInstance>('thing', {});
+Thing = sequelize.model<ThingInstance>('thing');
