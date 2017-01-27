@@ -1,5 +1,5 @@
 
-import SequelizePromise = require('./promise');
+import SequelizePromise from './promise';
 
 
 /**
@@ -140,7 +140,7 @@ export class Transaction {
    *
    * @see TransactionStatic
    */
-  LOCK: Transaction.TransactionLock;
+  LOCK: TransactionLock;
 
   /**
    * Commit the transaction

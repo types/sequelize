@@ -31,8 +31,6 @@ export function lowercaseFirst(s: string): string;
 export function uppercaseFirst(s: string): string;
 export function spliceStr(str: string, index: number, count: number, add: string): string;
 export function camelize(str: string): string;
-export function format(arr: any[], dialect: string): string;
-export function formatNamedParameters(sql: string, parameters: any, dialect: string): string;
 export function cloneDeep<T>(obj: T, fn?: Function): T;
 
 /** Expand and normalize finder options */
@@ -79,6 +77,8 @@ export const TICK_CHAR: '`';
 export function addTicks(s: string, tickChar?: string): string;
 export function removeTicks(s: string, tickChar?: string): string;
 
+export type GroupOption = string | fn | col | (string | fn | col)[];
+
 /*
  * Utility functions for representing SQL functions, and columns that should be escaped.
  * Please do not use these functions directly, use Sequelize.fn and Sequelize.col instead.
@@ -112,6 +112,3 @@ export class where {
 
 export const validateParameter: typeof parameterValidator;
 export function formatReferences(obj: any): any;
-
-import Promise = require('./promise');
-export {Promise};

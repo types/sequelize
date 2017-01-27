@@ -1,8 +1,9 @@
 
 import {Association, AssociationOptions, SingleAssociationAccessors} from './base';
-import {Model, Instance, InstanceSaveOptions, CreateOptions} from '../../index';
+import {Model, CreateOptions} from '../model';
+import {Instance, InstanceSaveOptions} from '../instance';
 import {DataType} from '../data-types';
-import Promise = require('../promise');
+import Promise from '../promise';
 
 /**
  * Options provided when associating models with hasOne relationship

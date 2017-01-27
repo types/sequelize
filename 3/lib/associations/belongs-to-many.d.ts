@@ -6,18 +6,10 @@ import {
   ForeignKeyOptions,
   MultiAssociationAccessors
 } from './base';
-import {Transaction} from '../../index';
-import Promise = require('../promise');
-import {
-  Model,
-  Instance,
-  WhereOptions,
-  FindOptions,
-  BulkCreateOptions,
-  InstanceUpdateOptions,
-  InstanceDestroyOptions,
-  CreateOptions
-} from '../../index';
+import {Model, WhereOptions, FindOptions, BulkCreateOptions, CreateOptions} from '../model';
+import {Instance, InstanceUpdateOptions, InstanceDestroyOptions} from '../instance';
+import {Transaction} from '../transaction';
+import Promise from '../promise';
 
 /**
  * Used for a association table in n:m associations.

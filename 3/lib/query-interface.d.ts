@@ -1,6 +1,8 @@
 
-import {Sequelize} from './sequelize';
+import {Sequelize, QueryOptions, Connection, DefineAttributeColumnOptions, DefineAttributes} from './sequelize';
+import {Transaction} from './transaction';
 import {Instance} from './instance';
+import {DataType} from './data-types';
 import {Promise as SequelizePromise} from './promise';
 import {Model} from './model';
 
@@ -204,7 +206,7 @@ export class QueryInterface {
   /**
    * Inserts or Updates a record in the database
    */
-  upsert(tableName: string, values: Object, updateValues: Object, model: Model.Model<any>,
+  upsert(tableName: string, values: Object, updateValues: Object, model: Model<any>,
     options?: QueryOptions): SequelizePromise<Object>;
 
   /**

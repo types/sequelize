@@ -151,3 +151,26 @@ export class InvalidConnectionError extends ConnectionError { }
  * Thrown when a connection to a database times out
  */
 export class ConnectionTimedOutError extends ConnectionError { }
+
+/**
+ * Sequelize provides a host of custom error classes, to allow you to do easier debugging. All of these errors
+ * are exposed on the sequelize object and the sequelize constructor. All sequelize errors inherit from the
+ * base JS error object.
+ */
+export interface Errors {
+  Error: BaseError;
+  ValidationError: ValidationError;
+  ValidationErrorItem: ValidationErrorItem;
+  DatabaseError: DatabaseError;
+  TimeoutError: TimeoutError;
+  UniqueConstraintError: UniqueConstraintError;
+  ExclusionConstraintError: ExclusionConstraintError;
+  ForeignKeyConstraintError: ForeignKeyConstraintError;
+  ConnectionError: ConnectionError;
+  ConnectionRefusedError: ConnectionRefusedError;
+  AccessDeniedError: AccessDeniedError;
+  HostNotFoundError: HostNotFoundError;
+  HostNotReachableError: HostNotReachableError;
+  InvalidConnectionError: InvalidConnectionError;
+  ConnectionTimedOutError: ConnectionTimedOutError;
+}

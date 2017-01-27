@@ -1,5 +1,11 @@
 
-import Instance = require('./instance');
+import {Instance, InstanceDestroyOptions} from './instance';
+import {Transaction} from './transaction';
+import {DataType} from './data-types';
+import {where, literal, col, fn, GroupOption} from './utils';
+import {Association, HasOne, BelongsTo, HasOneOptions, BelongsToMany, BelongsToManyOptions, HasMany, HasManyOptions, BelongsToOptions} from './associations/index';
+import {QueryOptions, DefineOptions, DefineAttributes, Connection, SyncOptions, DefineAttributeColumnOptions} from './sequelize';
+import Promise from './promise';
 
 /**
  * Options to pass to Model on drop

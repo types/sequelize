@@ -1,4 +1,9 @@
 
+import {Transaction} from './transaction';
+import {WhereOptions, ModelStatic, FindOptions, Model} from './model';
+import {SetOptions, Connection} from './sequelize';
+import Promise from './promise';
+
 /**
  * Options used for Instance.increment method
  */

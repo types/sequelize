@@ -1,9 +1,10 @@
 
 import {Association, ManyToManyOptions, MultiAssociationAccessors} from './base';
-import {Model, Instance, WhereOptions, FindOptions, InstanceUpdateOptions, InstanceDestroyOptions, CreateOptions} from '../../index';
+import {Model, WhereOptions, FindOptions, CreateOptions} from '../model';
+import {Instance, InstanceUpdateOptions, InstanceDestroyOptions} from '../instance';
 import {DataType} from '../data-types';
-import {Transaction} from '../../index';
-import Promise = require('../promise');
+import {Transaction} from '../transaction'
+import Promise from '../promise';
 
 /**
  * Options provided when associating models with hasMany relationship
