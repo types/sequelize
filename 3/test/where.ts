@@ -1,15 +1,33 @@
 
-import * as Sequelize from 'sequelize';
+import {Model, Instance, WhereOptions, WhereOperators, Sequelize, AndOperator, OrOperator, NotOperator} from 'sequelize';
 
-let Model: Sequelize.Model<any, any>;
+let model: Model<ThingInstance>;
 
-let where: Sequelize.WhereOptions;
+interface Thing {
+  audio: any[];
+}
+
+interface ThingInstance extends Instance {
+  id: number;
+  a: number;
+  rank: number;
+  createdAt: Date;
+  title: string;
+  name: string;
+  description: string;
+  site: string;
+  hi: number;
+  status: boolean;
+  meta: Thing;
+}
+
+let where: WhereOptions<ThingInstance>;
 
 // From http://docs.sequelizejs.com/en/v3/docs/querying/
 
 // Operators
 
-let operators: Sequelize.WhereOperators = {
+let operators: WhereOperators<ThingInstance, any> | AndOperator<ThingInstance, any> | OrOperator<ThingInstance, any> | NotOperator<ThingInstance, any>  = {
   $and: { a: 5 },                 // AND (a = 5)
   $or: [{ a: 5 }, { a: 6 }],      // (a = 5 OR a = 6)
   $gt: 6,                         // > 6
@@ -43,11 +61,11 @@ where = Sequelize.or();
 where = {$and: []};
 
 where = {
-  rank: Sequelize.and({$lt: 1000}, {$eq: null})
+  rank: Sequelize.and<ThingInstance, any>({$lt: 1000}, {$gt: null})
 };
 
 where = {
-  rank: Sequelize.or({$lt: 1000}, {$eq: null})
+  rank: Sequelize.or<ThingInstance, any>({$lt: 1000}, {$gt: null})
 };
 
 // Combinations
@@ -91,60 +109,59 @@ where = {
 
 // Relations / Associations
 // Find all projects with a least one task where task.state === project.task
-Model.findAll({
+model.findAll({
     include: [{
-        model: Model,
+        model,
         where: { state: Sequelize.col('project.state') }
     }]
 });
 
-Model.find({
+model.find({
   where,
   include: [
     {
-      model: Model,
+      model,
       where,
       include: [
-        { model: Model, where }
+        { model, where }
       ]
     }
   ]
 });
-Model.destroy({ where });
-Model.update({ hi: 1 }, { where });
+model.destroy({ where });
+model.update({ hi: 1 }, { where });
 
 // From http://docs.sequelizejs.com/en/v3/docs/models-usage/
 
-
 // find multiple entries
-Model.findAll().then(function(projects) {
+model.findAll().then(function(projects) {
   // projects will be an array of all Model instances
 });
 
 // also possible:
-Model.all().then(function(projects) {
+model.all().then(function(projects) {
   // projects will be an array of all Model instances
 });
 
 // search for specific attributes - hash usage
-Model.findAll({ where: { name: 'A Model' } }).then(function(projects) {
+model.findAll({ where: { name: 'A Model' } }).then(function(projects) {
   // projects will be an array of Model instances with the specified name
 });
 
 // search with string replacements
-Model.findAll({ where: ['id > ?', 25] }).then(function(projects) {
+model.findAll({ where: ['id > ?', 25] }).then(function(projects) {
   // projects will be an array of Models having a greater id than 25
 });
 
 // search within a specific range
-Model.findAll({ where: { id: [1,2,3] } }).then(function(projects) {
+model.findAll({ where: { id: [1, 2, 3] } }).then(function(projects) {
   // projects will be an array of Models having the id 1, 2 or 3
   // this is actually doing an IN query
 });
 
-Model.findAll({
+model.findAll({
   where: {
-    id: <Sequelize.WhereOperators>{ // casting here to check a missing operator is not accepted as field name
+    id: <WhereOperators<ThingInstance, any>>{ // casting here to check a missing operator is not accepted as field name
       $and: {a: 5},          // AND (a = 5)
       $or: [{a: 5}, {a: 6}], // (a = 5 OR a = 6)
       $gt: 6,                // id > 6
@@ -211,12 +228,5 @@ where = {
         $ne: null
       }
     }
-  }
-};
-
-// Nested key
-where = {
-  'meta.audio.length': {
-    $gt: 20
   }
 };

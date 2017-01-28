@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird';
 
-declare const Promise: typeof Bluebird;
-declare type Promise<T> = Bluebird<T>;
-export = Promise;
+export const Promise: typeof Bluebird;
+export type Promise<T> = Bluebird<T>;
+export default Promise;
