@@ -4800,7 +4800,7 @@ declare module sequelize {
     /**
      * only allow uuids
      */
-    isUUID?: number | { msg: string, args: number };
+    isUUID?: number | string | { msg: string, args: number | string };
 
     /**
      * only allow date strings
