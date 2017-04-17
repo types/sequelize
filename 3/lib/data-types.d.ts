@@ -169,7 +169,9 @@ export interface NumberDataTypeOptions {
 export const INTEGER: IntegerDataTypeConstructor;
 
 interface IntegerDataTypeConstructor extends NumberDataTypeConstructor {
+  new (length?: number): IntegerDataType;
   new (options?: NumberDataTypeOptions): IntegerDataType;
+  (length?: number): IntegerDataType;
   (options?: NumberDataTypeOptions): IntegerDataType;
 }
 
@@ -191,7 +193,9 @@ export interface IntegerDataTypeOptions {
 export const BIGINT: BigIntDataTypeConstructor;
 
 interface BigIntDataTypeConstructor extends NumberDataTypeConstructor {
+  new (length?: number): BigIntDataType;
   new (options?: BigIntDataTypeOptions): BigIntDataType;
+  (length?: number): BigIntDataType;
   (options?: BigIntDataTypeOptions): BigIntDataType;
 }
 
