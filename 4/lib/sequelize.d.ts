@@ -1272,5 +1272,6 @@ export {Promise} from './promise';
 export {Validator} from './utils/validator-extras';
 import * as Utils from './utils';
 export {Utils};
+export * from './utils';
 
 export default Sequelize;
