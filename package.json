@@ -5,10 +5,10 @@
   "description": "Typescript Typings for Sequelize",
   "dependencies": {},
   "devDependencies": {
-    "tslint": "^3.14.0",
-    "typedoc": "^0.5.0",
+    "tslint": "^5.2.0",
+    "typedoc": "^0.6.0",
     "typescript": "^2.0.3",
-    "typings": "^1.3.2"
+    "typings": "^2.1.1"
   },
   "scripts": {
     "postinstall": "cd 3 && typings install && typings prune && cd ../4 && typings install && typings prune",
