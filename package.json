@@ -6,7 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "tslint": "^5.2.0",
-    "typedoc": "^0.6.0",
+    "typedoc": "^0.7.0",
     "typescript": "^2.0.3",
     "typings": "^2.1.1"
   },
