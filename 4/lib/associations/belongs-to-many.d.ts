@@ -141,7 +141,9 @@ export interface BelongsToManyGetAssociationsMixin<TModel> {
  * The options for the setAssociations mixin of the belongsToMany association.
  * @see BelongsToManySetAssociationsMixin
  */
-export interface BelongsToManySetAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
+export interface BelongsToManySetAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
+  through: JoinTableAttributes;
+}
 
 /**
  * The setAssociations mixin applied to models with belongsToMany.
@@ -185,7 +187,9 @@ export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey> {
  * The options for the addAssociations mixin of the belongsToMany association.
  * @see BelongsToManyAddAssociationsMixin
  */
-export interface BelongsToManyAddAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
+export interface BelongsToManyAddAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
+  through: JoinTableAttributes;
+}
 
 /**
  * The addAssociations mixin applied to models with belongsToMany.
@@ -228,7 +232,9 @@ export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey> {
  * The options for the addAssociation mixin of the belongsToMany association.
  * @see BelongsToManyAddAssociationMixin
  */
-export interface BelongsToManyAddAssociationMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions, JoinTableAttributes { }
+export interface BelongsToManyAddAssociationMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
+  through: JoinTableAttributes;
+}
 
 /**
  * The addAssociation mixin applied to models with belongsToMany.
@@ -271,7 +277,9 @@ export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey> {
  * The options for the createAssociation mixin of the belongsToMany association.
  * @see BelongsToManyCreateAssociationMixin
  */
-export interface BelongsToManyCreateAssociationMixinOptions extends CreateOptions, JoinTableAttributes { }
+export interface BelongsToManyCreateAssociationMixinOptions extends CreateOptions {
+  through: JoinTableAttributes;
+}
 /**
  * The createAssociation mixin applied to models with belongsToMany.
  * An example of usage is as follows:
