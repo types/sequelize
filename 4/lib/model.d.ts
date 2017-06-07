@@ -331,6 +331,11 @@ export interface IncludeOptions {
    * Order include. Only available when setting `separate` to true.
    */
   order?: Order;
+
+  /**
+   * Use sub queries. This should only be used if you know for sure the query does not result in a cartesian product.
+   */
+  subQuery?: boolean;
 }
 
 export type OrderItem =
@@ -432,6 +437,11 @@ export interface FindOptions {
    * having ?!?
    */
   having?: WhereAttributeHash;
+
+  /**
+   * Use sub queries (internal)
+   */
+  subQuery?: boolean;
 
 }
 
