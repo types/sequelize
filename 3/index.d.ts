@@ -3239,7 +3239,7 @@ declare module sequelize {
     having?: WhereOptions;
 
     /**
-     * Use sub queries (internal)
+     * Use sub queries. This should only be used if you know for sure the query does not result in a cartesian product.
      */
     subQuery?: boolean;
 
