@@ -1,7 +1,9 @@
 
 import {Model, Sequelize, WhereOptions, WhereOperators, AndOperator, OrOperator} from 'sequelize';
 
-class MyModel extends Model { }
+class MyModel extends Model {
+  hi: number;
+}
 
 let where: WhereOptions;
 
@@ -44,8 +46,8 @@ operators = {
 
 // Combinations
 
-Model.find({ where: or });
-Model.find({ where: and });
+MyModel.find({ where: or });
+MyModel.find({ where: and });
 
 where = Sequelize.and();
 

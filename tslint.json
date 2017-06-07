@@ -39,7 +39,7 @@
     "no-duplicate-key": true,
     "no-unreachable": true,
     "no-unused-expression": true,
-    "no-unused-variable": [true],
+    "no-unused-variable": [false],
     "eofline": true,
     "trailing-comma": [true, {"singleline": "never", "multiline": "never"}],
     "align": [true, "parameters", "statements"]

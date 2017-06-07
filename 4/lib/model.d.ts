@@ -1812,22 +1812,22 @@ export abstract class Model {
    *
    * @see    {Sequelize#query}
    */
-  static findAll(options?: FindOptions): Promise<Array<Model>>;
-  static all(optionz?: FindOptions): Promise<Array<Model>>;
+  static findAll<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M[]>;
+  static all<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M[]>;
 
   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById(identifier?: number | string, options?: FindOptions): Promise<Model>;
-  static findByPrimary(identifier?: number | string, options?: FindOptions): Promise<Model>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne(options?: FindOptions): Promise<Model>;
-  static find(optionz?: FindOptions): Promise<Model>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
 
   /**
    * Run an aggregation method on the specified field
@@ -1838,8 +1838,8 @@ export abstract class Model {
    * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
    *     which case the complete data result is returned.
    */
-  aggregate<T>(field: string, aggregateFunction: string, options?: AggregateOptions): Promise<T>;
-  static aggregate(field: string, aggregateFunction: string, options?: AggregateOptions): Promise<number>;
+  aggregate(field: keyof this, aggregateFunction: string, options?: AggregateOptions): Promise<any>;
+  static aggregate<M extends Model>(this: {new (): M} & typeof Model, field: keyof M, aggregateFunction: string, options?: AggregateOptions): Promise<any>;
 
   /**
    * Count the number of records matching the provided where clause.
@@ -1883,45 +1883,45 @@ export abstract class Model {
    * without
    * profiles will be counted
    */
-  static findAndCount(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
-  static findAndCountAll(options?: FindAndCountOptions): Promise<{ rows: Array<Model>, count: number }>;
+  static findAndCount<M extends Model>(this: {new (): M} & typeof Model, options?: FindAndCountOptions): Promise<{ rows: M[], count: number }>;
+  static findAndCountAll<M extends Model>(this: {new (): M} & typeof Model, options?: FindAndCountOptions): Promise<{ rows: M[], count: number }>;
 
   /**
    * Find the maximum value of field
    */
-  static max(field: string, options?: AggregateOptions): Promise<any>;
+  static max<M extends Model>(this: {new (): M} & typeof Model, field: keyof M, options?: AggregateOptions): Promise<any>;
 
   /**
    * Find the minimum value of field
    */
-  static min(field: string, options?: AggregateOptions): Promise<any>;
+  static min<M extends Model>(this: {new (): M} & typeof Model, field: keyof M, options?: AggregateOptions): Promise<any>;
 
   /**
    * Find the sum of field
    */
-  static sum(field: string, options?: AggregateOptions): Promise<number>;
+  static sum<M extends Model>(this: {new (): M} & typeof Model, field: keyof M, options?: AggregateOptions): Promise<number>;
 
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build(record?: Object, options?: BuildOptions): Model;
+  static build<M extends Model>(this: {new (): M} & typeof Model, record?: Partial<M>, options?: BuildOptions): M;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild(records: Object[], options?: BuildOptions): Array<Model>;
+  static bulkBuild<M extends Model>(this: {new (): M} & typeof Model, records: Partial<M>[], options?: BuildOptions): M[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create(values?: Object, options?: CreateOptions): Promise<Model>;
+  static create<M extends Model>(this: {new (): M} & typeof Model, values?: Partial<M>, options?: CreateOptions): Promise<M>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
    * The successfull result of the promise will be (instance, initialized) - Make sure to use .spread()
    */
-  static findOrInitialize(options: FindOrInitializeOptions): Promise<[Model, boolean]>;
-  static findOrBuild(options: FindOrInitializeOptions): Promise<[Model, boolean]>;
+  static findOrInitialize<M extends Model>(this: {new (): M} & typeof Model, options: FindOrInitializeOptions): Promise<[M, boolean]>;
+  static findOrBuild<M extends Model>(this: {new (): M} & typeof Model, options: FindOrInitializeOptions): Promise<[M, boolean]>;
 
   /**
    * Find a row that matches the query, or build and save the row if none is found
@@ -1934,7 +1934,7 @@ export abstract class Model {
    * an instance of sequelize.TimeoutError will be thrown instead. If a transaction is created, a savepoint
    * will be created instead, and any unique constraint violation will be handled internally.
    */
-  static findOrCreate(options: FindOrInitializeOptions): Promise<[Model, boolean]>;
+  static findOrCreate<M extends Model>(this: {new (): M} & typeof Model, options: FindOrInitializeOptions): Promise<[M, boolean]>;
 
   /**
    * Insert or update a single row. An update will be executed if a row which matches the supplied values on
@@ -1955,8 +1955,8 @@ export abstract class Model {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert(values: Object, options?: UpsertOptions): Promise<boolean>;
-  static insertOrUpdate(values: Object, options?: UpsertOptions): Promise<boolean>;
+  static upsert<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options?: UpsertOptions): Promise<boolean>;
 
   /**
    * Create and insert multiple instances in bulk.
@@ -1969,7 +1969,7 @@ export abstract class Model {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate(records: Array<Object>, options?: BulkCreateOptions): Promise<Array<Model>>;
+  static bulkCreate<M extends Model>(this: {new (): M} & typeof Model, records: M[], options?: BulkCreateOptions): Promise<M[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -1993,18 +1993,18 @@ export abstract class Model {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update(values: Object, options: UpdateOptions): Promise<[number, Array<Model>]>;
+  static update<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options: UpdateOptions): Promise<[number, M[]]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
    * their types.
    */
-  static describe(): Promise<Object>;
+  static describe(): Promise<object>;
 
   /**
    * Unscope the model
    */
-  static unscoped(): typeof Model;
+  static unscoped<M extends typeof Model>(this: M): M;
 
   /**
    * Add a hook to the model
@@ -2016,10 +2016,10 @@ export abstract class Model {
    *
    * @alias hook
    */
-  static addHook(hookType: string, name: string, fn: Function): typeof Model;
-  static addHook(hookType: string, fn: Function): typeof Model;
-  static hook(hookType: string, name: string, fn: Function): typeof Model;
-  static hook(hookType: string, fn: Function): typeof Model;
+  static addHook<C extends typeof Model>(this: C, hookType: string, name: string, fn: Function): C;
+  static addHook<C extends typeof Model>(this: C, hookType: string, fn: Function): C;
+  static hook<C extends typeof Model>(this: C, hookType: string, name: string, fn: Function): C;
+  static hook<C extends typeof Model>(this: C, hookType: string, fn: Function): C;
 
   /**
    * Remove hook from the model
@@ -2027,7 +2027,7 @@ export abstract class Model {
    * @param hookType
    * @param name
    */
-  static removeHook(hookType: string, name: string): typeof Model;
+  static removeHook<C extends typeof Model>(this: C, hookType: string, name: string): C;
 
   /**
    * Check whether the mode has any hooks of this type
@@ -2045,8 +2045,8 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static beforeValidate(name: string, fn: (instance: Model, options: Object) => void): void;
-  static beforeValidate(fn: (instance: Model, options: Object) => void): void;
+  static beforeValidate(name: string, fn: (instance: Model, options: object) => void): void;
+  static beforeValidate(fn: (instance: Model, options: object) => void): void;
 
   /**
    * A hook that is run after validation
@@ -2054,8 +2054,7 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instance, options
    */
-  static afterValidate(name: string,
-    fn: (instance: Model, options: Object) => void): void;
+  static afterValidate(name: string, fn: (instance: Model, options: Object) => void): void;
   static afterValidate(fn: (instance: Model, options: Object) => void): void;
 
   /**
@@ -2125,8 +2124,7 @@ export abstract class Model {
    * @param name
    * @param fn A callback function that is called with instances, options
    */
-  static beforeBulkCreate(name: string,
-    fn: (instances: Model[], options: BulkCreateOptions) => void): void;
+  static beforeBulkCreate(name: string, fn: (instances: Model[], options: BulkCreateOptions) => void): void;
   static beforeBulkCreate(fn: (instances: Model[], options: BulkCreateOptions) => void): void;
 
   /**
@@ -2207,8 +2205,7 @@ export abstract class Model {
    * @param name
    * @param fn   A callback function that is called with options
    */
-  static beforeFindAfterExpandIncludeAll(name: string,
-    fn: (options: FindOptions) => void): void;
+  static beforeFindAfterExpandIncludeAll(name: string, fn: (options: FindOptions) => void): void;
   static beforeFindAfterExpandIncludeAll(fn: (options: FindOptions) => void): void;
 
   /**
@@ -2433,7 +2430,7 @@ export abstract class Model {
    * Builds a new model instance.
    * @param values an object of key value pairs
    */
-  constructor(values?: Object, options?: BuildOptions);
+  constructor(values?: object, options?: BuildOptions);
 
   /**
    * Get an object representing the query for this instance, use with `options.where`
@@ -2443,12 +2440,12 @@ export abstract class Model {
   /**
    * Get the value of the underlying data value
    */
-  getDataValue(key: string): any;
+  getDataValue<K extends keyof this>(key: K): this[K];
 
   /**
    * Update the underlying data value
    */
-  setDataValue(key: string, value: any): void;
+  setDataValue<K extends keyof this>(key: K, value: this[K]): void;
 
   /**
    * If no key is given, returns all values of the instance, also invoking virtual getters.
@@ -2458,8 +2455,8 @@ export abstract class Model {
    *
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
-  get(options?: { plain?: boolean, clone?: boolean }): any;
-  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
+  get(options?: { plain?: boolean, clone?: boolean }): object;
+  get<K extends keyof this>(key: K, options?: { plain?: boolean, clone?: boolean }): this[K];
 
   /**
    * Set is used to update values on the instance (the sequelize representation of the instance that is,
@@ -2485,10 +2482,10 @@ export abstract class Model {
    * @param options.raw If set to true, field and virtual setters will be ignored
    * @param options.reset Clear all previously set data values
    */
-  set(key: string, value: any, options?: SetOptions): Model;
-  set(keys: Object, options?: SetOptions): Model;
-  setAttributes(key: string, value: any, options?: SetOptions): Model;
-  setAttributes(keys: Object, options?: SetOptions): Model;
+  set<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+  set(keys: Partial<this>, options?: SetOptions): this;
+  setAttributes<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
+  setAttributes(keys: Partial<this>, options?: SetOptions): this;
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -2500,14 +2497,14 @@ export abstract class Model {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed(key: string): boolean;
-  changed(key: string, dirty: boolean): void;
-  changed(): boolean | Array<string>;
+  changed(key: keyof this): boolean;
+  changed(key: keyof this, dirty: boolean): void;
+  changed(): false | string[];
 
   /**
    * Returns the previous value for key from `_previousDataValues`.
    */
-  previous(key: string): any;
+  previous<K extends keyof this>(key: K): this[K];
 
   /**
    * Validate this instance, and if the validation passes, persist it to the database.
@@ -2516,7 +2513,7 @@ export abstract class Model {
    * called with an instance of `Sequelize.ValidationError`. This error will have a property for each of the
    * fields for which validation failed, with the error message for that field.
    */
-  save(options?: SaveOptions): Promise<Model>;
+  save(options?: SaveOptions): Promise<this>;
 
   /**
    * Refresh the current instance in-place, i.e. update the object with current data from the DB and return
@@ -2524,7 +2521,7 @@ export abstract class Model {
    * return a new instance. With this method, all references to the Instance are updated with the new data
    * and no new objects are created.
    */
-  reload(options?: FindOptions): Promise<Model>;
+  reload(options?: FindOptions): Promise<this>;
 
   /**
    * Validate the attribute of this instance according to validation rules set in the model definition.
@@ -2534,15 +2531,15 @@ export abstract class Model {
    *
    * @param options.skip An array of strings. All properties that are in this array will not be validated
    */
-  validate(options?: { skip?: Array<string> }): Promise<void>;
+  validate(options?: { skip?: string[] }): Promise<void>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
    */
-  update(key: string, value: any, options?: InstanceUpdateOptions): Promise<Model>;
-  update(keys: Object, options?: InstanceUpdateOptions): Promise<Model>;
-  updateAttributes(key: string, value: any, options?: InstanceUpdateOptions): Promise<Model>;
-  updateAttributes(keys: Object, options?: InstanceUpdateOptions): Promise<Model>;
+  update<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions): Promise<this>;
+  update(keys: Partial<this>, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(keys: Partial<this>, options?: InstanceUpdateOptions): Promise<this>;
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
@@ -2575,8 +2572,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment(fields: string | Array<string> | Object,
-    options?: IncrementDecrementOptions): Promise<Model>;
+  increment(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2598,24 +2594,23 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement(fields: string | Array<string> | Object,
-    options?: IncrementDecrementOptions): Promise<Model>;
+  decrement(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
    */
-  equals(other: Model): boolean;
+  equals(other: this): boolean;
 
   /**
    * Check if this is eqaul to one of `others` by calling equals
    */
-  equalsOneOf(others: Model[]): boolean;
+  equalsOneOf(others: this[]): boolean;
 
   /**
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON(): Object;
+  toJSON(): object;
 }
 
 export default Model;
