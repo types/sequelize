@@ -14,7 +14,7 @@ typings install --save sequelize
 or
 
 ```bash
-npm install --save-dev --exact types/npm-sequelize
+npm install --save-dev types/npm-sequelize
 ```
 
 ## Usage
