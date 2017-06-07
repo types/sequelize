@@ -1,39 +1,35 @@
 {
-  "name": "typed-sequelize",
-  "version": false,
+  "name": "@types/sequelize",
+  "version": "4.0.0",
   "private": true,
   "description": "Typescript Typings for Sequelize",
-  "dependencies": {},
+  "dependencies": {
+    "@types/bluebird": "^3.5.5",
+    "@types/validator": "^6.2.0"
+  },
   "devDependencies": {
-    "tslint": "^5.2.0",
-    "typedoc": "^0.7.0",
-    "typescript": "^2.0.3",
+    "tslint": "^5.4.3",
+    "typedoc": "^0.7.1",
+    "typescript": "^2.3.4",
     "typings": "^2.1.1"
   },
   "scripts": {
-    "postinstall": "cd 3 && typings install && typings prune && cd ../4 && typings install && typings prune",
-    "build-v3": "cd 3 && tsc -p . && typings bundle -o dist/index.d.ts",
-    "test-v3": "tsc -p 3/test",
-    "build+test-v3": "npm run build-v3 && npm run test-v3",
-    "build-v4": "cd 4 && tsc -p . && typings bundle -o dist/index.d.ts",
-    "test-v4": "tsc -p 4/test",
-    "build+test-v4": "npm run build-v4 && npm run test-v4",
-    "build": "npm run build-v3 && npm run build-v4",
-    "test": "npm run test-v3 && npm run test-v4",
-    "build+test": "npm run build+test-v3 && npm run build+test-v4",
-    "lint": "tslint -c tslint.json 3/**/*.ts 4/**/*.ts",
-    "typedoc-v3": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme 3/docs_index.md --name \"TypeScript definitions for Sequelize v3\" --mode file --out typedoc/v3 3/index.d.ts 3/lib/data-types.d.ts 3/typings/index.d.ts",
-    "typedoc-v4": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme 4/docs_index.md --name \"TypeScript definitions for Sequelize v4\" --mode modules --out typedoc/v4 4/lib/sequelize.d.ts 4/lib/model.d.ts 4/lib/transaction.d.ts 4/lib/errors.d.ts 4/lib/data-types.d.ts 4/lib/query-interface.d.ts 4/lib/deferrable.d.ts 4/lib/associations/base.d.ts 4/lib/associations/belongs-to-many.d.ts 4/lib/associations/belongs-to.d.ts 4/lib/associations/has-many.d.ts 4/lib/associations/has-one.d.ts 4/typings/index.d.ts",
-    "typedoc": "npm run typedoc-v3 && npm run typedoc-v4"
+    "postinstall": "typings install && typings prune",
+    "build": "tsc -p . && typings bundle -o dist/index.d.ts",
+    "test": "tsc -p test",
+    "typedoc": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib/sequelize.d.ts lib/model.d.ts lib/transaction.d.ts lib/errors.d.ts lib/data-types.d.ts lib/query-interface.d.ts lib/deferrable.d.ts lib/associations/base.d.ts lib/associations/belongs-to-many.d.ts lib/associations/belongs-to.d.ts lib/associations/has-many.d.ts lib/associations/has-one.d.ts typings/index.d.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/louy/typed-sequelize.git"
+    "url": "git+https://github.com/types/npm-sequelize.git"
   },
   "author": "Louay Alakkad",
   "license": "ISC",
+  "contributors": [
+    "Felix Becker <felix.b@outlook.com>"
+  ],
   "bugs": {
-    "url": "https://github.com/louy/typed-sequelize/issues"
+    "url": "https://github.com/types/npm-sequelize/issues"
   },
-  "homepage": "https://github.com/louy/typed-sequelize#readme"
+  "homepage": "https://github.com/types/npm-sequelize#readme"
 }

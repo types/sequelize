@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "noEmit": true,
+    "typeRoots": [
+      "../typings/globals",
+      "../typings/modules"
+    ]
+  },
+  "include": [
+    "../dist/index.d.ts",
+    "./**/*.ts"
+  ]
+}
