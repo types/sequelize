@@ -1,7 +1,7 @@
 
 import {User, Group} from './models/User';
 
-async function test(): Promise<User> {
+async function test(): Promise<void> {
 
   const user = await User.findOne({include: [Group]});
   User.update({  }, { where: {} });
@@ -14,7 +14,4 @@ async function test(): Promise<User> {
 
   const user2 = await User.create({firstName: 'John', groupId: 1});
   await User.findAndCountAll({ distinct: true });
-  return user2;
 }
-
-test();
