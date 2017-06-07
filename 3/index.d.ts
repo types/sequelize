@@ -3131,6 +3131,11 @@ declare module sequelize {
      */
     order?: Order;
 
+    /**
+     * Use sub queries (internal)
+     */
+    subQuery?: boolean;
+
   }
 
   export type OrderItem =
@@ -3232,6 +3237,11 @@ declare module sequelize {
      * having ?!?
      */
     having?: WhereOptions;
+
+    /**
+     * Use sub queries (internal)
+     */
+    subQuery?: boolean;
 
   }
 
