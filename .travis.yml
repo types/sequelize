@@ -5,6 +5,8 @@ node_js:
   - 8
 
 install:
+  # Only install devDependencies to work around duplicate module errors of @types dependencies
+  # https://github.com/Microsoft/TypeScript/issues/10199
   - npm install --only=dev
 
 script:
