@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noEmit": true
+  },
+  "include": [
+    "**/*.ts",
+    "../dist/index.d.ts"
+  ]
+}

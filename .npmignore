@@ -4,4 +4,4 @@ dist/
 *.js
 *.log
 typedoc/
-package-lock.json
+tsconfig.json

@@ -1,9 +1,49 @@
-# Typed Sequelize
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/types/npm-sequelize.svg)](https://greenkeeper.io/)
-[![Build Status](https://travis-ci.org/types/npm-sequelize.svg?branch=master)](https://travis-ci.org/types/npm-sequelize)
+# TypeScript Typings for [Sequelize v3](https://sequelize.readthedocs.io/en/v3/)
 
-Typescript Typings for [Sequelize](http://sequelizejs.com).
+[![Build Status](https://travis-ci.org/types/npm-sequelize.svg?branch=v3)](https://travis-ci.org/types/npm-sequelize)
 
-## [API Documentation v3](http://typed-sequelize.surge.sh/v3)
-## [API Documentation v4](http://typed-sequelize.surge.sh/v4)
+## Usage
+
+First, install:
+```bash
+typings install --save sequelize@3
+```
+
+or
+
+```bash
+npm install --save-dev types/npm-sequelize#<commit hash>
+```
+
+To create a model:
+
+```ts
+/** models/thing.ts */
+import * as Sequelize from 'sequelize';
+import sequelize from '../connection'; // A Sequelize instance
+
+interface Thing { // interface used to create/update an instance
+  id?: number;
+  name?: string;
+}
+interface ThingInstance extends Sequelize.Instance<ThingInstance, Thing> { // an instance
+  id: number;
+
+  // you should add all instance methods here
+  doSomething(): any;
+}
+const Thing = sequelize.define<ThingInstance, Thing>('thing', {
+  name: Sequelize.STRING,
+}, {
+  instanceMethods: {
+    doSomething() {
+      // whatever...
+    }
+  },
+});
+
+export default Thing;
+export {ThingInstance};
+
+```

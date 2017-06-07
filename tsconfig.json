@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "typeRoots": [
+      "typings/globals",
+      "typings/modules"
+    ]
+  },
+  "include": [
+    "index.d.ts",
+    "lib/**/*.d.ts"
+  ]
+}
