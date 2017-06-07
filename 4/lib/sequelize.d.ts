@@ -1032,7 +1032,7 @@ export class Sequelize {
    * @param options    These options are merged with the default define options provided to the Sequelize
    *                   constructor
    */
-  define<TModel>(modelName: string, attributes: ModelAttributes, options?: ModelOptions): TModel;
+  define(modelName: string, attributes: ModelAttributes, options?: ModelOptions): typeof Model;
 
   /**
    * Fetch a Model which is already defined
