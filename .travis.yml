@@ -1,11 +1,21 @@
+
 language: node_js
+
 node_js:
- - '4.1'
+  - 8
+
+install:
+  # Only install devDependencies to work around duplicate module errors of @types dependencies
+  # https://github.com/Microsoft/TypeScript/issues/10199
+  - npm install --only=dev
+
 script:
- - npm run build
- - npm test
+  - npm run build
+  - npm test
+
 before_deploy:
- - npm run typedoc
+  - npm run typedoc
+
 deploy:
   provider: surge
   project: ./typedoc/
