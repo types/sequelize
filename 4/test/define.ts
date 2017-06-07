@@ -13,10 +13,10 @@ interface User extends Model {
   updatedAt: Date;
 }
 
-type UserModel = typeof Model & {
+type UserModel = {
   new (): User;
   customStaticMethod(): any;
-};
+} & typeof Model;
 
 const User = sequelize.define('User', {firstName: DataTypes.STRING}, {tableName: 'users'}) as UserModel;
 
