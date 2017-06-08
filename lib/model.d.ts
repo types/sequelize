@@ -651,6 +651,10 @@ export interface BulkCreateOptions {
    */
   logging?: boolean | Function;
 
+  /**
+   * Return the affected rows (only for postgres)
+   */
+  returning?: boolean;
 }
 
 /**
