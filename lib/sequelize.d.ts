@@ -262,6 +262,8 @@ export class Sequelize {
 
   modelManager: ModelManager;
 
+  // -------------------- Utilities ------------------------------------------------------------------------
+
   /**
    * Creates a object representing a database function. This can be used in search queries, both in where and
    * order parts, and as default values in column definitions. If you want to refer to columns in your
@@ -277,7 +279,7 @@ export class Sequelize {
    * @param fn The function you want to call
    * @param args All further arguments will be passed as arguments to the function
    */
-  static fn(fn: string, ...args: any[]): Fn;
+  static fn: typeof fn;
 
   /**
    * Creates a object representing a column in the DB. This is often useful in conjunction with
@@ -285,7 +287,7 @@ export class Sequelize {
    *
    * @param col The name of the column
    */
-  static col(col: string): Col;
+  static col: typeof col;
 
   /**
    * Creates a object representing a call to the cast function.
@@ -293,29 +295,29 @@ export class Sequelize {
    * @param val The value to cast
    * @param type The type to cast it to
    */
-  static cast(val: any, type: string): Cast;
+  static cast: typeof cast;
 
   /**
    * Creates a object representing a literal, i.e. something that will not be escaped.
    *
    * @param val
    */
-  static literal(val: any): Literal;
-  static asIs(val: any): Literal;
+  static literal: typeof literal;
+  static asIs: typeof asIs;
 
   /**
    * An AND query
    *
    * @param args Each argument will be joined by AND
    */
-  static and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
+  static and: typeof and;
 
   /**
    * An OR query
    *
    * @param args Each argument will be joined by OR
    */
-  static or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
+  static or: typeof or;
 
   /**
    * Creates an object representing nested where conditions for postgres's json data-type.
@@ -325,7 +327,7 @@ export class Sequelize {
    * @param value An optional value to compare against. Produces a string of the form "<json path> =
    *     '<value>'".
    */
-  static json(conditionsOrPath: string | Object, value?: string | number | boolean): Json;
+  static json: typeof json;
 
   /**
    * A way of specifying attr = condition.
@@ -345,9 +347,9 @@ export class Sequelize {
    * @param logic The condition. Can be both a simply type, or a further condition (`.or`, `.and`, `.literal`
    *     etc.)
    */
-  static where(attr: Object, comparator: string, logic: string | Object): Where;
-  static where(attr: Object, logic: string | Object): Where;
-  static condition(attr: Object, logic: string | Object): Where;
+  static where: typeof where;
+  static condition: typeof condition;
+
 
   // -------------------- Static Hooks ---------------------------------------------------------------------
 
@@ -1257,6 +1259,95 @@ export class Sequelize {
   databaseVersion(): Promise<string>;
 
 }
+
+// Utilities
+
+/**
+ * Creates a object representing a database function. This can be used in search queries, both in where and
+ * order parts, and as default values in column definitions. If you want to refer to columns in your
+ * function, you should use `sequelize.col`, so that the columns are properly interpreted as columns and
+ * not a strings.
+ *
+ * Convert a user's username to upper case
+ * ```js
+ * instance.updateAttributes({
+ *   username: self.sequelize.fn('upper', self.sequelize.col('username'))
+ * })
+ * ```
+ * @param fn The function you want to call
+ * @param args All further arguments will be passed as arguments to the function
+ */
+export function fn(fn: string, ...args: any[]): Fn;
+
+/**
+ * Creates a object representing a column in the DB. This is often useful in conjunction with
+ * `sequelize.fn`, since raw string arguments to fn will be escaped.
+ *
+ * @param col The name of the column
+ */
+export function col(col: string): Col;
+
+/**
+ * Creates a object representing a call to the cast function.
+ *
+ * @param val The value to cast
+ * @param type The type to cast it to
+ */
+export function cast(val: any, type: string): Cast;
+
+/**
+ * Creates a object representing a literal, i.e. something that will not be escaped.
+ *
+ * @param val
+ */
+export function literal(val: any): Literal;
+export function asIs(val: any): Literal;
+
+/**
+ * An AND query
+ *
+ * @param args Each argument will be joined by AND
+ */
+export function and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
+
+/**
+ * An OR query
+ *
+ * @param args Each argument will be joined by OR
+ */
+export function or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
+
+/**
+ * Creates an object representing nested where conditions for postgres's json data-type.
+ *
+ * @param conditionsOrPath A hash containing strings/numbers or other nested hash, a string using dot
+ *     notation or a string using postgres json syntax.
+ * @param value An optional value to compare against. Produces a string of the form "<json path> =
+ *     '<value>'".
+ */
+export function json(conditionsOrPath: string | Object, value?: string | number | boolean): Json;
+
+/**
+ * A way of specifying attr = condition.
+ *
+ * The attr can either be an object taken from `Model.rawAttributes` (for example `Model.rawAttributes.id`
+ * or
+ * `Model.rawAttributes.name`). The attribute should be defined in your model definition. The attribute can
+ * also be an object from one of the sequelize utility functions (`sequelize.fn`, `sequelize.col` etc.)
+ *
+ * For string attributes, use the regular `{ where: { attr: something }}` syntax. If you don't want your
+ * string to be escaped, use `sequelize.literal`.
+ *
+ * @param attr The attribute, which can be either an attribute object from `Model.rawAttributes` or a
+ *     sequelize object, for example an instance of `sequelize.fn`. For simple string attributes, use the
+ *     POJO syntax
+ * @param comparator Comparator
+ * @param logic The condition. Can be both a simply type, or a further condition (`.or`, `.and`, `.literal`
+ *     etc.)
+ */
+export function where(attr: Object, comparator: string, logic: string | Object): Where;
+export function where(attr: Object, logic: string | Object): Where;
+export function condition(attr: Object, logic: string | Object): Where;
 
 export {DataTypes};
 export * from './model';
