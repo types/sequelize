@@ -1269,9 +1269,12 @@ export {useInflection} from './utils';
 import * as Deferrable from './deferrable';
 export {Deferrable};
 export {Promise} from './promise';
-export {Validator} from './utils/validator-extras';
 import * as Utils from './utils';
 export {Utils};
 export * from './utils';
+
+export {Validator as validator} from './utils/validator-extras';
+import {validator} from './utils/validator-extras';
+export {validator as Validator};
 
 export default Sequelize;
