@@ -1979,7 +1979,7 @@ export abstract class Model {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<M extends Model>(this: {new (): M} & typeof Model, records: M[], options?: BulkCreateOptions): Promise<M[]>;
+  static bulkCreate<M extends Model>(this: {new (): M} & typeof Model, records: Partial<M>[], options?: BulkCreateOptions): Promise<M[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
