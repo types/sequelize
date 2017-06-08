@@ -142,7 +142,7 @@ export interface BelongsToManyGetAssociationsMixin<TModel> {
  * @see BelongsToManySetAssociationsMixin
  */
 export interface BelongsToManySetAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
-  through: JoinTableAttributes;
+  through?: JoinTableAttributes;
 }
 
 /**
@@ -188,7 +188,7 @@ export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey> {
  * @see BelongsToManyAddAssociationsMixin
  */
 export interface BelongsToManyAddAssociationsMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
-  through: JoinTableAttributes;
+  through?: JoinTableAttributes;
 }
 
 /**
@@ -233,7 +233,7 @@ export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey> {
  * @see BelongsToManyAddAssociationMixin
  */
 export interface BelongsToManyAddAssociationMixinOptions extends FindOptions, BulkCreateOptions, InstanceUpdateOptions, InstanceDestroyOptions {
-  through: JoinTableAttributes;
+  through?: JoinTableAttributes;
 }
 
 /**
@@ -278,7 +278,7 @@ export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey> {
  * @see BelongsToManyCreateAssociationMixin
  */
 export interface BelongsToManyCreateAssociationMixinOptions extends CreateOptions {
-  through: JoinTableAttributes;
+  through?: JoinTableAttributes;
 }
 /**
  * The createAssociation mixin applied to models with belongsToMany.
