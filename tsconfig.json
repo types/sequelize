@@ -7,7 +7,14 @@
     "typeRoots": [
       "typings/globals",
       "typings/modules"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "typings/globals/*",
+        "typings/modules/*"
+      ]
+    }
   },
   "include": [
     "typings/index.d.ts",
