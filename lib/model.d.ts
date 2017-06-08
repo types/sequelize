@@ -2620,7 +2620,7 @@ export abstract class Model {
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON(): object;
+  toJSON(): Partial<this>;
 }
 
 export default Model;
