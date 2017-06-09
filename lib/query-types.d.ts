@@ -1,16 +1,16 @@
 
-export interface QueryTypes {
-  SELECT: string;
-  INSERT: string;
-  UPDATE: string;
-  BULKUPDATE: string;
-  BULKDELETE: string;
-  DELETE: string;
-  UPSERT: string;
-  VERSION: string;
-  SHOWTABLES: string;
-  SHOWINDEXES: string;
-  DESCRIBE: string;
-  RAW: string;
-  FOREIGNKEYS: string;
-}
+export = {
+  SELECT: 'SELECT';
+  INSERT: 'INSERT';
+  UPDATE: 'UPDATE';
+  BULKUPDATE: 'BULKUPDATE';
+  BULKDELETE: 'BULKDELETE';
+  DELETE: 'DELETE';
+  UPSERT: 'UPSERT';
+  VERSION: 'VERSION';
+  SHOWTABLES: 'SHOWTABLES';
+  SHOWINDEXES: 'SHOWINDEXES';
+  DESCRIBE: 'DESCRIBE';
+  RAW: 'RAW';
+  FOREIGNKEYS: 'FOREIGNKEYS';
+};
