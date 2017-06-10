@@ -1,7 +1,7 @@
 
 # Typescript Typings for [Sequelize](http://sequelizejs.com).
 
-[![Build Status](https://travis-ci.org/types/npm-sequelize.svg?branch=master)](https://travis-ci.org/types/npm-sequelize)
+[![Build Status](https://travis-ci.org/types/sequelize.svg?branch=master)](https://travis-ci.org/types/sequelize)
 
 ## [API Documentation](https://typed-sequelize.surge.sh)
 
@@ -14,7 +14,7 @@ typings install --save sequelize
 or
 
 ```bash
-npm install --save-dev types/npm-sequelize#<commit hash>
+npm install --save-dev types/sequelize#<commit hash>
 ```
 
 ## Usage
