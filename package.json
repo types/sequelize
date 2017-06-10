@@ -6,7 +6,7 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/bluebird": "^3.5.5",
-    "@types/validator": "types/npm-validator#01a495f7231ba611a62cdf850907104937896edc"
+    "@types/validator": "types/validator#87a9d159817251f76fcf0c6446beca04671c4465"
   },
   "devDependencies": {
     "tslint": "^5.4.3",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/types/npm-sequelize.git"
+    "url": "git+https://github.com/types/sequelize.git"
   },
   "author": "Louay Alakkad",
   "license": "ISC",
@@ -30,7 +30,7 @@
     "Felix Becker <felix.b@outlook.com>"
   ],
   "bugs": {
-    "url": "https://github.com/types/npm-sequelize/issues"
+    "url": "https://github.com/types/sequelize/issues"
   },
   "homepage": "https://typed-sequelize.surge.sh"
 }
