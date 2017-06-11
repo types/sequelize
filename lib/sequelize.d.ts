@@ -1368,4 +1368,7 @@ export {Validator as validator} from './utils/validator-extras';
 import {validator} from './utils/validator-extras';
 export {validator as Validator};
 
+import QueryTypes = require('./query-types');
+export {QueryTypes};
+
 export default Sequelize;
