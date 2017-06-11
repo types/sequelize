@@ -1918,17 +1918,17 @@ export abstract class Model {
   /**
    * Builds a new model instance. Values is an object of key value pairs, must be defined but can be empty.
    */
-  static build<M extends Model>(this: {new (): M} & typeof Model, record?: Partial<M>, options?: BuildOptions): M;
+  static build<M extends Model>(this: {new (): M} & typeof Model, record?: object, options?: BuildOptions): M;
 
   /**
    * Undocumented bulkBuild
    */
-  static bulkBuild<M extends Model>(this: {new (): M} & typeof Model, records: Partial<M>[], options?: BuildOptions): M[];
+  static bulkBuild<M extends Model>(this: {new (): M} & typeof Model, records: object[], options?: BuildOptions): M[];
 
   /**
    * Builds a new model instance and calls save on it.
    */
-  static create<M extends Model>(this: {new (): M} & typeof Model, values?: Partial<M>, options?: CreateOptions): Promise<M>;
+  static create<M extends Model>(this: {new (): M} & typeof Model, values?: object, options?: CreateOptions): Promise<M>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
@@ -1969,8 +1969,8 @@ export abstract class Model {
    * because SQLite always runs INSERT OR IGNORE + UPDATE, in a single query, so there is no way to know
    * whether the row was inserted or not.
    */
-  static upsert<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options?: UpsertOptions): Promise<boolean>;
-  static insertOrUpdate<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options?: UpsertOptions): Promise<boolean>;
+  static upsert<M extends Model>(this: {new (): M} & typeof Model, values: object, options?: UpsertOptions): Promise<boolean>;
+  static insertOrUpdate<M extends Model>(this: {new (): M} & typeof Model, values: object, options?: UpsertOptions): Promise<boolean>;
 
   /**
    * Create and insert multiple instances in bulk.
@@ -1983,7 +1983,7 @@ export abstract class Model {
    *
    * @param records List of objects (key/value pairs) to create instances from
    */
-  static bulkCreate<M extends Model>(this: {new (): M} & typeof Model, records: Partial<M>[], options?: BulkCreateOptions): Promise<M[]>;
+  static bulkCreate<M extends Model>(this: {new (): M} & typeof Model, records: object[], options?: BulkCreateOptions): Promise<M[]>;
 
   /**
    * Truncate all instances of the model. This is a convenient method for Model.destroy({ truncate: true }).
@@ -2007,7 +2007,7 @@ export abstract class Model {
    * elements. The first element is always the number of affected rows, while the second element is the actual
    * affected rows (only supported in postgres with `options.returning` true.)
    */
-  static update<M extends Model>(this: {new (): M} & typeof Model, values: Partial<M>, options: UpdateOptions): Promise<[number, M[]]>;
+  static update<M extends Model>(this: {new (): M} & typeof Model, values: object, options: UpdateOptions): Promise<[number, M[]]>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
