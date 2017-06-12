@@ -2497,7 +2497,7 @@ export abstract class Model {
    * @param options.reset Clear all previously set data values
    */
   set<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
-  set(keys: object, options?: SetOptions): this;
+  set(keys: Partial<this>, options?: SetOptions): this;
   setAttributes<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
   setAttributes(keys: object, options?: SetOptions): this;
 
@@ -2586,7 +2586,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment(fields: keyof this | (keyof this)[] | object, options?: IncrementDecrementOptions): Promise<this>;
+  increment(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2608,7 +2608,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement(fields: keyof this | (keyof this)[] | object, options?: IncrementDecrementOptions): Promise<this>;
+  decrement(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
