@@ -2499,7 +2499,7 @@ export abstract class Model {
   set<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
   set(keys: Partial<this>, options?: SetOptions): this;
   setAttributes<K extends keyof this>(key: K, value: this[K], options?: SetOptions): this;
-  setAttributes(keys: Partial<this>, options?: SetOptions): this;
+  setAttributes(keys: object, options?: SetOptions): this;
 
   /**
    * If changed is called with a string it will return a boolean indicating whether the value of that key in
@@ -2551,9 +2551,9 @@ export abstract class Model {
    * This is the same as calling `set` and then calling `save`.
    */
   update<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions): Promise<this>;
-  update(keys: Partial<this>, options?: InstanceUpdateOptions): Promise<this>;
+  update(keys: object, options?: InstanceUpdateOptions): Promise<this>;
   updateAttributes<K extends keyof this>(key: K, value: this[K], options?: InstanceUpdateOptions): Promise<this>;
-  updateAttributes(keys: Partial<this>, options?: InstanceUpdateOptions): Promise<this>;
+  updateAttributes(keys: object, options?: InstanceUpdateOptions): Promise<this>;
 
   /**
    * Destroy the row corresponding to this instance. Depending on your setting for paranoid, the row will
@@ -2624,7 +2624,7 @@ export abstract class Model {
    * Convert the instance to a JSON representation. Proxies to calling `get` with no keys. This means get all
    * values gotten from the DB, and apply all custom getters.
    */
-  toJSON(): Partial<this>;
+  toJSON(): object;
 }
 
 export default Model;
