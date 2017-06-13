@@ -6,7 +6,7 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/bluebird": "^3.5.5",
-    "@types/validator": "types/validator#87a9d159817251f76fcf0c6446beca04671c4465"
+    "@types/validator": "types/validator#76d6217b7b848ccdd1fcc2b3745eca237faafb6d"
   },
   "devDependencies": {
     "tslint": "^5.4.3",
