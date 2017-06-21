@@ -85,6 +85,11 @@ export interface QueryInterfaceOptions {
     */
   logging?: boolean | Function;
 
+  /**
+   * The transaction that the query should be executed under
+   */
+  transaction?: Transaction;
+
 }
 
 export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
