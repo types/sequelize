@@ -3023,6 +3023,7 @@ declare module sequelize {
   export type WhereValue =
     string // literal value
     | number // literal value
+    | boolean // literal value
     | WhereOperators
     | WhereAttributeHash // for JSON columns
     | col // reference another column
