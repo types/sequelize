@@ -11,7 +11,7 @@
   "devDependencies": {
     "tslint": "^5.4.3",
     "typedoc": "^0.7.1",
-    "typescript": "^2.3.4",
+    "typescript": "^2.4.1",
     "typings": "^2.1.1"
   },
   "scripts": {
