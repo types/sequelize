@@ -9,7 +9,7 @@
     "@types/validator": "types/validator#83990944fcc53bcb4b05b347c3cdfcb7aa05b3c7"
   },
   "devDependencies": {
-    "tslint": "^5.4.3",
+    "tslint": "^5.5.0",
     "typedoc": "^0.7.1",
     "typescript": "^2.4.1",
     "typings": "^2.1.1"
