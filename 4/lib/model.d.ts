@@ -2518,9 +2518,9 @@ export interface Instance {
    * Emits null if and only if validation successful; otherwise an Error instance containing
    * { field name : [error msgs] } entries.
    *
-   * @param options.skip An array of strings. All properties that are in this array will not be validated
+   * @param options Options that are passed to the validator
    */
-  validate(options?: { skip?: string[] }): Promise<void>;
+  validate(options?: { skip?: string[], fields?: string[] }): Promise<ValidationError>;
 
   /**
    * This is the same as calling `set` and then calling `save`.
