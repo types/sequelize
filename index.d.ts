@@ -3001,11 +3001,11 @@ declare module sequelize {
   }
 
   export interface OrOperator {
-    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+    $or: WhereOperators | WhereAttributeHash | Array<Array<number> | WhereOperators | WhereAttributeHash>;
   }
 
   export interface AndOperator {
-    $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+    $and: WhereOperators | WhereAttributeHash | Array<Array<number> | WhereOperators | WhereAttributeHash>;
   }
 
   /**
@@ -3030,7 +3030,7 @@ declare module sequelize {
     | AndOperator
     | OrOperator
     | WhereGeometryOptions
-    | Array<string | number>; // implicit $or
+    | Array<string | number | WhereAttributeHash>; // implicit $or
 
   /**
    * A hash of attributes to describe your search.
