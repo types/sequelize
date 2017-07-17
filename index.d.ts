@@ -3005,7 +3005,7 @@ declare module sequelize {
   }
 
   export interface AndOperator {
-    $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+    $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
   }
 
   /**
