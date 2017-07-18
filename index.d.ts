@@ -3001,11 +3001,11 @@ declare module sequelize {
   }
 
   export interface OrOperator {
-    $or: WhereOperators | WhereAttributeHash | Array<Array<number> | WhereOperators | WhereAttributeHash>;
+    $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
   }
 
   export interface AndOperator {
-    $and: WhereOperators | WhereAttributeHash | Array<Array<number> | WhereOperators | WhereAttributeHash>;
+    $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
   }
 
   /**

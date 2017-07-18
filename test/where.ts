@@ -191,6 +191,16 @@ where = {
   }
 };
 
+where = {
+  name: 'a project',
+  type: {
+    $and: [
+      ['a', 'b'],
+      { $notLike: '%z' }
+    ]
+  }
+};
+
 // $not example:
 where = {
   name: 'a project',
