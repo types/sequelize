@@ -267,7 +267,10 @@ export interface IncludeThroughOptions {
 
 }
 
-export type Includeable = Model | Association | IncludeOptions;
+/**
+ * Options for eager-loading associated models, also allowing for all associations to be loaded at once
+ */
+export type Includeable = Model | Association | IncludeOptions | { all: true };
 
 /**
  * Complex include options
@@ -325,7 +328,7 @@ export interface IncludeOptions {
   /**
    * Load further nested related models
    */
-  include?: Includeable[] | IncludeAll[];
+  include?: Includeable[];
 
   /**
    * Order include. Only available when setting `separate` to true.
@@ -336,16 +339,6 @@ export interface IncludeOptions {
    * Use sub queries. This should only be used if you know for sure the query does not result in a cartesian product.
    */
   subQuery?: boolean;
-}
-
-/**
- * Allows for all associated models to be eagerly loaded at once
- */
-export interface IncludeAll {
-  /**
-   * If true, all associated models will be eagerly loaded at once and included with the parent model
-   */
-  all: boolean
 }
 
 export type OrderItem =
@@ -397,7 +390,7 @@ export interface FindOptions {
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */
-  include?: Includeable[] | IncludeAll[];
+  include?: Includeable[];
 
   /**
    * Specifies an ordering. If a string is provided, it will be escaped. Using an array, you can provide
@@ -469,7 +462,7 @@ export interface CountOptions {
   /**
    * Include options. See `find` for details
    */
-  include?: Includeable[] | IncludeAll[];
+  include?: Includeable[];
 
   /**
    * Apply COUNT(DISTINCT(col))
@@ -516,7 +509,7 @@ export interface BuildOptions {
    *
    * TODO: See set
    */
-  include?: Includeable[] | IncludeAll[];
+  include?: Includeable[];
 
 }
 
