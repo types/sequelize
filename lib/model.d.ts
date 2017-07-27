@@ -202,12 +202,12 @@ export interface WhereOperators {
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /**
@@ -225,13 +225,14 @@ export interface WhereGeometryOptions {
 export type WhereValue =
   string // literal value
   | number // literal value
+  | boolean // literal value
   | WhereOperators
   | WhereAttributeHash // for JSON columns
   | Col // reference another column
   | OrOperator
   | AndOperator
   | WhereGeometryOptions
-  | Array<string | number>; // implicit $or
+  | Array<string | number | WhereAttributeHash>; // implicit $or
 
 /**
  * A hash of attributes to describe your search.
