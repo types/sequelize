@@ -202,12 +202,12 @@ export interface WhereOperators {
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<WhereOperators | WhereAttributeHash>;
+  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /**
@@ -225,6 +225,7 @@ export interface WhereGeometryOptions {
 export type WhereValue =
   string // literal value
   | number // literal value
+  | boolean // literal value
   | null
   | WhereOperators
   | WhereAttributeHash // for JSON columns
@@ -232,7 +233,7 @@ export type WhereValue =
   | OrOperator
   | AndOperator
   | WhereGeometryOptions
-  | Array<string | number>; // implicit $or
+  | Array<string | number | WhereAttributeHash>; // implicit $or
 
 /**
  * A hash of attributes to describe your search.
@@ -268,7 +269,10 @@ export interface IncludeThroughOptions {
 
 }
 
-export type Includeable = Model | Association | IncludeOptions;
+/**
+ * Options for eager-loading associated models, also allowing for all associations to be loaded at once
+ */
+export type Includeable = Model | Association | IncludeOptions | { all: true };
 
 /**
  * Complex include options
@@ -383,7 +387,8 @@ export interface FindOptions {
 
   /**
    * A list of associations to eagerly load using a left join. Supported is either
-   * `{ include: [ Model1, Model2, ...]}` or `{ include: [{ model: Model1, as: 'Alias' }]}`.
+   * `{ include: [ Model1, Model2, ...]}`, `{ include: [{ model: Model1, as: 'Alias' }]}` or
+   * `{ include: [{ all: true }]}`.
    * If your association are set up with an `as` (eg. `X.hasMany(Y, { as: 'Z }`, you need to specify Z in
    * the as attribute when eager loading Y).
    */

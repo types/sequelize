@@ -146,7 +146,7 @@ MyModel.all().then(function(projects) {
 });
 
 // search for specific attributes - hash usage
-MyModel.findAll({ where: { name: 'A MyModel' } }).then(function(projects) {
+MyModel.findAll({ where: { name: 'A MyModel', enabled: true } }).then(function(projects) {
   // projects will be an array of MyModel instances with the specified name
 });
 
@@ -206,6 +206,16 @@ where = {
     $or: [
       [1, 2, 3],
       { $gt: 10 }
+    ]
+  }
+};
+
+where = {
+  name: 'a project',
+  type: {
+    $and: [
+      ['a', 'b'],
+      { $notLike: '%z' }
     ]
   }
 };

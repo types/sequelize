@@ -6,12 +6,15 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/bluebird": "^3.5.5",
-    "@types/validator": "types/validator#76d6217b7b848ccdd1fcc2b3745eca237faafb6d"
+    "@types/validator": "types/validator#83990944fcc53bcb4b05b347c3cdfcb7aa05b3c7"
+  },
+  "peerDependencies": {
+    "typescript": ">=2.0.0 <2.4.0"
   },
   "devDependencies": {
     "tslint": "^5.4.3",
     "typedoc": "^0.7.1",
-    "typescript": "^2.3.4",
+    "typescript": "~2.3.4",
     "typings": "^2.1.1"
   },
   "scripts": {

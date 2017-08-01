@@ -14,3 +14,7 @@ MyModel.findAll({
         order: [['id', 'DESC']]
     }]
 })
+
+MyModel.findAll({
+  include: [{ all: true }]
+})

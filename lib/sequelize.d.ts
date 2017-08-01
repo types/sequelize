@@ -59,25 +59,30 @@ export interface SetOptions { }
 export interface PoolOptions {
 
   /**
-   * Maximum connections of the pool
+   * Maximum number of connections in pool. Default is 5
    */
-  maxConnections?: number;
+  max?: number;
 
   /**
-   * Minimum connections of the pool
+   * Minimum number of connections in pool. Default is 0
    */
-  minConnections?: number;
+  min?: number;
 
   /**
-   * The maximum time, in milliseconds, that a connection can be idle before being released.
+   * The maximum time, in milliseconds, that a connection can be idle before being released
    */
-  maxIdleTime?: number;
+  idle?: number;
+
+  /**
+   * The maximum time, in milliseconds, that pool will try to get connection before throwing error
+   */
+  acquire?: number;
 
   /**
    * A function that validates a connection. Called with client. The default function checks that client is an
-   * object, and that its state is not disconnected.
+   * object, and that its state is not disconnected
    */
-  validateConnection?: (client?: any) => boolean;
+  validate?: (client?: any) => boolean;
 
 }
 
