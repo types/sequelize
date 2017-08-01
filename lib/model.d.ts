@@ -225,6 +225,7 @@ export interface WhereGeometryOptions {
 export type WhereValue =
   string // literal value
   | number // literal value
+  | null
   | WhereOperators
   | WhereAttributeHash // for JSON columns
   | Col // reference another column
