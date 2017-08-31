@@ -22,6 +22,56 @@ export class Transaction {
    */
   rollback(): Promise<void>;
 
+  /**
+   * Possible options for row locking. Used in conjunction with `find` calls:
+   *
+   * ```js
+   * t1 // is a transaction
+   * t1.LOCK.UPDATE,
+   * t1.LOCK.SHARE,
+   * t1.LOCK.KEY_SHARE, // Postgres 9.3+ only
+   * t1.LOCK.NO_KEY_UPDATE // Postgres 9.3+ only
+   * ```
+   *
+   * Usage:
+   * ```js
+   * t1 // is a transaction
+   * Model.findAll({
+   *   where: ...,
+   *   transaction: t1,
+   *   lock: t1.LOCK...
+   * });
+   * ```
+   *
+   * Postgres also supports specific locks while eager loading by using OF:
+   * ```js
+   * UserModel.findAll({
+   *   where: ...,
+   *   include: [TaskModel, ...],
+   *   transaction: t1,
+   *   lock: {
+   *     level: t1.LOCK...,
+   *     of: UserModel
+   *   }
+   * });
+   * ```
+   * UserModel will be locked but TaskModel won't!
+   *
+   * @property LOCK
+   */
+  static LOCK: TransactionLock;
+
+  /**
+   * @see {@link Transaction.LOCK}
+   */
+  LOCK: TransactionLock;
+}
+
+export interface TransactionLock {
+  UPDATE: 'UPDATE';
+  SHARE: 'SHARE';
+  KEY_SHARE: 'KEY SHARE';
+  NO_KEY_UPDATE: 'NO KEY UPDATE';
 }
 
 export type TransactionType = 'DEFERRED' | 'IMMEDIATE' | 'EXCLUSIVE';
@@ -66,51 +116,6 @@ export const ISOLATION_LEVELS: {
   REPEATABLE_READ: 'REPEATABLE READ',
   SERIALIZABLE: 'SERIALIZABLE'
 };
-
-/**
- * Possible options for row locking. Used in conjunction with `find` calls:
- *
- * ```js
- * t1 // is a transaction
- * t1.LOCK.UPDATE,
- * t1.LOCK.SHARE,
- * t1.LOCK.KEY_SHARE, // Postgres 9.3+ only
- * t1.LOCK.NO_KEY_UPDATE // Postgres 9.3+ only
- * ```
- *
- * Usage:
- * ```js
- * t1 // is a transaction
- * Model.findAll({
- *   where: ...,
- *   transaction: t1,
- *   lock: t1.LOCK...
- * });
- * ```
- *
- * Postgres also supports specific locks while eager loading by using OF:
- * ```js
- * UserModel.findAll({
- *   where: ...,
- *   include: [TaskModel, ...],
- *   transaction: t1,
- *   lock: {
- *     level: t1.LOCK...,
- *     of: UserModel
- *   }
- * });
- * ```
- * UserModel will be locked but TaskModel won't!
- *
- * @property LOCK
- */
-export const LOCK: {
-  UPDATE: 'UPDATE',
-  SHARE: 'SHARE',
-  KEY_SHARE: 'KEY SHARE',
-  NO_KEY_UPDATE: 'NO KEY UPDATE'
-}
-export type TransactionLock = 'UDPATE' | 'SHARE' | 'KEY SHARE' | 'NO KEY UPDATE';
 
 /**
  * Options provided when the transaction is created
