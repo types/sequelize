@@ -1,6 +1,7 @@
 
 import {Promise} from './promise';
 import {Sequelize} from './sequelize';
+import {AbstractDeferrableStatic} from './deferrable';
 
 /**
  * The transaction object is used to identify a running transaction. It is created by calling
@@ -135,7 +136,7 @@ export interface TransactionOptions {
   logging?: Function;
 
   type?: TransactionType;
-  deferrable?: string;
+  deferrable?: string | AbstractDeferrableStatic;
 }
 
 export default Transaction;
