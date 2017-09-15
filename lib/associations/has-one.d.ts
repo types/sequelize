@@ -1,6 +1,6 @@
 
 import {Association, AssociationOptions, SingleAssociationAccessors} from './base';
-import {Model, SaveOptions, CreateOptions} from '../model';
+import {Model, SaveOptions, CreateOptions, FindOptions} from '../model';
 import {DataType} from '../data-types';
 import {Promise} from '../promise';
 
@@ -20,16 +20,15 @@ export class HasOne extends Association {
   constructor(source: typeof Model, target: typeof Model, options: HasOneOptions);
 }
 
-
 /**
  * The options for the getAssociation mixin of the hasOne association.
  * @see HasOneGetAssociationMixin
  */
-export interface HasOneGetAssociationMixinOptions {
+export interface HasOneGetAssociationMixinOptions extends FindOptions {
   /**
    * Apply a scope on the related model, or remove its default scope by passing false.
    */
-  scope?: string | boolean;
+  scope?: string | string[] | boolean;
 }
 
 /**

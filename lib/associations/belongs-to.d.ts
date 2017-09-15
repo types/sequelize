@@ -1,6 +1,6 @@
 
-import {Association, SingleAssociationAccessors} from './base';
-import {Model, SaveOptions, CreateOptions} from '../model';
+import {Association, SingleAssociationAccessors, } from './base';
+import {Model, SaveOptions, CreateOptions, FindOptions } from '../model';
 import {DataType} from '../data-types';
 import {AssociationOptions} from './base';
 import {Promise} from '../promise';
@@ -35,11 +35,11 @@ export class BelongsTo extends Association {
  * The options for the getAssociation mixin of the belongsTo association.
  * @see BelongsToGetAssociationMixin
  */
-export interface BelongsToGetAssociationMixinOptions {
+export interface BelongsToGetAssociationMixinOptions extends FindOptions {
   /**
    * Apply a scope on the related model, or remove its default scope by passing false.
    */
-  scope?: string | boolean;
+  scope?: string | string[] | boolean;
 }
 
 /**

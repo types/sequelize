@@ -4,7 +4,7 @@ import {
   ManyToManyOptions,
   AssociationScope,
   ForeignKeyOptions,
-  MultiAssociationAccessors
+  MultiAssociationAccessors,
 } from './base';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
@@ -86,22 +86,11 @@ export class BelongsToMany extends Association {
  * The options for the getAssociations mixin of the belongsToMany association.
  * @see BelongsToManyGetAssociationsMixin
  */
-export interface BelongsToManyGetAssociationsMixinOptions {
-
-  /**
-   * An optional where clause to limit the associated models.
-   */
-  where?: WhereOptions;
-
+export interface BelongsToManyGetAssociationsMixinOptions extends FindOptions {
   /**
    * Apply a scope on the related model, or remove its default scope by passing false.
    */
   scope?: string | boolean;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
 }
 
 /**

@@ -272,7 +272,7 @@ export interface IncludeThroughOptions {
 /**
  * Options for eager-loading associated models, also allowing for all associations to be loaded at once
  */
-export type Includeable = Model | Association | IncludeOptions | { all: true };
+export type Includeable = typeof Model | Association | IncludeOptions | { all: true };
 
 /**
  * Complex include options
@@ -448,8 +448,19 @@ export interface FindOptions {
    * Use sub queries (internal)
    */
   subQuery?: boolean;
-
 }
+
+export interface RejectOnEmpty {
+  /**
+   * Throw if nothing was found.
+   */
+  rejectOnEmpty: boolean;
+}
+
+/**
+ * Options for methods that find single models or null.
+ */
+export interface NonNullFindOptions extends RejectOnEmpty {}
 
 /**
  * Options for Model.count method
@@ -489,7 +500,7 @@ export interface CountOptions {
   transaction?: Transaction;
 }
 
-export interface FindAndCountOptions extends CountOptions, FindOptions { }
+export interface FindAndCountOptions extends CountOptions, FindOptions, RejectOnEmpty { }
 
 /**
  * Options for Model.build method
@@ -1840,14 +1851,18 @@ export abstract class Model {
    * always be called with a single instance.
    */
   static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: NonNullFindOptions): Promise<M>;
   static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions): Promise<M>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
   static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
   static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
 
   /**
    * Run an aggregation method on the specified field
@@ -1858,7 +1873,7 @@ export abstract class Model {
    * @return Returns the aggregate result cast to `options.dataType`, unless `options.plain` is false, in
    *     which case the complete data result is returned.
    */
-  aggregate(field: keyof this, aggregateFunction: string, options?: AggregateOptions): Promise<any>;
+  aggregate<K extends keyof this>(field: K, aggregateFunction: string, options?: AggregateOptions): Promise<any>;
   static aggregate<M extends Model>(this: {new (): M} & typeof Model, field: keyof M, aggregateFunction: string, options?: AggregateOptions): Promise<any>;
 
   /**
@@ -2517,8 +2532,8 @@ export abstract class Model {
    *
    * If changed is called without an argument and no keys have changed, it will return `false`.
    */
-  changed(key: keyof this): boolean;
-  changed(key: keyof this, dirty: boolean): void;
+  changed<K extends keyof this>(key: K): boolean;
+  changed<K extends keyof this>(key: K, dirty: boolean): void;
   changed(): false | string[];
 
   /**
@@ -2592,7 +2607,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
+  increment<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2614,7 +2629,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement(fields: keyof this | (keyof this)[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
+  decrement<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same
