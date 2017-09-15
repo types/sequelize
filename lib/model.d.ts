@@ -500,7 +500,7 @@ export interface CountOptions {
   transaction?: Transaction;
 }
 
-export interface FindAndCountOptions extends CountOptions, FindOptions, RejectOnEmpty { }
+export interface FindAndCountOptions extends CountOptions, FindOptions, Partial<RejectOnEmpty> { }
 
 /**
  * Options for Model.build method
