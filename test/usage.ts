@@ -4,6 +4,9 @@ import {User, Group} from './models/User';
 async function test(): Promise<void> {
 
   let user = await User.findOne({include: [Group]});
+  if (!user) {
+    return;
+  }
   User.update({  }, { where: {} });
   user.firstName = 'John';
   await user.save();
