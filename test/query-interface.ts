@@ -1,7 +1,7 @@
 import {DataTypes} from 'sequelize';
 import {QueryInterface} from 'sequelize/lib/query-interface';
 
-let queryInterface: QueryInterface;
+declare let queryInterface: QueryInterface;
 
 queryInterface.createTable(
   'nameOfTheNewTable',
@@ -24,7 +24,7 @@ queryInterface.createTable(
       defaultValue: false,
       allowNull: false
     },
-    //foreign key usage
+    // foreign key usage
     attr4: {
         type: DataTypes.INTEGER,
         references: {
@@ -47,7 +47,9 @@ queryInterface.dropAllTables();
 
 queryInterface.renameTable('Person', 'User');
 
-queryInterface.showAllTables().then(function(tableNames) {})
+queryInterface.showAllTables().then(function(tableNames) {
+  // do nothing
+});
 
 queryInterface.describeTable('Person').then(function(attributes) {
   /*

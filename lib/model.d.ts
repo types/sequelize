@@ -1,4 +1,3 @@
-
 import {Promise} from './promise';
 import {Col, Fn, Literal, Where} from './utils';
 import {SyncOptions} from './sequelize';
@@ -448,19 +447,12 @@ export interface FindOptions {
    * Use sub queries (internal)
    */
   subQuery?: boolean;
-}
 
-export interface RejectOnEmpty {
   /**
    * Throw if nothing was found.
    */
-  rejectOnEmpty: boolean;
+  rejectOnEmpty?: boolean;
 }
-
-/**
- * Options for methods that find single models or null.
- */
-export interface NonNullFindOptions extends RejectOnEmpty {}
 
 /**
  * Options for Model.count method
@@ -500,7 +492,7 @@ export interface CountOptions {
   transaction?: Transaction;
 }
 
-export interface FindAndCountOptions extends CountOptions, FindOptions, Partial<RejectOnEmpty> { }
+export interface FindAndCountOptions extends CountOptions, FindOptions { }
 
 /**
  * Options for Model.build method
@@ -1850,19 +1842,19 @@ export abstract class Model {
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
-  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: NonNullFindOptions): Promise<M>;
-  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
-  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions): Promise<M>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
-  static findOne<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
-  static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
-  static find<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
 
   /**
    * Run an aggregation method on the specified field
