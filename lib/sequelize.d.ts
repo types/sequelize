@@ -242,6 +242,13 @@ export interface Options {
    */
   isolationLevel?: string;
 
+  /**
+   * Run built in type validators on insert and update, e.g. validate that arguments passed to integer
+   * fields are integer-like.
+   *
+   * Defaults to false
+   */
+  typeValidation?: boolean;
 }
 
 export interface QueryOptionsTransactionRequired { }
