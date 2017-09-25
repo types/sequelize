@@ -4,7 +4,7 @@ import {
   ManyToManyOptions,
   AssociationScope,
   ForeignKeyOptions,
-  MultiAssociationAccessors,
+  MultiAssociationAccessors
 } from './base';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
