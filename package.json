@@ -9,7 +9,7 @@
     "@types/validator": "types/validator#83990944fcc53bcb4b05b347c3cdfcb7aa05b3c7"
   },
   "peerDependencies": {
-    "typescript": ">=2.0.0 <2.4.0"
+    "typescript": ">=2.0.0"
   },
   "devDependencies": {
     "tslint": "^5.4.3",
