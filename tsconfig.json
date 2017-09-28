@@ -4,6 +4,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
+    "strictNullChecks": true,
+    "lib": [
+      "es2015",
+      "es2015.collection"
+    ],
     "typeRoots": [
       "typings/globals",
       "typings/modules"

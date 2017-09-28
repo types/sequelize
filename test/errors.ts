@@ -12,4 +12,3 @@ async function test() {
     }
   }
 }
-

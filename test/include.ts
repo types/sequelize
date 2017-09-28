@@ -13,8 +13,8 @@ MyModel.findAll({
         separate: true,
         order: [['id', 'DESC']]
     }]
-})
+});
 
 MyModel.findAll({
   include: [{ all: true }]
-})
+});
