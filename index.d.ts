@@ -5779,8 +5779,8 @@ declare module sequelize {
      * @param options Transaction Options
      * @param autoCallback Callback for the transaction
      */
-    transaction(options: TransactionOptions, autoCallback: (t: Transaction) => PromiseLike<any>): SequelizePromise<any>;
-    transaction(autoCallback: (t: Transaction) => PromiseLike<any>): SequelizePromise<any>;
+    transaction<TResult>(options: TransactionOptions, autoCallback: (t: Transaction) => PromiseLike<TResult>): SequelizePromise<TResult>;
+    transaction<TResult>(autoCallback: (t: Transaction) => PromiseLike<TResult>): SequelizePromise<TResult>;
     transaction(options?: TransactionOptions): SequelizePromise<Transaction>;
 
     /**
