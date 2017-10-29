@@ -1,4 +1,4 @@
-declare enum QueryTypes {
+export enum QueryTypes {
   SELECT = "SELECT",
   INSERT = "INSERT",
   UPDATE = "UPDATE",
@@ -13,5 +13,3 @@ declare enum QueryTypes {
   RAW = "RAW",
   FOREIGNKEYS = "FOREIGNKEYS",
 }
-
-export default QueryTypes
