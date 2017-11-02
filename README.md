@@ -2,6 +2,9 @@
 # Typescript Typings for [Sequelize](http://sequelizejs.com).
 
 [![Build Status](https://travis-ci.org/types/sequelize.svg?branch=master)](https://travis-ci.org/types/sequelize)
+[![dependencies Status](https://david-dm.org/types/sequelize/status.svg)](https://david-dm.org/types/sequelize)
+[![devDependencies Status](https://david-dm.org/types/sequelize/dev-status.svg)](https://david-dm.org/types/sequelize?type=dev)
+[![peerDependencies Status](https://david-dm.org/types/sequelize/peer-status.svg)](https://david-dm.org/types/sequelize?type=peer)
 
 ## [API Documentation](https://typed-sequelize.surge.sh)
 
