@@ -1610,7 +1610,7 @@ export abstract class Model {
   /**
    * An object hash from alias to association object
    */
-  static associations: any;
+  static associations: { [association: string]: Association };
 
   /**
    * The options that the model was initialized with
