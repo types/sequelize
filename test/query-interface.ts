@@ -79,6 +79,14 @@ queryInterface.addColumn(
 // or
 
 queryInterface.addColumn(
+  { tableName: 'nameOfAnExistingTable', schema: 'nameOfSchema' },
+  'nameOfTheNewAttribute',
+  DataTypes.STRING
+);
+
+// or
+
+queryInterface.addColumn(
   'nameOfAnExistingTable',
   'nameOfTheNewAttribute',
   {
@@ -89,8 +97,27 @@ queryInterface.addColumn(
 
 queryInterface.removeColumn('Person', 'signature');
 
+// or
+
+queryInterface.removeColumn(
+  { tableName: 'Person', schema: 'nameOfSchema' },
+  'signature'
+);
+
 queryInterface.changeColumn(
   'nameOfAnExistingTable',
+  'nameOfAnExistingAttribute',
+  {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0.0
+  }
+);
+
+// or
+
+queryInterface.changeColumn(
+  { tableName: 'nameOfAnExistingTable', schema: 'nameOfSchema' },
   'nameOfAnExistingAttribute',
   {
     type: DataTypes.FLOAT,
