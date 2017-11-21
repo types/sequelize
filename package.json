@@ -5,8 +5,8 @@
   "description": "Typescript Typings for Sequelize",
   "typings": "index.d.ts",
   "dependencies": {
-    "@types/bluebird": "^3.5.5",
-    "@types/validator": "types/validator#83990944fcc53bcb4b05b347c3cdfcb7aa05b3c7"
+    "@types/validator": "^6.3.0",
+    "@types/bluebird": "^3.5.5"
   },
   "peerDependencies": {
     "typescript": ">=2.0.0"

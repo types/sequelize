@@ -1,3 +1,4 @@
+
 import {Promise} from './promise';
 import {Col, Fn, Literal, Where} from './utils';
 import {SyncOptions} from './sequelize';
@@ -7,6 +8,7 @@ import {DataType} from './data-types';
 import {Sequelize} from './sequelize';
 import {AbstractDeferrable} from './deferrable';
 import {ModelManager} from './model-manager';
+import {Logging, Transactionable, SearchPathable, Filterable, Projectable, Paranoid} from './misc-types';
 import {
   Association,
   BelongsTo,
@@ -24,35 +26,23 @@ export type GroupOption = string | Fn | Col | (string | Fn | Col)[];
 /**
  * Options to pass to Model on drop
  */
-export interface DropOptions {
+export interface DropOptions extends Logging {
 
   /**
    * Also drop all objects depending on this table, such as views. Only works in postgres
    */
   cascade?: boolean;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
 }
 
 /**
  * Schema Options provided for applying a schema to a model
  */
-export interface SchemaOptions {
+export interface SchemaOptions extends Logging {
 
   /**
    * The character(s) that separates the schema name from the table name
    */
   schemaDelimeter?: string,
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
 }
 
 /**
@@ -201,12 +191,12 @@ export interface WhereOperators {
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where | AndOperator>;
+  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where | OrOperator>;
+  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
 }
 
 /**
@@ -254,18 +244,7 @@ export interface WhereAttributeHash {
 /**
  * Through options for Include Options
  */
-export interface IncludeThroughOptions {
-
-  /**
-   * Filter on the join model for belongsToMany relations
-   */
-  where?: WhereOptions;
-
-  /**
-   * A list of attributes to select from the join model for belongsToMany relations
-   */
-  attributes?: FindAttributeOptions;
-
+export interface IncludeThroughOptions extends Filterable, Projectable {
 }
 
 /**
@@ -276,7 +255,7 @@ export type Includeable = typeof Model | Association | IncludeOptions | { all: t
 /**
  * Complex include options
  */
-export interface IncludeOptions {
+export interface IncludeOptions extends Filterable, Projectable {
 
   /**
    * The model you want to eagerly load
@@ -295,15 +274,10 @@ export interface IncludeOptions {
   association?: Association;
 
   /**
-   * Where clauses to apply to the child models. Note that this converts the eager load to an inner join,
+   * Note that this converts the eager load to an inner join,
    * unless you explicitly set `required: false`
    */
   where?: WhereOptions;
-
-  /**
-   * A list of attributes to select from the child model
-   */
-  attributes?: FindAttributeOptions;
 
   /**
    * If true, converts to an inner join, which means that the parent model will only be loaded if it has any
@@ -364,26 +338,7 @@ export type FindAttributeOptions =
  *
  * A hash of options to describe the scope of the search
  */
-export interface FindOptions {
-  /**
-   * A hash of attributes to describe your search. See above for examples.
-   */
-  where?: WhereOptions;
-
-  /**
-   * A list of the attributes that you want to select. To rename an attribute, you can pass an array, with
-   * two elements - the first is the name of the attribute in the DB (or some kind of expression such as
-   * `Sequelize.literal`, `Sequelize.fn` and so on), and the second is the name you want the attribute to
-   * have in the returned instance
-   */
-  attributes?: FindAttributeOptions;
-
-  /**
-   * If true, only non-deleted records will be returned. If false, both deleted and non-deleted records will
-   * be returned. Only applies if `options.paranoid` is true for the model.
-   */
-  paranoid?: boolean;
-
+export interface FindOptions extends Logging, Transactionable, Filterable, Projectable, Paranoid {
   /**
    * A list of associations to eagerly load using a left join. Supported is either
    * `{ include: [ Model1, Model2, ...]}`, `{ include: [{ model: Model1, as: 'Alias' }]}` or
@@ -417,11 +372,6 @@ export interface FindOptions {
   offset?: number;
 
   /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
    * Lock the selected rows. Possible options are transaction.LOCK.UPDATE and transaction.LOCK.SHARE.
    * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
    * locks with joins. See [transaction.LOCK for an example](transaction#lock)
@@ -434,11 +384,6 @@ export interface FindOptions {
   raw?: boolean;
 
   /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
    * having ?!?
    */
   having?: WhereAttributeHash;
@@ -447,22 +392,19 @@ export interface FindOptions {
    * Use sub queries (internal)
    */
   subQuery?: boolean;
+}
 
+export interface NonNullFindOptions extends FindOptions {
   /**
    * Throw if nothing was found.
    */
-  rejectOnEmpty?: boolean;
+  rejectOnEmpty: boolean;
 }
 
 /**
  * Options for Model.count method
  */
-export interface CountOptions {
-
-  /**
-   * A hash of search attributes.
-   */
-  where?: WhereOptions;
+export interface CountOptions extends Logging, Transactionable, Filterable, Projectable {
 
   /**
    * Include options. See `find` for details
@@ -475,21 +417,11 @@ export interface CountOptions {
   distinct?: boolean;
 
   /**
-   * Used in conjustion with `group`
-   */
-  attributes?: FindAttributeOptions;
-
-  /**
    * GROUP BY in sql
+   * Used in conjunction with `attributes`.
+   * @see Projectable
    */
   group?: GroupOption;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  transaction?: Transaction;
 }
 
 export interface FindAndCountOptions extends CountOptions, FindOptions { }
@@ -518,10 +450,19 @@ export interface BuildOptions {
 
 }
 
+export interface Silent {
+  /**
+   * If true, the updatedAt timestamp will not be updated.
+   *
+   * Defaults to false
+   */
+  silent?: boolean;
+}
+
 /**
  * Options for Model.create method
  */
-export interface CreateOptions extends BuildOptions {
+export interface CreateOptions extends BuildOptions, Logging, Silent, Transactionable {
 
   /**
    * If set, only columns matching those in fields will be saved
@@ -532,26 +473,12 @@ export interface CreateOptions extends BuildOptions {
    * On Duplicate
    */
   onDuplicate?: string;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  silent?: boolean;
-
-  returning?: boolean;
 }
 
 /**
  * Options for Model.findOrInitialize method
  */
-export interface FindOrInitializeOptions {
+export interface FindOrInitializeOptions extends Logging, Transactionable {
 
   /**
    * A hash of search attributes.
@@ -562,23 +489,12 @@ export interface FindOrInitializeOptions {
    * Default values to use if building a new instance
    */
   defaults?: Object;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
 }
 
 /**
  * Options for Model.upsert method
  */
-export interface UpsertOptions {
+export interface UpsertOptions extends Logging, Transactionable, SearchPathable {
   /**
    * Run validations before the row is inserted
    */
@@ -589,20 +505,6 @@ export interface UpsertOptions {
    */
   fields?: Array<string>;
 
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * An optional parameter to specify the schema search_path (Postgres only)
-   */
-  searchPath?: string;
 
   /**
    * Print query execution time in milliseconds when logging SQL.
@@ -613,7 +515,7 @@ export interface UpsertOptions {
 /**
  * Options for Model.bulkCreate method
  */
-export interface BulkCreateOptions {
+export interface BulkCreateOptions extends Logging, Transactionable {
 
   /**
    * Fields to insert (defaults to all fields)
@@ -651,16 +553,6 @@ export interface BulkCreateOptions {
   updateOnDuplicate?: Array<string>;
 
   /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
    * Return the affected rows (only for postgres)
    */
   returning?: boolean;
@@ -669,12 +561,7 @@ export interface BulkCreateOptions {
 /**
  * The options passed to Model.destroy in addition to truncate
  */
-export interface TruncateOptions {
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
+export interface TruncateOptions extends Logging, Transactionable, Filterable {
 
   /**
    * Only used in conjuction with TRUNCATE. Truncates  all tables that have foreign-key references to the
@@ -683,16 +570,6 @@ export interface TruncateOptions {
    * Defaults to false;
    */
   cascade?: boolean;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Filter the destroy
-   */
-  where?: WhereOptions;
 
   /**
    * Run before / after bulk destroy hooks?
@@ -738,12 +615,7 @@ export interface DestroyOptions extends TruncateOptions {
 /**
  * Options for Model.restore
  */
-export interface RestoreOptions {
-
-  /**
-   * Filter the restore
-   */
-  where?: WhereOptions;
+export interface RestoreOptions extends Logging, Transactionable, Filterable {
 
   /**
    * Run before / after bulk restore hooks?
@@ -760,23 +632,12 @@ export interface RestoreOptions {
    * How many rows to undelete
    */
   limit?: number;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
 }
 
 /**
  * Options used for Model.update
  */
-export interface UpdateOptions {
+export interface UpdateOptions extends Logging, Transactionable {
 
   /**
    * Options to describe the scope of the search.
@@ -827,25 +688,12 @@ export interface UpdateOptions {
    * How many rows to update (only for mysql and mariadb)
    */
   limit?: number;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
 }
 
 /**
  * Options used for Model.aggregate
  */
-export interface AggregateOptions extends QueryOptions {
-  /** A hash of search attributes. */
-  where?: WhereOptions;
+export interface AggregateOptions extends QueryOptions, Filterable, Paranoid {
 
   /**
    * The type of the result. If `field` is a field in this Model, the default will be the type of that field,
@@ -853,7 +701,9 @@ export interface AggregateOptions extends QueryOptions {
    */
   dataType?: DataType;
 
-  /** Applies DISTINCT to the field being aggregated over */
+  /**
+   * Applies DISTINCT to the field being aggregated over
+   */
   distinct?: boolean;
 }
 
@@ -863,81 +713,43 @@ export interface AggregateOptions extends QueryOptions {
 /**
  * Options used for Instance.increment method
  */
-export interface IncrementDecrementOptions {
+export interface IncrementDecrementOptions extends Logging, Transactionable, Silent, SearchPathable, Filterable {
+
+}
+
+/**
+ * Options used for Instance.increment method
+ */
+export interface IncrementDecrementOptionsWithBy extends IncrementDecrementOptions {
 
   /**
    * The number to increment by
    *
-   * Defaults to 1
+    * Defaults to 1
    */
   by?: number;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-  /**
-   * A hash of attributes to describe your search. See above for examples.
-   */
-  where?: WhereOptions;
-
 }
 
 /**
  * Options used for Instance.restore method
  */
-export interface InstanceRestoreOptions {
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
-
-}
+export interface InstanceRestoreOptions extends Logging, Transactionable {}
 
 /**
  * Options used for Instance.destroy method
  */
-export interface InstanceDestroyOptions {
+export interface InstanceDestroyOptions extends Logging, Transactionable {
 
   /**
    * If set to true, paranoid models will actually be deleted
    */
   force?: boolean;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run the query in
-   */
-  transaction?: Transaction;
-
 }
 
 /**
  * Options used for Instance.update method
  */
-export interface InstanceUpdateOptions extends SaveOptions, SetOptions {
-
-  /**
-   * A hash of attributes to describe your search. See above for examples.
-   */
-  where?: WhereOptions;
-
+export interface InstanceUpdateOptions extends SaveOptions, SetOptions, Filterable {
 }
 
 /**
@@ -960,7 +772,7 @@ export interface SetOptions {
 /**
  * Options used for Instance.save method
  */
-export interface SaveOptions {
+export interface SaveOptions extends Logging, Transactionable {
 
   /**
    * An optional array of strings, representing database columns. If fields is provided, only those columns
@@ -969,28 +781,11 @@ export interface SaveOptions {
   fields?: Array<string>;
 
   /**
-   * If true, the updatedAt timestamp will not be updated.
-   *
-   * Defaults to false
-   */
-  silent?: boolean;
-
-  /**
    * If false, validations won't be run.
    *
    * Defaults to true
    */
   validate?: boolean;
-
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: boolean | Function;
-
-  /**
-   * Transaction to run the query in
-   */
-  transaction?: Transaction;
 }
 
 
@@ -1838,23 +1633,23 @@ export abstract class Model {
   static findAll<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M[]>;
   static all<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M[]>;
 
-  /**
+   /**
    * Search for a single instance by its primary key. This applies LIMIT 1, so the listener will
    * always be called with a single instance.
    */
-  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
-  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
-  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
-  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
+  static findById<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: NonNullFindOptions): Promise<M>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier?: number | string, options?: FindOptions): Promise<M | null>;
+  static findByPrimary<M extends Model>(this: {new (): M} & typeof Model, identifier: number | string, options: NonNullFindOptions): Promise<M>;
 
   /**
    * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single
    * instance.
    */
-  static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
-  static findOne<M extends Model>(this: {new (): M} & typeof Model, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
-  static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions & { rejectOnEmpty?: false }): Promise<M | null>;
-  static find<M extends Model>(this: {new (): M} & typeof Model, options: FindOptions & { rejectOnEmpty: true }): Promise<M>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
+  static findOne<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options?: FindOptions): Promise<M | null>;
+  static find<M extends Model>(this: {new (): M} & typeof Model, options: NonNullFindOptions): Promise<M>;
 
   /**
    * Run an aggregation method on the specified field
@@ -1942,6 +1737,7 @@ export abstract class Model {
    * Builds a new model instance and calls save on it.
    */
   static create<M extends Model>(this: {new (): M} & typeof Model, values?: object, options?: CreateOptions): Promise<M>;
+  static create(values: object, options: CreateOptions & { returning: false; }): Promise<void>;
 
   /**
    * Find a row that matches the query, or build (but don't save) the row if none is found.
@@ -2021,6 +1817,21 @@ export abstract class Model {
    * affected rows (only supported in postgres with `options.returning` true.)
    */
   static update<M extends Model>(this: {new (): M} & typeof Model, values: object, options: UpdateOptions): Promise<[number, M[]]>;
+
+  /**
+   * Increments a single field.
+   */
+  static increment<M extends Model, K extends keyof M>(this: {new (): M}, field: K, options: IncrementDecrementOptionsWithBy): Promise<M>;
+
+  /**
+   * Increments multiple fields by the same value.
+   */
+  static increment<M extends Model, K extends keyof M>(this: {new (): M}, fields: K[], options: IncrementDecrementOptionsWithBy): Promise<M>;
+
+  /**
+   * Increments multiple fields by different values.
+   */
+  static increment<M extends Model, K extends keyof M>(this: {new (): M}, fields: { [key in K]?: number }, options: IncrementDecrementOptions): Promise<M>;
 
   /**
    * Run a describe query on the table. The result will be return to the listener as a hash of attributes and
@@ -2483,6 +2294,7 @@ export abstract class Model {
    * @param options.plain If set to true, included instances will be returned as plain objects
    */
   get(options?: { plain?: boolean, clone?: boolean }): object;
+  get(key: string, options?: { plain?: boolean, clone?: boolean }): any;
   get<K extends keyof this>(key: K, options?: { plain?: boolean, clone?: boolean }): this[K];
 
   /**
@@ -2599,7 +2411,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is incremented by the value given.
    */
-  increment<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
+  increment<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptionsWithBy): Promise<this>;
 
   /**
    * Decrement the value of one or more columns. This is done in the database, which means it does not use
@@ -2621,7 +2433,7 @@ export abstract class Model {
    *               If an array is provided, the same is true for each column.
    *               If and object is provided, each column is decremented by the value given
    */
-  decrement<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptions): Promise<this>;
+  decrement<K extends keyof this>(fields: K | K[] | Partial<this>, options?: IncrementDecrementOptionsWithBy): Promise<this>;
 
   /**
    * Check whether all values of this and `other` Instance are the same

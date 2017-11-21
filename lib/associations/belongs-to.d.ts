@@ -1,6 +1,6 @@
 
-import {Association, SingleAssociationAccessors, } from './base';
-import {Model, SaveOptions, CreateOptions, FindOptions } from '../model';
+import {Association, SingleAssociationAccessors} from './base';
+import {Model, SaveOptions, CreateOptions, FindOptions} from '../model';
 import {DataType} from '../data-types';
 import {AssociationOptions} from './base';
 import {Promise} from '../promise';

@@ -4,7 +4,7 @@ import {
   ManyToManyOptions,
   AssociationScope,
   ForeignKeyOptions,
-  MultiAssociationAccessors
+  MultiAssociationAccessors,
 } from './base';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
@@ -17,6 +17,7 @@ import {
   InstanceDestroyOptions,
   CreateOptions
 } from '../model';
+import {Transactionable, Filterable} from '../misc-types';
 
 /**
  * Used for a association table in n:m associations.
@@ -482,22 +483,11 @@ export interface BelongsToManyHasAssociationsMixin<TModel, TModelPrimaryKey> {
  * The options for the countAssociations mixin of the belongsToMany association.
  * @see BelongsToManyCountAssociationsMixin
  */
-export interface BelongsToManyCountAssociationsMixinOptions {
-
-  /**
-   * An optional where clause to limit the associated models.
-   */
-  where?: WhereOptions;
-
+export interface BelongsToManyCountAssociationsMixinOptions extends Transactionable, Filterable {
   /**
    * Apply a scope on the related model, or remove its default scope by passing false.
    */
   scope?: string | boolean;
-
-  /**
-   * Transaction to run query under
-   */
-  transaction?: Transaction;
 }
 
 /**
