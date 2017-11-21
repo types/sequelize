@@ -5,7 +5,9 @@ node_js:
   - 8
 
 install:
-  - npm install
+  - npm install --only=dev
+  - typings install
+
 
 script:
   - npm run lint
