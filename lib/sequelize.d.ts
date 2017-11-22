@@ -150,6 +150,11 @@ export interface Options {
    * The port of the relational database.
    */
   port?: number;
+  
+  /**
+   * A flag that defines if is used SSL.
+   */
+  ssl?: boolean;
 
   /**
    * The protocol of the relational database.
