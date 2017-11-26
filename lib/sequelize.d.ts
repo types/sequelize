@@ -5,7 +5,6 @@ import {QueryInterface, QueryOptions, QueryOptionsWithType, QueryOptionsWithMode
 import * as DataTypes from './data-types';
 import {Promise} from './promise';
 import {ModelManager} from './model-manager';
-import {Logging} from './misc-types'
 import {
   Model,
   ModelAttributes,
@@ -20,7 +19,8 @@ import {
   WhereAttributeHash,
   WhereOperators,
   AndOperator,
-  OrOperator
+  OrOperator,
+  Logging
 } from './model';
 
 

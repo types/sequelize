@@ -1,7 +1,7 @@
 
 import {Promise} from './promise';
 import {Sequelize} from './sequelize';
-import {Logging} from './misc-types';
+import {Logging} from './model';
 
 /**
  * The transaction object is used to identify a running transaction. It is created by calling

@@ -1,10 +1,17 @@
 
 import {Association, ManyToManyOptions, MultiAssociationAccessors } from './base';
-import {Model, WhereOptions, FindOptions, InstanceUpdateOptions, CreateOptions} from '../model';
+import {
+  Model,
+  WhereOptions,
+  FindOptions,
+  InstanceUpdateOptions,
+  CreateOptions,
+  Transactionable,
+  Filterable
+} from '../model';
 import {DataType} from '../data-types';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
-import {Transactionable, Filterable} from '../misc-types';
 
 /**
  * Options provided when associating models with hasMany relationship

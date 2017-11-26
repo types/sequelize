@@ -15,9 +15,10 @@ import {
   BulkCreateOptions,
   InstanceUpdateOptions,
   InstanceDestroyOptions,
-  CreateOptions
+  CreateOptions,
+  Transactionable,
+  Filterable
 } from '../model';
-import {Transactionable, Filterable} from '../misc-types';
 
 /**
  * Used for a association table in n:m associations.

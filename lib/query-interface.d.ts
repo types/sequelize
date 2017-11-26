@@ -1,11 +1,16 @@
 
 import {Sequelize} from './sequelize';
 import {Promise} from './promise';
-import {ModelAttributes, ModelAttributeColumnOptions, Model} from './model';
+import {
+  ModelAttributes,
+  ModelAttributeColumnOptions,
+  Model,
+  Logging,
+  Transactionable
+} from './model';
 import {Transaction} from './transaction';
 import {DataType} from './data-types';
 import * as QueryTypes from './query-types';
-import {Logging, Transactionable} from './misc-types';
 
 /**
  * Interface for query options
@@ -19,11 +24,6 @@ export interface QueryOptions extends Logging, Transactionable {
   raw?: boolean;
 
   /**
-   * The transaction that the query should be executed under
-   */
-  transaction?: Transaction;
-
-  /*
    * The type of query you are executing. The query type affects how results are formatted before they are
    * passed back. The type is a string, but `Sequelize.QueryTypes` is provided as convenience shortcuts.
    */
