@@ -10,7 +10,7 @@ sequelize.afterBulkSync((options: SyncOptions) => {
 sequelize.query('SELECT * FROM `test`', {
   type: QueryTypes.SELECT
 })
-.then(rows => {
+.then((rows: any[]) => {
   rows.forEach(row => {
     console.log(row);
   });
