@@ -7,22 +7,11 @@
     "strictNullChecks": true,
     "lib": [
       "es2015",
-      "es2015.collection"
-    ],
-    "typeRoots": [
-      "typings/globals",
-      "typings/modules"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "typings/globals/*",
-        "typings/modules/*"
-      ]
-    }
+      "es2015.collection",
+      "dom"
+    ]
   },
   "include": [
-    "typings/index.d.ts",
     "lib/**/*.d.ts",
     "index.d.ts"
   ]

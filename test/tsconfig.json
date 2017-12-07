@@ -3,11 +3,7 @@
     "module": "commonjs",
     "target": "es6",
     "noEmit": true,
-    "strictNullChecks": true,
-    "typeRoots": [
-      "../typings/globals",
-      "../typings/modules"
-    ]
+    "strictNullChecks": true
   },
   "include": [
     "../dist/index.d.ts",
