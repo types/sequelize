@@ -1,5 +1,5 @@
 
-import {Model, Sequelize, WhereOptions, WhereOperators, AndOperator, OrOperator} from 'sequelize';
+import {Model, Sequelize, WhereOptions, WhereOperators, AndOperator, OrOperator, Op} from 'sequelize';
 
 class MyModel extends Model {
   hi: number;
@@ -248,4 +248,12 @@ where = {
   'meta.audio.length': {
     $gt: 20
   }
+};
+
+// Operator symbols
+where = {
+  [Op.and]: [
+    { id: [1, 2, 3] },
+    { array: { [Op.contains]: [3, 4, 5] } }
+  ]
 };
