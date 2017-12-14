@@ -254,6 +254,13 @@ export interface Options {
    * Defaults to false
    */
   typeValidation?: boolean;
+
+  /**
+   * String based operator alias, default value is true which will enable all operators alias. Pass object to limit set of aliased operators or false to disable completely.
+   *
+   * Defaults to true
+   */
+  operatorsAliases?: boolean | object;
 }
 
 export interface QueryOptionsTransactionRequired { }
