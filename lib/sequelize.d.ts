@@ -107,6 +107,53 @@ export interface ReplicationOptions {
 }
 
 /**
+ * Object that holds all operator symbols
+ */
+export declare var Op: {
+  eq: symbol,
+  ne: symbol,
+  gte: symbol,
+  gt: symbol,
+  lte: symbol,
+  lt: symbol,
+  not: symbol,
+  in: symbol,
+  notIn: symbol,
+  is: symbol,
+  like: symbol,
+  notLike: symbol,
+  iLike: symbol,
+  notILike: symbol,
+  regexp: symbol,
+  notRegexp: symbol,
+  iRegexp: symbol,
+  notIRegexp: symbol,
+  between: symbol,
+  notBetween: symbol,
+  overlap: symbol,
+  contains: symbol,
+  contained: symbol,
+  adjacent: symbol,
+  strictLeft: symbol,
+  strictRight: symbol,
+  noExtendRight: symbol,
+  noExtendLeft: symbol,
+  and: symbol,
+  or: symbol,
+  any: symbol,
+  all: symbol,
+  values: symbol,
+  co: symbol
+};
+
+/**
+ * Used to map operators to their Symbol representations
+ */
+export interface OperatorsAliases {
+  [K: string]: Symbol
+}
+
+/**
  * Options for the constructor of Sequelize main class
  */
 export interface Options extends Logging {
@@ -147,6 +194,11 @@ export interface Options extends Logging {
    * The port of the relational database.
    */
   port?: number;
+
+  /**
+   * A flag that defines if is used SSL.
+   */
+  ssl?: boolean;
 
   /**
    * The protocol of the relational database.
@@ -232,6 +284,21 @@ export interface Options extends Logging {
    */
   isolationLevel?: string;
 
+  /**
+   * Run built in type validators on insert and update, e.g. validate that arguments passed to integer
+   * fields are integer-like.
+   *
+   * Defaults to false
+   */
+  typeValidation?: boolean;
+
+  /**
+   * Sets available operator aliases. See (http://docs.sequelizejs.com/manual/tutorial/querying.html#operators)
+   * for more information. Set to false to disable operator aliases completely (recommended)
+   *
+   * Defaults to all aliases
+   */
+  operatorsAliases: OperatorsAliases | false
 }
 
 export interface QueryOptionsTransactionRequired { }
