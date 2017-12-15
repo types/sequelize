@@ -224,13 +224,13 @@ export class QueryInterface {
   /**
    * Adds a new column to a table
    */
-  addColumn(table: string, key: string, attribute: ModelAttributeColumnOptions | DataType,
+  addColumn(table: string | { schema?: string, tableName?: string }, key: string, attribute: ModelAttributeColumnOptions | DataType,
     options?: QueryInterfaceOptions): Promise<void>;
 
   /**
    * Removes a column from a table
    */
-  removeColumn(table: string, attribute: string, options?: QueryInterfaceOptions): Promise<void>;
+  removeColumn(table: string | { schema?: string, tableName?: string }, attribute: string, options?: QueryInterfaceOptions): Promise<void>;
 
   /**
    * Changes a column
