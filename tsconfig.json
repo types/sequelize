@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "alwaysStrict": true,
     "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
-    "strict": true,
-    "noImplicitThis": true,
     "lib": [
       "es2015",
       "es2015.collection",
