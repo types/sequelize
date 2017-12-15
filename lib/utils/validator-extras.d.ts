@@ -1,4 +1,6 @@
-import {ValidatorStatic} from 'validator';
+import * as val from 'validator';
+
+type OrigValidator = typeof val;
 
 export interface Extensions {
   notEmpty(str: string): boolean;
@@ -19,7 +21,7 @@ export interface Extensions {
 }
 export const extensions: Extensions;
 
-export interface Validator extends ValidatorStatic, Extensions {
+export interface Validator extends OrigValidator, Extensions {
   contains(str: string, elem: string[]): boolean;
 }
 export const validator: Validator;

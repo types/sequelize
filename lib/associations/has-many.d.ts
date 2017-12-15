@@ -1,6 +1,14 @@
 
-import {Association, ManyToManyOptions, MultiAssociationAccessors} from './base';
-import {Model, WhereOptions, FindOptions, InstanceUpdateOptions, CreateOptions} from '../model';
+import {Association, ManyToManyOptions, MultiAssociationAccessors } from './base';
+import {
+  Model,
+  WhereOptions,
+  FindOptions,
+  InstanceUpdateOptions,
+  CreateOptions,
+  Transactionable,
+  Filterable
+} from '../model';
 import {DataType} from '../data-types';
 import {Transaction} from '../transaction';
 import {Promise} from '../promise';
@@ -415,22 +423,11 @@ export class HasMany extends Association {
    * The options for the countAssociations mixin of the hasMany association.
    * @see HasManyCountAssociationsMixin
    */
-  export interface HasManyCountAssociationsMixinOptions {
-
-    /**
-     * An optional where clause to limit the associated models.
-     */
-    where?: WhereOptions;
-
+  export interface HasManyCountAssociationsMixinOptions extends Transactionable, Filterable {
     /**
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean;
-
-    /**
-     * Transaction to run query under
-     */
-    transaction?: Transaction;
   }
 
   /**

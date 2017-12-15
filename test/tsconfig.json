@@ -3,14 +3,16 @@
     "module": "commonjs",
     "target": "es6",
     "noEmit": true,
-    "strictNullChecks": true,
-    "typeRoots": [
-      "../typings/globals",
-      "../typings/modules"
-    ]
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "sequelize": [ "../"],
+      "sequelize/*": [ "../"]
+    }
   },
   "include": [
-    "../dist/index.d.ts",
+    "../index.d.ts",
+    "./**/sequelize.d.ts",
     "./**/*.ts"
   ]
 }

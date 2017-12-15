@@ -61,17 +61,21 @@ export class ValidationErrorItem {
 
 }
 
-export class DatabaseError extends BaseError {
+export interface CommonErrorProperties {
+  /** The database specific error which triggered this one */
+  readonly parent: Error;
 
   /** The database specific error which triggered this one */
-  parent: Error;
-
-  /** The database specific error which triggered this one */
-  original: Error;
+  readonly original: Error;
 
   /** The SQL that triggered the error */
-  sql: string;
+  readonly sql: string;
+}
 
+export class DatabaseError extends BaseError implements CommonErrorProperties {
+  readonly parent: Error;
+  readonly original: Error;
+  readonly sql: string;
   /**
    * A base class for all database related errors.
    * @param parent The database specific error which triggered this one
@@ -82,13 +86,23 @@ export class DatabaseError extends BaseError {
 /** Thrown when a database query times out because of a deadlock */
 export class TimeoutError extends DatabaseError { }
 
+export interface UniqueConstraintErrorOptions {
+  parent?: Error,
+  message?: string,
+  errors?: ValidationErrorItem[],
+  fields?: { [key: string]: any };
+  original?: Error;
+}
+
 /**
  * Thrown when a unique constraint is violated in the database
  */
-export class UniqueConstraintError extends DatabaseError {
-  errors: ValidationErrorItem[];
-  fields: { [field: string]: string };
-  constructor(options?: { parent?: Error, message?: string, errors?: ValidationErrorItem[] });
+export class UniqueConstraintError extends ValidationError implements CommonErrorProperties {
+  readonly parent: Error;
+  readonly original: Error;
+  readonly sql: string;
+  readonly fields: { [key: string]: any };
+  constructor(options?: UniqueConstraintErrorOptions);
 }
 
 /**

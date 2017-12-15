@@ -97,6 +97,7 @@ export interface AssociationOptions {
   constraints?: boolean;
   foreignKeyConstraint?: boolean;
 
+  scope?: AssociationScope;
 }
 
 

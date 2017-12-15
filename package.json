@@ -5,8 +5,8 @@
   "description": "Typescript Typings for Sequelize",
   "typings": "index.d.ts",
   "dependencies": {
-    "@types/bluebird": "^3.5.5",
-    "@types/validator": "types/validator#83990944fcc53bcb4b05b347c3cdfcb7aa05b3c7"
+    "@types/validator": "^6.3.0",
+    "@types/bluebird": "^3.5.5"
   },
   "peerDependencies": {
     "typescript": ">=2.0.0"
@@ -14,13 +14,12 @@
   "devDependencies": {
     "tslint": "^5.4.3",
     "typedoc": "^0.9.0",
-    "typescript": "^2.5.3",
-    "typings": "^2.1.1"
+    "typescript": "^2.5.3"
   },
   "scripts": {
-    "build": "tsc -p . && typings bundle -o dist/index.d.ts",
+    "build": "tsc -p .",
     "test": "tsc -p test",
-    "typedoc": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib/sequelize.d.ts lib/model.d.ts lib/transaction.d.ts lib/errors.d.ts lib/data-types.d.ts lib/query-interface.d.ts lib/deferrable.d.ts lib/associations/base.d.ts lib/associations/belongs-to-many.d.ts lib/associations/belongs-to.d.ts lib/associations/has-many.d.ts lib/associations/has-one.d.ts typings/index.d.ts",
+    "typedoc": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib/sequelize.d.ts lib/model.d.ts lib/transaction.d.ts lib/errors.d.ts lib/data-types.d.ts lib/query-interface.d.ts lib/deferrable.d.ts lib/associations/base.d.ts lib/associations/belongs-to-many.d.ts lib/associations/belongs-to.d.ts lib/associations/has-many.d.ts lib/associations/has-one.d.ts",
     "lint": "tslint -p tsconfig.json && tslint -p test/tsconfig.json"
   },
   "repository": {

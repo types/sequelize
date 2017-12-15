@@ -11,12 +11,6 @@
 ## Installation
 
 ```bash
-typings install --save sequelize
-```
-
-or
-
-```bash
 npm install --save-dev types/sequelize#<commit hash>
 ```
 

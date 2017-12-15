@@ -38,7 +38,7 @@ User.init({
 }, { sequelize });
 
 // Hooks
-User.afterFind((users: User[], options: FindOptions) => {
+User.afterFind((users, options: FindOptions) => {
   console.log('found');
 });
 

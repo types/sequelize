@@ -80,7 +80,7 @@ interface StringDataTypeConstructor extends AbstractDataTypeConstructor {
 }
 
 export interface StringDataType extends AbstractDataType {
-  options: StringDataTypeOptions;
+  options?: StringDataTypeOptions;
   BINARY: this;
   validate(value: any): boolean;
 }

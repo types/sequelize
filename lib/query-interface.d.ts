@@ -1,25 +1,27 @@
 
 import {Sequelize} from './sequelize';
 import {Promise} from './promise';
-import {ModelAttributes, ModelAttributeColumnOptions, Model} from './model';
+import {
+  ModelAttributes,
+  ModelAttributeColumnOptions,
+  Model,
+  Logging,
+  Transactionable
+} from './model';
 import {Transaction} from './transaction';
 import {DataType} from './data-types';
+import * as QueryTypes from './query-types';
 
 /**
  * Interface for query options
  */
-export interface QueryOptions {
+export interface QueryOptions extends Logging, Transactionable {
 
   /**
    * If true, sequelize will not try to format the results of the query, or build an instance of a model from
    * the result
    */
   raw?: boolean;
-
-  /**
-   * The transaction that the query should be executed under
-   */
-  transaction?: Transaction;
 
   /**
    * The type of query you are executing. The query type affects how results are formatted before they are
@@ -56,45 +58,44 @@ export interface QueryOptions {
   useMaster?: boolean;
 
   /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: Function
-
-  /**
    * A sequelize instance used to build the return instance
    */
   instance?: Model;
+}
 
+
+export interface QueryOptionsWithModel {
   /**
    * A sequelize model used to build the returned model instances (used to be called callee)
    */
-  model?: typeof Model;
+  model: typeof Model;
+}
 
-  // TODO: force, cascade
-
+export interface QueryOptionsWithType {
+  /**
+   * The type of query you are executing. The query type affects how results are formatted before they are
+   * passed back. The type is a string, but `Sequelize.QueryTypes` is provided as convenience shortcuts.
+   */
+  type: QueryTypes;
 }
 
 /**
   * Most of the methods accept options and use only the logger property of the options. That's why the most used
   * interface type for options in a method is separated here as another interface.
   */
-export interface QueryInterfaceOptions {
-
-  /**
-    * A function that gets executed while running the query to log the sql.
-    */
-  logging?: boolean | Function;
-
-  /**
-   * The transaction that the query should be executed under
-   */
-  transaction?: Transaction;
-
-}
+export interface QueryInterfaceOptions extends Logging, Transactionable {}
 
 export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
   engine?: string;
   charset?: string;
+  /**
+  * Used for compound unique keys.
+  */
+  uniqueKeys?: {
+    [keyName: string]: {
+        fields: string[];
+    }
+  };
 }
 
 export interface QueryInterfaceDropTableOptions extends QueryInterfaceOptions {
@@ -218,7 +219,7 @@ export class QueryInterface {
    * Describe a table
    */
   describeTable(tableName: string | { schema?: string, tableName?: string },
-    options?: string | { schema?: string, schemaDelimeter?: string, logging?: boolean | Function }): Promise<Object>;
+    options?: string | { schema?: string, schemaDelimeter?: string} & Logging): Promise<Object>;
 
   /**
    * Adds a new column to a table

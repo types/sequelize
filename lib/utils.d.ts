@@ -1,5 +1,5 @@
 
-import parameterValidator = require('./utils/parameter-validator');
+import * as parameterValidator from './utils/parameter-validator';
 
 export type Primitive = 'string'|'number'|'boolean';
 

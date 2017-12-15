@@ -1,7 +1,7 @@
 
 import {Promise} from './promise';
 import {Sequelize} from './sequelize';
-import {AbstractDeferrableStatic} from './deferrable';
+import {Logging} from './model';
 
 /**
  * The transaction object is used to identify a running transaction. It is created by calling
@@ -121,7 +121,7 @@ export const ISOLATION_LEVELS: {
 /**
  * Options provided when the transaction is created
  */
-export interface TransactionOptions {
+export interface TransactionOptions extends Logging {
 
   autocommit?: boolean;
 
@@ -130,13 +130,8 @@ export interface TransactionOptions {
    */
   isolationLevel?: string;
 
-  /**
-   * A function that gets executed while running the query to log the sql.
-   */
-  logging?: Function;
-
   type?: TransactionType;
-  deferrable?: string | AbstractDeferrableStatic;
+  deferrable?: string;
 }
 
 export default Transaction;

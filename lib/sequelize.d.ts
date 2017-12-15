@@ -1,7 +1,7 @@
 
 import {Literal, Json, Where, Col, Cast, Fn} from './utils';
 import {Transaction, TransactionOptions} from './transaction';
-import {QueryInterface, QueryOptions} from './query-interface';
+import {QueryInterface, QueryOptions, QueryOptionsWithType, QueryOptionsWithModel } from './query-interface';
 import * as DataTypes from './data-types';
 import {Promise} from './promise';
 import {ModelManager} from './model-manager';
@@ -19,14 +19,16 @@ import {
   WhereAttributeHash,
   WhereOperators,
   AndOperator,
-  OrOperator
+  OrOperator,
+  Logging,
+  ModelCtor
 } from './model';
 
 
 /**
  * Sync Options
  */
-export interface SyncOptions {
+export interface SyncOptions extends Logging {
 
   /**
    * If force is true, each DAO will do DROP TABLE IF EXISTS ..., before it tries to create its own table
@@ -38,11 +40,6 @@ export interface SyncOptions {
    * used in tests but not live code
    */
   match?: RegExp;
-
-  /**
-   * A function that logs sql queries, or false for no logging
-   */
-  logging?: Function | boolean;
 
   /**
    * The schema that the tables should be created in. This can be overriden for each table in sequelize.define
@@ -159,7 +156,7 @@ export interface OperatorsAliases {
 /**
  * Options for the constructor of Sequelize main class
  */
-export interface Options {
+export interface Options extends Logging {
 
   /**
    * The dialect of the database you are connecting to. One of mysql, postgres, sqlite, mariadb and mssql.
@@ -241,13 +238,6 @@ export interface Options {
    * Defaults to '+00:00'
    */
   timezone?: string;
-
-  /**
-   * A function that gets executed everytime Sequelize would log something.
-   *
-   * Defaults to console.log
-   */
-  logging?: boolean | Function;
 
   /**
    * A flag that defines if null values should be passed to SQL queries or not.
@@ -646,8 +636,8 @@ export class Sequelize {
    * @param name
    * @param fn   A callback function that is called with attributes, options
    */
-  static beforeDefine(name: string, fn: (attributes: ModelAttributes, options: ModelOptions) => void): void;
-  static beforeDefine(fn: (attributes: ModelAttributes, options: ModelOptions) => void): void;
+  static beforeDefine<M extends Model>(this: ModelCtor<M>, name: string, fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
+  static beforeDefine<M extends Model>(this: ModelCtor<M>, fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
 
   /**
    * A hook that is run after a define call
@@ -1166,6 +1156,8 @@ export class Sequelize {
    * @param options Query options
    */
   query(sql: string | { query: string, values: Array<any> }, options?: QueryOptions): Promise<any>;
+  query<M extends Model>(sql: string | { query: string, values: Array<any> }, options: QueryOptionsWithModel): Promise<M[]>;
+  query(sql: string | { query: string, values: Array<any> }, options: QueryOptionsWithType): Promise<any[]>;
 
   /**
    * Execute a query which would set an environment or user variable. The variables are set per connection,
@@ -1196,7 +1188,7 @@ export class Sequelize {
    * @param options Options supplied
    * @param options.logging A function that logs sql queries, or false for no logging
    */
-  createSchema(schema: string, options: { logging?: boolean | Function }): Promise<any>;
+  createSchema(schema: string, options: Logging): Promise<any>;
 
   /**
    * Show all defined schemas
@@ -1208,7 +1200,7 @@ export class Sequelize {
    * @param options Options supplied
    * @param options.logging A function that logs sql queries, or false for no logging
    */
-  showAllSchemas(options: { logging?: boolean | Function }): Promise<any>;
+  showAllSchemas(options: Logging): Promise<any>;
 
   /**
    * Drop a single schema
@@ -1221,7 +1213,7 @@ export class Sequelize {
    * @param options Options supplied
    * @param options.logging A function that logs sql queries, or false for no logging
    */
-  dropSchema(schema: string, options: { logging?: boolean | Function }): Promise<any>;
+  dropSchema(schema: string, options: Logging): Promise<any>;
 
   /**
    * Drop all schemas
@@ -1233,7 +1225,7 @@ export class Sequelize {
    * @param options Options supplied
    * @param options.logging A function that logs sql queries, or false for no logging
    */
-  dropAllSchemas(options: { logging?: boolean | Function }): Promise<any>;
+  dropAllSchemas(options: Logging): Promise<any>;
 
   /**
    * Sync all defined models to the DB.
@@ -1380,14 +1372,14 @@ export function asIs(val: any): Literal;
  *
  * @param args Each argument will be joined by AND
  */
-export function and(...args: Array<WhereOperators | WhereAttributeHash>): AndOperator;
+export function and(...args: (WhereOperators | WhereAttributeHash | Where)[]): AndOperator;
 
 /**
  * An OR query
  *
  * @param args Each argument will be joined by OR
  */
-export function or(...args: Array<WhereOperators | WhereAttributeHash>): OrOperator;
+export function or(...args: (WhereOperators | WhereAttributeHash | Where)[]): OrOperator;
 
 /**
  * Creates an object representing nested where conditions for postgres's json data-type.
@@ -1440,7 +1432,7 @@ export {Validator as validator} from './utils/validator-extras';
 import {validator} from './utils/validator-extras';
 export {validator as Validator};
 
-import QueryTypes = require('./query-types');
+import * as QueryTypes from './query-types';
 export {QueryTypes};
 
 export default Sequelize;

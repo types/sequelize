@@ -4,5 +4,5 @@ declare function check(value: any, expectation: any, options?: {
   method?: any;
   optional?: boolean;
 }): boolean;
-
+declare namespace check {}
 export = check;
