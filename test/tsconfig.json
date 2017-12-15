@@ -5,10 +5,6 @@
     "noEmit": true,
     "strict": true,
     "baseUrl": ".",
-    "typeRoots": [
-      "typings/globals",
-      "typings/modules"
-    ],
     "paths": {
       "sequelize": [ "../"],
       "sequelize/*": [ "../"]
