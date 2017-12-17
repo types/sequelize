@@ -1614,7 +1614,7 @@ export abstract class Model {
    * @return Model A reference to the model, with the scope(s) applied. Calling scope again on the returned
    *     model will clear the previous scope.
    */
-  static scope(options?: string | Array<string> | ScopeOptions | WhereAttributeHash): typeof Model;
+  static scope<M extends ModelCtor<any>>(this: M, options?: string | Array<string> | ScopeOptions | WhereAttributeHash): M;
 
   /**
    * Search for multiple instances.

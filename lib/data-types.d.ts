@@ -49,8 +49,6 @@ export type DataType = string | AbstractDataTypeConstructor | AbstractDataType;
 export const ABSTRACT: AbstractDataTypeConstructor;
 
 interface AbstractDataTypeConstructor {
-  new (options: Object): AbstractDataType;
-  (options: Object): AbstractDataType;
   key: string;
   warn(link: string, text: string): void;
 }
@@ -362,10 +360,12 @@ export const NOW: AbstractDataTypeConstructor;
  */
 export const BLOB: BlobDataTypeConstructor;
 
+export type BlobSize = 'tiny' | 'medium' | 'long';
+
 interface BlobDataTypeConstructor extends AbstractDataTypeConstructor {
-  new (length?: number): BlobDataType;
+  new (length?: BlobSize): BlobDataType;
   new (options?: BlobDataTypeOptions): BlobDataType;
-  (length?: number): BlobDataType;
+  (length?: BlobSize): BlobDataType;
   (options?: BlobDataTypeOptions): BlobDataType;
 }
 
@@ -375,7 +375,7 @@ export interface BlobDataType extends AbstractDataType {
 }
 
 export interface BlobDataTypeOptions {
-  length?: number;
+  length?: BlobSize;
   escape?: boolean;
 }
 
