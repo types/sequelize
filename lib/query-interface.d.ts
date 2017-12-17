@@ -157,7 +157,6 @@ export interface AddForeignKeyConstraintOptions {
 
 export type AddConstraintOptions = AddUniqueConstraintOptions | AddDefaultConstraintOptions | AddCheckConstraintOptions | AddPrimaryKeyConstraintOptions | AddForeignKeyConstraintOptions;
 
-
 /**
  * The interface that Sequelize uses to talk to all databases.
  *
