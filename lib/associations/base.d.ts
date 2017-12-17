@@ -60,6 +60,11 @@ export interface AssociationOptions {
   hooks?: boolean;
 
   /**
+  * The name of the foreign key in the source table
+  */
+  sourceKey?: string | ForeignKeyOptions;
+
+  /**
    * The alias of this model, in singular form. See also the `name` option passed to `sequelize.define`. If
    * you create multiple associations between the same tables, you should provide an alias to be able to
    * distinguish between them. If you provide an alias when creating the assocition, you should provide the
@@ -67,6 +72,7 @@ export interface AssociationOptions {
    * target
    */
   as?: string | { singular: string, plural: string };
+
 
   /**
    * The name of the foreign key in the target table or an object representing the type definition for the
