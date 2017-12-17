@@ -6,7 +6,8 @@ import {
   ModelAttributeColumnOptions,
   Model,
   Logging,
-  Transactionable
+  Transactionable,
+  WhereOptions
 } from './model';
 import {Transaction} from './transaction';
 import {DataType} from './data-types';
@@ -88,6 +89,7 @@ export interface QueryInterfaceOptions extends Logging, Transactionable {}
 export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
   engine?: string;
   charset?: string;
+  collate?: string;
   /**
   * Used for compound unique keys.
   */
@@ -119,6 +121,42 @@ export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
   /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
   indexType?: string;
 }
+
+export interface AddUniqueConstraintOptions {
+  type: 'unique';
+  name?: string;
+}
+
+export interface AddDefaultConstraintOptions {
+  type: 'default';
+  name?: string;
+  defaultValue?: any;
+}
+
+export interface AddCheckConstraintOptions {
+  type: 'check';
+  name?: string;
+  where?: WhereOptions;
+}
+
+export interface AddPrimaryKeyConstraintOptions {
+  type: 'primary key';
+  name?: string;
+}
+
+export interface AddForeignKeyConstraintOptions {
+  type: 'foreign key';
+  name?: string;
+  references?: {
+    table: string;
+    field: string;
+  };
+  onDelete: string;
+  onUpdate: string;
+}
+
+export type AddConstraintOptions = AddUniqueConstraintOptions | AddDefaultConstraintOptions | AddCheckConstraintOptions | AddPrimaryKeyConstraintOptions | AddForeignKeyConstraintOptions;
+
 
 /**
  * The interface that Sequelize uses to talk to all databases.
@@ -261,6 +299,16 @@ export class QueryInterface {
     options?: QueryInterfaceIndexOptions): Promise<void>;
   removeIndex(tableName: string, attributes: string[],
     options?: QueryInterfaceIndexOptions): Promise<void>;
+
+  /**
+   * Adds constraints to a table
+   */
+  addConstraint(tableName: string, attributes: string[], options?: AddConstraintOptions | QueryInterfaceOptions): Promise<void>;
+
+  /**
+   * Removes constraints from a table
+   */
+  removeConstraint(tableName: string, constraintName: string, options?: QueryInterfaceOptions): Promise<void>;
 
   /**
    * Shows the index of a table
