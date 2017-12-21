@@ -237,12 +237,12 @@ export interface WhereOperators {
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
+  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where>;
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash>;
+  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where>;
 }
 
 /**
@@ -818,7 +818,7 @@ export interface SetOptions {
 /**
  * Options used for Instance.save method
  */
-export interface SaveOptions extends Logging, Transactionable {
+export interface SaveOptions extends Logging, Transactionable, Silent {
 
   /**
    * An optional array of strings, representing database columns. If fields is provided, only those columns
