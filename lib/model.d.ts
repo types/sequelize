@@ -109,10 +109,8 @@ export interface ScopeOptions {
 
 /**
  * The type accepted by every `where` option
- *
- * The `Array<string | number>` is to support string with replacements, like `['id > ?', 25]`
  */
-export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where | Array<string | number>;
+export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where;
 
 /**
  * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
@@ -237,12 +235,12 @@ export interface WhereOperators {
 
 /** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-  $or: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where>;
+  $or: WhereOptions | WhereOptions[];
 }
 
 /** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-  $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where>;
+  $and: WhereOptions | WhereOptions[];
 }
 
 /**
