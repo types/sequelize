@@ -150,11 +150,6 @@ MyModel.findAll({ where: { name: 'A MyModel', enabled: true } }).then(function(p
   // projects will be an array of MyModel instances with the specified name
 });
 
-// search with string replacements
-MyModel.findAll({ where: ['id > ?', 25] }).then(function(projects) {
-  // projects will be an array of MyModels having a greater id than 25
-});
-
 // search within a specific range
 MyModel.findAll({ where: { id: [1, 2, 3] } }).then(function(projects) {
   // projects will be an array of MyModels having the id 1, 2 or 3

@@ -21,7 +21,6 @@ import {
   AndOperator,
   OrOperator,
   Logging,
-  ModelCtor
 } from './model';
 
 
@@ -651,8 +650,8 @@ export class Sequelize {
    * @param name
    * @param fn   A callback function that is called with attributes, options
    */
-  static beforeDefine<M extends Model>(this: ModelCtor<M>, name: string, fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
-  static beforeDefine<M extends Model>(this: ModelCtor<M>, fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
+  static beforeDefine<M extends Model>(name: string, fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
+  static beforeDefine<M extends Model>(fn: (attributes: ModelAttributes, options: ModelOptions<M>) => void): void;
 
   /**
    * A hook that is run after a define call
