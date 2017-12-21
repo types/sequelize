@@ -4,3 +4,4 @@ dist/
 *.log
 typedoc/
 package-lock.json
+package-lock.json.*
