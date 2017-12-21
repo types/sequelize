@@ -245,6 +245,48 @@ export interface AndOperator {
   $and: WhereOperators | WhereAttributeHash | Array<Array<string> | Array<number> | WhereOperators | WhereAttributeHash | Where>;
 }
 
+export const Op: OpInterface;
+
+export interface OpInterface {
+  eq: symbol;
+  ne: symbol;
+  gte: symbol;
+  gt: symbol;
+  lte: symbol;
+  lt: symbol;
+  not: symbol;
+  is: symbol;
+  in: symbol;
+  notIn: symbol;
+  like: symbol;
+  notLike: symbol;
+  iLike: symbol;
+  notILike: symbol;
+  regexp: symbol;
+  notRegexp: symbol;
+  iRegexp: symbol;
+  notIRegexp: symbol;
+  between: symbol;
+  notBetween: symbol;
+  overlap: symbol;
+  contains: symbol;
+  contained: symbol;
+  adjacent: symbol;
+  strictLeft: symbol;
+  strictRight: symbol;
+  noExtendRight: symbol;
+  noExtendLeft: symbol;
+  and: symbol;
+  or: symbol;
+  any: symbol;
+  all: symbol;
+  values: symbol;
+  col: symbol;
+  placeholder: symbol;
+  join: symbol;
+  raw: symbol;
+}
+
 /**
  * Where Geometry Options
  */
@@ -262,6 +304,7 @@ export type WhereValue =
   | number // literal value
   | boolean // literal value
   | null
+  | Op
   | WhereOperators
   | WhereAttributeHash // for JSON columns
   | Col // reference another column
