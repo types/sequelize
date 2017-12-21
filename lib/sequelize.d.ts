@@ -184,6 +184,21 @@ export interface Options extends Logging {
   storage?: string;
 
   /**
+   * The name of the database
+   */
+  database?: string;
+
+  /**
+   * The username which is used to authenticate against the database.
+   */
+  username?: string;
+
+  /**
+   * The password which is used to authenticate against the database.
+   */
+  password?: string;
+
+  /**
    * The host of the relational database.
    *
    * Defaults to 'localhost'
@@ -1021,8 +1036,9 @@ export class Sequelize {
    *     database.
    * @param options An object with options.
    */
-  constructor(database: string, username: string, password: string, options?: Options);
+  constructor(database: string, username: string, password?: string, options?: Options);
   constructor(database: string, username: string, options?: Options);
+  constructor(options?: Options);
 
   /**
    * Instantiate sequelize with an URI
