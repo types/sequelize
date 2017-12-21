@@ -22,7 +22,9 @@
     "build": "tsc -p .",
     "prettier": "prettier --write --list-different '**/{*.{json,ts,md},.prettierrc}'",
     "test": "tsc -p test",
-    "tslint": "tslint -p tsconfig.json && tslint -p test/tsconfig.json",
+    "tslint": "npm run tslint-types && npm run tslint-test",
+    "tslint-types": "tslint -p tsconfig.json -c tslint.json '**/*.d.ts' -e 'node_modules/**'",
+    "tslint-test": "tslint -p test/tsconfig.json -c tslint.json 'test/**/*.ts'",
     "typedoc": "typedoc --tsconfig tsconfig.json --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib"
   },
   "repository": {

@@ -8,7 +8,4 @@ declare function check(
         optional?: boolean
     }
 ): boolean
-declare namespace check {
-
-}
 export = check

@@ -1,16 +1,16 @@
-import { Association, ManyToManyOptions, MultiAssociationAccessors } from './base'
+import { DataType } from '../data-types'
 import {
-    Model,
-    WhereOptions,
+    CreateOptions,
+    Filterable,
     FindOptions,
     InstanceUpdateOptions,
-    CreateOptions,
+    Model,
     Transactionable,
-    Filterable,
+    WhereOptions,
 } from '../model'
-import { DataType } from '../data-types'
-import { Transaction } from '../transaction'
 import { Promise } from '../promise'
+import { Transaction } from '../transaction'
+import { Association, ManyToManyOptions, MultiAssociationAccessors } from './base'
 
 /**
  * Options provided when associating models with hasMany relationship
@@ -23,7 +23,7 @@ export interface HasManyOptions extends ManyToManyOptions {
 }
 
 export class HasMany extends Association {
-    accessors: MultiAssociationAccessors
+    public accessors: MultiAssociationAccessors
     constructor(source: typeof Model, target: typeof Model, options: HasManyOptions)
 }
 
@@ -63,13 +63,7 @@ export interface HasManyGetAssociationsMixinOptions extends FindOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyGetAssociationsMixin<TModel> {
-    /**
-     * Get everything currently associated with this, using an optional where clause.
-     * @param options The options to use when getting the associations.
-     */
-    (options?: HasManyGetAssociationsMixinOptions): Promise<TModel[]>
-}
+export type HasManyGetAssociationsMixin<TModel> = (options?: HasManyGetAssociationsMixinOptions) => Promise<TModel[]>
 
 /**
  * The options for the setAssociations mixin of the hasMany association.
@@ -102,15 +96,10 @@ export interface HasManySetAssociationsMixinOptions extends FindOptions, Instanc
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManySetAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Set the associated models by passing an array of instances or their primary keys.
-     * Everything that it not in the passed array will be un-associated.
-     * @param newAssociations An array of instances or primary key of instances to associate with this. Pass null or undefined to remove all associations.
-     * @param options The options passed to `target.findAll` and `update`.
-     */
-    (newAssociations?: Array<TModel | TModelPrimaryKey>, options?: HasManySetAssociationsMixinOptions): Promise<void>
-}
+export type HasManySetAssociationsMixin<TModel, TModelPrimaryKey> = (
+    newAssociations?: (TModel | TModelPrimaryKey)[],
+    options?: HasManySetAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the addAssociations mixin of the hasMany association.
@@ -143,14 +132,10 @@ export interface HasManyAddAssociationsMixinOptions extends InstanceUpdateOption
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyAddAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Associate several instances with this.
-     * @param newAssociations An array of instances or primary key of instances to associate with this.
-     * @param options The options passed to `target.update`.
-     */
-    (newAssociations?: Array<TModel | TModelPrimaryKey>, options?: HasManyAddAssociationsMixinOptions): Promise<void>
-}
+export type HasManyAddAssociationsMixin<TModel, TModelPrimaryKey> = (
+    newAssociations?: (TModel | TModelPrimaryKey)[],
+    options?: HasManyAddAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the addAssociation mixin of the hasMany association.
@@ -183,14 +168,10 @@ export interface HasManyAddAssociationMixinOptions extends InstanceUpdateOptions
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyAddAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Associate an instance with this.
-     * @param newAssociation An instance or the primary key of an instance to associate with this.
-     * @param options The options passed to `target.update`.
-     */
-    (newAssociation?: TModel | TModelPrimaryKey, options?: HasManyAddAssociationMixinOptions): Promise<void>
-}
+export type HasManyAddAssociationMixin<TModel, TModelPrimaryKey> = (
+    newAssociation?: TModel | TModelPrimaryKey,
+    options?: HasManyAddAssociationMixinOptions
+) => Promise<void>
 
 /**
  * The options for the createAssociation mixin of the hasMany association.
@@ -223,14 +204,10 @@ export interface HasManyCreateAssociationMixinOptions extends CreateOptions {}
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyCreateAssociationMixin<TModel> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options The options to use when creating the association.
-     */
-    (values?: { [attribute: string]: any }, options?: HasManyCreateAssociationMixinOptions): Promise<TModel>
-}
+export type HasManyCreateAssociationMixin<TModel> = (
+    values?: { [attribute: string]: any },
+    options?: HasManyCreateAssociationMixinOptions
+) => Promise<TModel>
 
 /**
  * The options for the removeAssociation mixin of the hasMany association.
@@ -263,14 +240,10 @@ export interface HasManyRemoveAssociationMixinOptions extends InstanceUpdateOpti
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyRemoveAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Un-associate the instance.
-     * @param oldAssociated The instance or the primary key of the instance to un-associate.
-     * @param options The options passed to `target.update`.
-     */
-    (oldAssociated?: TModel | TModelPrimaryKey, options?: HasManyRemoveAssociationMixinOptions): Promise<void>
-}
+export type HasManyRemoveAssociationMixin<TModel, TModelPrimaryKey> = (
+    oldAssociated?: TModel | TModelPrimaryKey,
+    options?: HasManyRemoveAssociationMixinOptions
+) => Promise<void>
 
 /**
  * The options for the removeAssociations mixin of the hasMany association.
@@ -303,14 +276,10 @@ export interface HasManyRemoveAssociationsMixinOptions extends InstanceUpdateOpt
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Un-associate several instances.
-     * @param oldAssociated An array of instances or primary key of instances to un-associate.
-     * @param options The options passed to `target.update`.
-     */
-    (oldAssociateds?: Array<TModel | TModelPrimaryKey>, options?: HasManyRemoveAssociationsMixinOptions): Promise<void>
-}
+export type HasManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> = (
+    oldAssociateds?: (TModel | TModelPrimaryKey)[],
+    options?: HasManyRemoveAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the hasAssociation mixin of the hasMany association.
@@ -343,14 +312,10 @@ export interface HasManyHasAssociationMixinOptions extends HasManyGetAssociation
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyHasAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Check if an instance is associated with this.
-     * @param target The instance or the primary key of the instance to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (target: TModel | TModelPrimaryKey, options?: HasManyHasAssociationMixinOptions): Promise<boolean>
-}
+export type HasManyHasAssociationMixin<TModel, TModelPrimaryKey> = (
+    target: TModel | TModelPrimaryKey,
+    options?: HasManyHasAssociationMixinOptions
+) => Promise<boolean>
 
 /**
  * The options for the hasAssociations mixin of the hasMany association.
@@ -383,14 +348,10 @@ export interface HasManyHasAssociationsMixinOptions extends HasManyGetAssociatio
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyHasAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Check if all instances are associated with this.
-     * @param targets An array of instances or primary key of instances to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (targets: Array<TModel | TModelPrimaryKey>, options?: HasManyHasAssociationsMixinOptions): Promise<boolean>
-}
+export type HasManyHasAssociationsMixin<TModel, TModelPrimaryKey> = (
+    targets: (TModel | TModelPrimaryKey)[],
+    options?: HasManyHasAssociationsMixinOptions
+) => Promise<boolean>
 
 /**
  * The options for the countAssociations mixin of the hasMany association.
@@ -428,10 +389,4 @@ export interface HasManyCountAssociationsMixinOptions extends Transactionable, F
  * @see http://docs.sequelizejs.com/en/latest/api/associations/has-many/
  * @see Instance
  */
-export interface HasManyCountAssociationsMixin {
-    /**
-     * Count everything currently associated with this, using an optional where clause.
-     * @param options The options to use when counting the associations.
-     */
-    (options?: HasManyCountAssociationsMixinOptions): Promise<number>
-}
+export type HasManyCountAssociationsMixin = (options?: HasManyCountAssociationsMixinOptions) => Promise<number>

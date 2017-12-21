@@ -57,8 +57,8 @@ export interface AbstractDataType {
     key: string
     dialectTypes: string
     toSql(): string
-    stringify(value: any, options?: Object): string
-    toString(options: Object): string
+    stringify(value: any, options?: object): string
+    toString(options: object): string
 }
 
 /**

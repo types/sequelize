@@ -2,7 +2,7 @@
  * The Base Error all Sequelize Errors inherit from.
  */
 export class BaseError extends Error {
-    name: string
+    public name: string
 }
 
 /**
@@ -12,7 +12,7 @@ export class SequelizeScopeError extends BaseError {}
 
 export class ValidationError extends BaseError {
     /** Array of ValidationErrorItem objects describing the validation errors */
-    errors: ValidationErrorItem[]
+    public errors: ValidationErrorItem[]
 
     /**
      * Validation Error. Thrown when the sequelize validation has failed. The error contains an `errors`
@@ -28,21 +28,21 @@ export class ValidationError extends BaseError {
      *
      * @param path The path to be checked for error items
      */
-    get(path: string): ValidationErrorItem[]
+    public get(path: string): ValidationErrorItem[]
 }
 
 export class ValidationErrorItem {
     /** An error message */
-    message: string
+    public message: string
 
     /** The type of the validation error */
-    type: string
+    public type: string
 
     /** The field that triggered the validation error */
-    path: string
+    public path: string
 
     /** The value that generated the error */
-    value: string
+    public value: string
 
     /**
      * Validation Error Item
@@ -68,9 +68,9 @@ export interface CommonErrorProperties {
 }
 
 export class DatabaseError extends BaseError implements CommonErrorProperties {
-    readonly parent: Error
-    readonly original: Error
-    readonly sql: string
+    public readonly parent: Error
+    public readonly original: Error
+    public readonly sql: string
     /**
      * A base class for all database related errors.
      * @param parent The database specific error which triggered this one
@@ -93,10 +93,10 @@ export interface UniqueConstraintErrorOptions {
  * Thrown when a unique constraint is violated in the database
  */
 export class UniqueConstraintError extends ValidationError implements CommonErrorProperties {
-    readonly parent: Error
-    readonly original: Error
-    readonly sql: string
-    readonly fields: { [key: string]: any }
+    public readonly parent: Error
+    public readonly original: Error
+    public readonly sql: string
+    public readonly fields: { [key: string]: any }
     constructor(options?: UniqueConstraintErrorOptions)
 }
 
@@ -104,10 +104,10 @@ export class UniqueConstraintError extends ValidationError implements CommonErro
  * Thrown when a foreign key constraint is violated in the database
  */
 export class ForeignKeyConstraintError extends DatabaseError {
-    table: string
-    fields: { [field: string]: string }
-    value: any
-    index: string
+    public table: string
+    public fields: { [field: string]: string }
+    public value: any
+    public index: string
     constructor(options: { parent?: Error; message?: string; index?: string; fields?: string[]; table?: string })
 }
 
@@ -115,9 +115,9 @@ export class ForeignKeyConstraintError extends DatabaseError {
  * Thrown when an exclusion constraint is violated in the database
  */
 export class ExclusionConstraintError extends DatabaseError {
-    constraint: string
-    fields: { [field: string]: string }
-    table: string
+    public constraint: string
+    public fields: { [field: string]: string }
+    public table: string
     constructor(options: { parent?: Error; message?: string; constraint?: string; fields?: string[]; table?: string })
 }
 
@@ -125,8 +125,8 @@ export class ExclusionConstraintError extends DatabaseError {
  * A base class for all connection related errors.
  */
 export class ConnectionError extends BaseError {
-    parent: Error
-    original: Error
+    public parent: Error
+    public original: Error
     constructor(parent: Error)
 }
 

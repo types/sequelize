@@ -13,7 +13,5 @@ declare enum QueryTypes {
     RAW = 'RAW',
     FOREIGNKEYS = 'FOREIGNKEYS',
 }
-declare namespace QueryTypes {
 
-}
 export = QueryTypes

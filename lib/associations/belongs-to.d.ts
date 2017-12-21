@@ -1,8 +1,8 @@
-import { Association, SingleAssociationAccessors } from './base'
-import { Model, SaveOptions, CreateOptions, FindOptions } from '../model'
 import { DataType } from '../data-types'
-import { AssociationOptions } from './base'
+import { CreateOptions, FindOptions, Model, SaveOptions } from '../model'
 import { Promise } from '../promise'
+import { Association, SingleAssociationAccessors } from './base'
+import { AssociationOptions } from './base'
 
 /**
  * Options provided when associating models with belongsTo relationship
@@ -23,7 +23,7 @@ export interface BelongsToOptions extends AssociationOptions {
 }
 
 export class BelongsTo extends Association {
-    accessors: SingleAssociationAccessors
+    public accessors: SingleAssociationAccessors
     constructor(source: typeof Model, target: typeof Model, options: BelongsToOptions)
 }
 
@@ -56,13 +56,7 @@ export interface BelongsToGetAssociationMixinOptions extends FindOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToGetAssociationMixin<TModel> {
-    /**
-     * Get the associated instance.
-     * @param options The options to use when getting the association.
-     */
-    (options?: BelongsToGetAssociationMixinOptions): Promise<TModel>
-}
+export type BelongsToGetAssociationMixin<TModel> = (options?: BelongsToGetAssociationMixinOptions) => Promise<TModel>
 
 /**
  * The options for the setAssociation mixin of the belongsTo association.
@@ -93,14 +87,10 @@ export interface BelongsToSetAssociationMixinOptions extends SaveOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToSetAssociationMixin<TModel, TPrimaryKey> {
-    /**
-     * Set the associated instance.
-     * @param newAssociation An instance or the primary key of an instance to associate with this. Pass null or undefined to remove the association.
-     * @param options the options passed to `this.save`.
-     */
-    (newAssociation?: TModel | TPrimaryKey, options?: BelongsToSetAssociationMixinOptions): Promise<void>
-}
+export type BelongsToSetAssociationMixin<TModel, TPrimaryKey> = (
+    newAssociation?: TModel | TPrimaryKey,
+    options?: BelongsToSetAssociationMixinOptions
+) => Promise<void>
 
 /**
  * The options for the createAssociation mixin of the belongsTo association.
@@ -126,13 +116,9 @@ export interface BelongsToCreateAssociationMixinOptions extends CreateOptions, B
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to/
  * @see Instance
  */
-export interface BelongsToCreateAssociationMixin<TModel> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options The options passed to `target.create` and `setAssociation`.
-     */
-    (values?: { [attribute: string]: any }, options?: BelongsToCreateAssociationMixinOptions): Promise<TModel>
-}
+export type BelongsToCreateAssociationMixin<TModel> = (
+    values?: { [attribute: string]: any },
+    options?: BelongsToCreateAssociationMixinOptions
+) => Promise<TModel>
 
 export default BelongsTo

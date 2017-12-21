@@ -1,6 +1,6 @@
+import { Logging } from './model'
 import { Promise } from './promise'
 import { Sequelize } from './sequelize'
-import { Logging } from './model'
 
 /**
  * The transaction object is used to identify a running transaction. It is created by calling
@@ -14,12 +14,12 @@ export class Transaction {
     /**
      * Commit the transaction
      */
-    commit(): Promise<void>
+    public commit(): Promise<void>
 
     /**
      * Rollback (abort) the transaction
      */
-    rollback(): Promise<void>
+    public rollback(): Promise<void>
 
     /**
      * Possible options for row locking. Used in conjunction with `find` calls:
@@ -58,12 +58,12 @@ export class Transaction {
      *
      * @property LOCK
      */
-    static LOCK: TransactionLock
+    public static LOCK: TransactionLock
 
     /**
      * @see {@link Transaction.LOCK}
      */
-    LOCK: TransactionLock
+    public LOCK: TransactionLock
 }
 
 export interface TransactionLock {

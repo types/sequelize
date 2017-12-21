@@ -1,4 +1,4 @@
-import * as parameterValidator from './utils/parameter-validator'
+import parameterValidator = require('./utils/parameter-validator')
 
 export type Primitive = 'string' | 'number' | 'boolean'
 
@@ -68,43 +68,43 @@ export function removeTicks(s: string, tickChar?: string): string
 export class Fn {
     private _isSequelizeMethod: boolean
     constructor(fn: any, args: any)
-    clone(): this
+    public clone(): this
 }
 
 export class Col {
-    col: string
+    public col: string
     private _isSequelizeMethod: boolean
     constructor(col: string)
 }
 
 export class Cast {
-    val: any
-    type: string
+    public val: any
+    public type: string
     private _isSequelizeMethod: boolean
     constructor(val: any, type?: string)
 }
 
 export class Literal {
-    val: any
+    public val: any
     private _isSequelizeMethod: boolean
     constructor(val: any)
 }
 
 export class Json {
-    conditions: Object
-    path: string
-    value: string | number | boolean
+    public conditions: object
+    public path: string
+    public value: string | number | boolean
     private _isSequelizeMethod: boolean
-    constructor(conditionsOrPath: string | Object, value?: string | number | boolean)
+    constructor(conditionsOrPath: string | object, value?: string | number | boolean)
 }
 
 export class Where {
-    attribute: Object
-    comparator: string
-    logic: string | Object
+    public attribute: object
+    public comparator: string
+    public logic: string | object
     private _isSequelizeMethod: boolean
-    constructor(attr: Object, comparator: string, logic: string | Object)
-    constructor(attr: Object, logic: string | Object)
+    constructor(attr: object, comparator: string, logic: string | object)
+    constructor(attr: object, logic: string | object)
 }
 
 export const validateParameter: typeof parameterValidator

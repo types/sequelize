@@ -1,17 +1,17 @@
-import { Association, ManyToManyOptions, AssociationScope, ForeignKeyOptions, MultiAssociationAccessors } from './base'
-import { Transaction } from '../transaction'
-import { Promise } from '../promise'
 import {
-    Model,
-    WhereOptions,
-    FindOptions,
     BulkCreateOptions,
-    InstanceUpdateOptions,
-    InstanceDestroyOptions,
     CreateOptions,
-    Transactionable,
     Filterable,
+    FindOptions,
+    InstanceDestroyOptions,
+    InstanceUpdateOptions,
+    Model,
+    Transactionable,
+    WhereOptions,
 } from '../model'
+import { Promise } from '../promise'
+import { Transaction } from '../transaction'
+import { Association, AssociationScope, ForeignKeyOptions, ManyToManyOptions, MultiAssociationAccessors } from './base'
 
 /**
  * Used for a association table in n:m associations.
@@ -69,8 +69,8 @@ export interface BelongsToManyOptions extends ManyToManyOptions {
 }
 
 export class BelongsToMany extends Association {
-    otherKey: string
-    accessors: MultiAssociationAccessors
+    public otherKey: string
+    public accessors: MultiAssociationAccessors
     constructor(source: typeof Model, target: typeof Model, options: BelongsToManyOptions)
 }
 
@@ -110,13 +110,9 @@ export interface BelongsToManyGetAssociationsMixinOptions extends FindOptions {
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyGetAssociationsMixin<TModel> {
-    /**
-     * Get everything currently associated with this, using an optional where clause.
-     * @param options The options to use when getting the associations.
-     */
-    (options?: BelongsToManyGetAssociationsMixinOptions): Promise<TModel[]>
-}
+export type BelongsToManyGetAssociationsMixin<TModel> = (
+    options?: BelongsToManyGetAssociationsMixinOptions
+) => Promise<TModel[]>
 
 /**
  * The options for the setAssociations mixin of the belongsToMany association.
@@ -155,17 +151,10 @@ export interface BelongsToManySetAssociationsMixinOptions
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Set the associated models by passing an array of instances or their primary keys.
-     * Everything that it not in the passed array will be un-associated.
-     * @param newAssociations An array of instances or primary key of instances to associate with this. Pass null or undefined to remove all associations.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (newAssociations?: Array<TModel | TModelPrimaryKey>, options?: BelongsToManySetAssociationsMixinOptions): Promise<
-        void
-    >
-}
+export type BelongsToManySetAssociationsMixin<TModel, TModelPrimaryKey> = (
+    newAssociations?: (TModel | TModelPrimaryKey)[],
+    options?: BelongsToManySetAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the addAssociations mixin of the belongsToMany association.
@@ -204,16 +193,10 @@ export interface BelongsToManyAddAssociationsMixinOptions
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Associate several instances with this.
-     * @param newAssociations An array of instances or primary key of instances to associate with this.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (newAssociations?: Array<TModel | TModelPrimaryKey>, options?: BelongsToManyAddAssociationsMixinOptions): Promise<
-        void
-    >
-}
+export type BelongsToManyAddAssociationsMixin<TModel, TModelPrimaryKey> = (
+    newAssociations?: (TModel | TModelPrimaryKey)[],
+    options?: BelongsToManyAddAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the addAssociation mixin of the belongsToMany association.
@@ -252,14 +235,10 @@ export interface BelongsToManyAddAssociationMixinOptions
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Associate an instance with this.
-     * @param newAssociation An instance or the primary key of an instance to associate with this.
-     * @param options The options passed to `through.findAll`, `bulkCreate`, `update` and `destroy`. Can also hold additional attributes for the join table.
-     */
-    (newAssociation?: TModel | TModelPrimaryKey, options?: BelongsToManyAddAssociationMixinOptions): Promise<void>
-}
+export type BelongsToManyAddAssociationMixin<TModel, TModelPrimaryKey> = (
+    newAssociation?: TModel | TModelPrimaryKey,
+    options?: BelongsToManyAddAssociationMixinOptions
+) => Promise<void>
 
 /**
  * The options for the createAssociation mixin of the belongsToMany association.
@@ -293,14 +272,10 @@ export interface BelongsToManyCreateAssociationMixinOptions extends CreateOption
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyCreateAssociationMixin<TModel> {
-    /**
-     * Create a new instance of the associated model and associate it with this.
-     * @param values The values used to create the association.
-     * @param options Options passed to `create` and `add`. Can also hold additional attributes for the join table.
-     */
-    (values?: { [attribute: string]: any }, options?: BelongsToManyCreateAssociationMixinOptions): Promise<TModel>
-}
+export type BelongsToManyCreateAssociationMixin<TModel> = (
+    values?: { [attribute: string]: any },
+    options?: BelongsToManyCreateAssociationMixinOptions
+) => Promise<TModel>
 
 /**
  * The options for the removeAssociation mixin of the belongsToMany association.
@@ -333,14 +308,10 @@ export interface BelongsToManyRemoveAssociationMixinOptions extends InstanceDest
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyRemoveAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Un-associate the instance.
-     * @param oldAssociated The instance or the primary key of the instance to un-associate.
-     * @param options The options passed to `through.destroy`.
-     */
-    (oldAssociated?: TModel | TModelPrimaryKey, options?: BelongsToManyRemoveAssociationMixinOptions): Promise<void>
-}
+export type BelongsToManyRemoveAssociationMixin<TModel, TModelPrimaryKey> = (
+    oldAssociated?: TModel | TModelPrimaryKey,
+    options?: BelongsToManyRemoveAssociationMixinOptions
+) => Promise<void>
 
 /**
  * The options for the removeAssociations mixin of the belongsToMany association.
@@ -373,16 +344,10 @@ export interface BelongsToManyRemoveAssociationsMixinOptions extends InstanceDes
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Un-associate several instances.
-     * @param oldAssociated An array of instances or primary key of instances to un-associate.
-     * @param options The options passed to `through.destroy`.
-     */
-    (oldAssociateds?: Array<TModel | TModelPrimaryKey>, options?: BelongsToManyRemoveAssociationsMixinOptions): Promise<
-        void
-    >
-}
+export type BelongsToManyRemoveAssociationsMixin<TModel, TModelPrimaryKey> = (
+    oldAssociateds?: (TModel | TModelPrimaryKey)[],
+    options?: BelongsToManyRemoveAssociationsMixinOptions
+) => Promise<void>
 
 /**
  * The options for the hasAssociation mixin of the belongsToMany association.
@@ -415,14 +380,10 @@ export interface BelongsToManyHasAssociationMixinOptions extends BelongsToManyGe
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyHasAssociationMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Check if an instance is associated with this.
-     * @param target The instance or the primary key of the instance to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (target: TModel | TModelPrimaryKey, options?: BelongsToManyHasAssociationMixinOptions): Promise<boolean>
-}
+export type BelongsToManyHasAssociationMixin<TModel, TModelPrimaryKey> = (
+    target: TModel | TModelPrimaryKey,
+    options?: BelongsToManyHasAssociationMixinOptions
+) => Promise<boolean>
 
 /**
  * The options for the hasAssociations mixin of the belongsToMany association.
@@ -455,14 +416,10 @@ export interface BelongsToManyHasAssociationsMixinOptions extends BelongsToManyG
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyHasAssociationsMixin<TModel, TModelPrimaryKey> {
-    /**
-     * Check if all instances are associated with this.
-     * @param targets An array of instances or primary key of instances to check.
-     * @param options The options passed to `getAssociations`.
-     */
-    (targets: Array<TModel | TModelPrimaryKey>, options?: BelongsToManyHasAssociationsMixinOptions): Promise<boolean>
-}
+export type BelongsToManyHasAssociationsMixin<TModel, TModelPrimaryKey> = (
+    targets: (TModel | TModelPrimaryKey)[],
+    options?: BelongsToManyHasAssociationsMixinOptions
+) => Promise<boolean>
 
 /**
  * The options for the countAssociations mixin of the belongsToMany association.
@@ -500,10 +457,6 @@ export interface BelongsToManyCountAssociationsMixinOptions extends Transactiona
  * @see http://docs.sequelizejs.com/en/latest/api/associations/belongs-to-many/
  * @see Instance
  */
-export interface BelongsToManyCountAssociationsMixin {
-    /**
-     * Count everything currently associated with this, using an optional where clause.
-     * @param options The options to use when counting the associations.
-     */
-    (options?: BelongsToManyCountAssociationsMixinOptions): Promise<number>
-}
+export type BelongsToManyCountAssociationsMixin = (
+    options?: BelongsToManyCountAssociationsMixinOptions
+) => Promise<number>

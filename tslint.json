@@ -1,9 +1,23 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "object-literal-sort-keys": false,
-    "no-console": false,
+    "array-type": [true, "array"],
+    "ban-types": {
+      "options": [
+        ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
+        ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
+        ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
+        ["String", "Avoid using the `String` type. Did you mean `string`?"],
+        ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
+      ]
+    },
     "interface-name": false,
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "member-ordering": false,
+    "no-console": false,
+    "no-empty-interface": false,
+    "object-literal-sort-keys": false,
+    "unified-signatures": false,
+    "variable-name": false
   }
 }

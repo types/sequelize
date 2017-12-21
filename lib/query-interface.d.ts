@@ -1,9 +1,9 @@
-import { Sequelize } from './sequelize'
-import { Promise } from './promise'
-import { ModelAttributes, ModelAttributeColumnOptions, Model, Logging, Transactionable } from './model'
-import { Transaction } from './transaction'
 import { DataType } from './data-types'
-import * as QueryTypes from './query-types'
+import { Logging, Model, ModelAttributeColumnOptions, ModelAttributes, Transactionable } from './model'
+import { Promise } from './promise'
+import QueryTypes = require('./query-types')
+import { Sequelize } from './sequelize'
+import { Transaction } from './transaction'
 
 /**
  * Interface for query options
@@ -40,7 +40,7 @@ export interface QueryOptions extends Logging, Transactionable {
      * Either an object of named parameter replacements in the format `:param` or an array of unnamed
      * replacements to replace `?` in your SQL.
      */
-    replacements?: Object | Array<string>
+    replacements?: object | string[]
 
     /**
      * Force the query to use the write pool, regardless of the query type.
@@ -123,12 +123,12 @@ export class QueryInterface {
      *
      * We don't have a definition for the QueryGenerator, because I doubt it is commonly in use separately.
      */
-    QueryGenerator: any
+    public QueryGenerator: any
 
     /**
      * Returns the current sequelize instance.
      */
-    sequelize: Sequelize
+    public sequelize: Sequelize
 
     constructor(sequelize: Sequelize)
 
@@ -137,31 +137,31 @@ export class QueryInterface {
      *
      * @param schema The schema to query. Applies only to Postgres.
      */
-    createSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>
+    public createSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Drops the specified schema (table).
      *
      * @param schema The schema to query. Applies only to Postgres.
      */
-    dropSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>
+    public dropSchema(schema?: string, options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Drops all tables.
      */
-    dropAllSchemas(options?: QueryInterfaceDropAllTablesOptions): Promise<void>
+    public dropAllSchemas(options?: QueryInterfaceDropAllTablesOptions): Promise<void>
 
     /**
      * Queries all table names in the database.
      *
      * @param options
      */
-    showAllSchemas(options?: QueryOptions): Promise<Object>
+    public showAllSchemas(options?: QueryOptions): Promise<object>
 
     /**
      * Return database version
      */
-    databaseVersion(options?: QueryInterfaceOptions): Promise<string>
+    public databaseVersion(options?: QueryInterfaceOptions): Promise<string>
 
     /**
      * Creates a table with specified attributes.
@@ -170,7 +170,7 @@ export class QueryInterface {
      * @param attributes    Hash of attributes, key is attribute name, value is data type
      * @param options       Table options.
      */
-    createTable(
+    public createTable(
         tableName: string | { schema?: string; tableName?: string },
         attributes: ModelAttributes,
         options?: QueryInterfaceCreateTableOptions
@@ -182,44 +182,44 @@ export class QueryInterface {
      * @param tableName Table name.
      * @param options   Query options, particularly "force".
      */
-    dropTable(tableName: string, options?: QueryInterfaceDropTableOptions): Promise<void>
+    public dropTable(tableName: string, options?: QueryInterfaceDropTableOptions): Promise<void>
 
     /**
      * Drops all tables.
      *
      * @param options
      */
-    dropAllTables(options?: QueryInterfaceDropTableOptions): Promise<void>
+    public dropAllTables(options?: QueryInterfaceDropTableOptions): Promise<void>
 
     /**
      * Drops all defined enums
      *
      * @param options
      */
-    dropAllEnums(options?: QueryOptions): Promise<void>
+    public dropAllEnums(options?: QueryOptions): Promise<void>
 
     /**
      * Renames a table
      */
-    renameTable(before: string, after: string, options?: QueryInterfaceOptions): Promise<void>
+    public renameTable(before: string, after: string, options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Returns all tables
      */
-    showAllTables(options?: QueryOptions): Promise<Array<string>>
+    public showAllTables(options?: QueryOptions): Promise<string[]>
 
     /**
      * Describe a table
      */
-    describeTable(
+    public describeTable(
         tableName: string | { schema?: string; tableName?: string },
         options?: string | { schema?: string; schemaDelimeter?: string } & Logging
-    ): Promise<Object>
+    ): Promise<object>
 
     /**
      * Adds a new column to a table
      */
-    addColumn(
+    public addColumn(
         table: string | { schema?: string; tableName?: string },
         key: string,
         attribute: ModelAttributeColumnOptions | DataType,
@@ -229,7 +229,7 @@ export class QueryInterface {
     /**
      * Removes a column from a table
      */
-    removeColumn(
+    public removeColumn(
         table: string | { schema?: string; tableName?: string },
         attribute: string,
         options?: QueryInterfaceOptions
@@ -238,7 +238,7 @@ export class QueryInterface {
     /**
      * Changes a column
      */
-    changeColumn(
+    public changeColumn(
         tableName: string | { schema?: string; tableName?: string },
         attributeName: string,
         dataTypeOrOptions?: DataType | ModelAttributeColumnOptions,
@@ -248,7 +248,7 @@ export class QueryInterface {
     /**
      * Renames a column
      */
-    renameColumn(
+    public renameColumn(
         tableName: string | { schema?: string; tableName?: string },
         attrNameBefore: string,
         attrNameAfter: string,
@@ -258,13 +258,13 @@ export class QueryInterface {
     /**
      * Adds a new index to a table
      */
-    addIndex(
+    public addIndex(
         tableName: string,
         attributes: string[],
         options?: QueryInterfaceIndexOptions,
         rawTablename?: string
     ): Promise<void>
-    addIndex(
+    public addIndex(
         tableName: string,
         options: QueryInterfaceIndexOptions & { fields: string[] },
         rawTablename?: string
@@ -273,132 +273,137 @@ export class QueryInterface {
     /**
      * Removes an index of a table
      */
-    removeIndex(tableName: string, indexName: string, options?: QueryInterfaceIndexOptions): Promise<void>
-    removeIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions): Promise<void>
+    public removeIndex(tableName: string, indexName: string, options?: QueryInterfaceIndexOptions): Promise<void>
+    public removeIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions): Promise<void>
 
     /**
      * Shows the index of a table
      */
-    showIndex(tableName: string | Object, options?: QueryOptions): Promise<Object>
+    public showIndex(tableName: string | object, options?: QueryOptions): Promise<object>
 
     /**
      * Put a name to an index
      */
-    nameIndexes(indexes: Array<string>, rawTablename: string): Promise<void>
+    public nameIndexes(indexes: string[], rawTablename: string): Promise<void>
 
     /**
      * Returns all foreign key constraints of a table
      */
-    getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): Promise<Object>
+    public getForeignKeysForTables(tableNames: string, options?: QueryInterfaceOptions): Promise<object>
 
     /**
      * Inserts a new record
      */
-    insert(instance: Model, tableName: string, values: Object, options?: QueryOptions): Promise<Object>
+    public insert(instance: Model, tableName: string, values: object, options?: QueryOptions): Promise<object>
 
     /**
      * Inserts or Updates a record in the database
      */
-    upsert(
+    public upsert(
         tableName: string,
-        values: Object,
-        updateValues: Object,
+        values: object,
+        updateValues: object,
         model: typeof Model,
         options?: QueryOptions
-    ): Promise<Object>
+    ): Promise<object>
 
     /**
      * Inserts multiple records at once
      */
-    bulkInsert(
+    public bulkInsert(
         tableName: string,
-        records: Array<Object>,
+        records: object[],
         options?: QueryOptions,
-        attributes?: Array<string> | string
-    ): Promise<Object>
+        attributes?: string[] | string
+    ): Promise<object>
 
     /**
      * Updates a row
      */
-    update(
+    public update(
         instance: Model,
         tableName: string,
-        values: Object,
-        identifier: Object,
+        values: object,
+        identifier: object,
         options?: QueryOptions
-    ): Promise<Object>
+    ): Promise<object>
 
     /**
      * Updates multiple rows at once
      */
-    bulkUpdate(
+    public bulkUpdate(
         tableName: string,
-        values: Object,
-        identifier: Object,
+        values: object,
+        identifier: object,
         options?: QueryOptions,
-        attributes?: Array<string> | string
-    ): Promise<Object>
+        attributes?: string[] | string
+    ): Promise<object>
 
     /**
      * Deletes a row
      */
-    delete(instance: Model, tableName: string, identifier: Object, options?: QueryOptions): Promise<Object>
+    public delete(instance: Model, tableName: string, identifier: object, options?: QueryOptions): Promise<object>
 
     /**
      * Deletes multiple rows at once
      */
-    bulkDelete(tableName: string, identifier: Object, options?: QueryOptions, model?: typeof Model): Promise<Object>
+    public bulkDelete(
+        tableName: string,
+        identifier: object,
+        options?: QueryOptions,
+        model?: typeof Model
+    ): Promise<object>
 
     /**
      * Returns selected rows
      */
-    select(model: typeof Model, tableName: string, options?: QueryOptions): Promise<Array<Object>>
+    public select(model: typeof Model, tableName: string, options?: QueryOptions): Promise<object[]>
 
     /**
      * Increments a row value
      */
-    increment(
+    public increment(
         instance: Model,
         tableName: string,
-        values: Object,
-        identifier: Object,
+        values: object,
+        identifier: object,
         options?: QueryOptions
-    ): Promise<Object>
+    ): Promise<object>
 
     /**
      * Selects raw without parsing the string into an object
      */
-    rawSelect(
+    public rawSelect(
         tableName: string,
         options: QueryOptions,
-        attributeSelector: string | Array<string>,
+        attributeSelector: string | string[],
         model?: typeof Model
-    ): Promise<Array<string>>
+    ): Promise<string[]>
 
     /**
      * Postgres only. Creates a trigger on specified table to call the specified function with supplied
      * parameters.
      */
-    createTrigger(
+    public createTrigger(
         tableName: string,
         triggerName: string,
         timingType: string,
-        fireOnArray: Array<any>,
+        fireOnArray: any[],
         functionName: string,
-        functionParams: Array<any>,
-        optionsArray: Array<string>,
+        functionParams: any[],
+        optionsArray: string[],
         options?: QueryInterfaceOptions
     ): Promise<void>
 
     /**
      * Postgres only. Drops the specified trigger.
      */
-    dropTrigger(tableName: string, triggerName: string, options?: QueryInterfaceOptions): Promise<void>
+    public dropTrigger(tableName: string, triggerName: string, options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Postgres only. Renames a trigger
      */
-    renameTrigger(
+    public renameTrigger(
         tableName: string,
         oldTriggerName: string,
         newTriggerName: string,
@@ -408,9 +413,9 @@ export class QueryInterface {
     /**
      * Postgres only. Create a function
      */
-    createFunction(
+    public createFunction(
         functionName: string,
-        params: Array<any>,
+        params: any[],
         returnType: string,
         language: string,
         body: string,
@@ -420,14 +425,14 @@ export class QueryInterface {
     /**
      * Postgres only. Drops a function
      */
-    dropFunction(functionName: string, params: Array<any>, options?: QueryInterfaceOptions): Promise<void>
+    public dropFunction(functionName: string, params: any[], options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Postgres only. Rename a function
      */
-    renameFunction(
+    public renameFunction(
         oldFunctionName: string,
-        params: Array<any>,
+        params: any[],
         newFunctionName: string,
         options?: QueryInterfaceOptions
     ): Promise<void>
@@ -436,51 +441,51 @@ export class QueryInterface {
      * Escape an identifier (e.g. a table or attribute name). If force is true, the identifier will be quoted
      * even if the `quoteIdentifiers` option is false.
      */
-    quoteIdentifier(identifier: string, force: boolean): string
+    public quoteIdentifier(identifier: string, force: boolean): string
 
     /**
      * Escape a table name
      */
-    quoteTable(identifier: string): string
+    public quoteTable(identifier: string): string
 
     /**
      * Split an identifier into .-separated tokens and quote each part. If force is true, the identifier will be
      * quoted even if the `quoteIdentifiers` option is false.
      */
-    quoteIdentifiers(identifiers: string, force: boolean): string
+    public quoteIdentifiers(identifiers: string, force: boolean): string
 
     /**
      * Escape a value (e.g. a string, number or date)
      */
-    escape(value?: string | number | Date): string
+    public escape(value?: string | number | Date): string
 
     /**
      * Set option for autocommit of a transaction
      */
-    setAutocommit(transaction: Transaction, value: boolean, options?: QueryOptions): Promise<void>
+    public setAutocommit(transaction: Transaction, value: boolean, options?: QueryOptions): Promise<void>
 
     /**
      * Set the isolation level of a transaction
      */
-    setIsolationLevel(transaction: Transaction, value: string, options?: QueryOptions): Promise<void>
+    public setIsolationLevel(transaction: Transaction, value: string, options?: QueryOptions): Promise<void>
 
     /**
      * Begin a new transaction
      */
-    startTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
+    public startTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
 
     /**
      * Defer constraints
      */
-    deferConstraints(transaction: Transaction, options?: QueryOptions): Promise<void>
+    public deferConstraints(transaction: Transaction, options?: QueryOptions): Promise<void>
 
     /**
      * Commit an already started transaction
      */
-    commitTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
+    public commitTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
 
     /**
      * Rollback ( revert ) a transaction that has'nt been commited
      */
-    rollbackTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
+    public rollbackTransaction(transaction: Transaction, options?: QueryOptions): Promise<void>
 }

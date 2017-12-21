@@ -2,18 +2,18 @@ import { Model } from '../model'
 import { ColumnOptions } from '../model'
 
 export abstract class Association {
-    associationType: string
-    source: typeof Model
-    target: typeof Model
-    isSelfAssociation: boolean
-    isSingleAssociation: boolean
-    isMultiAssociation: boolean
-    as: string
-    isAliased: boolean
-    foreignKey: string
-    identifier: string
-    toInstanceArray(objs: any): Model[]
-    inspect(): string
+    public associationType: string
+    public source: typeof Model
+    public target: typeof Model
+    public isSelfAssociation: boolean
+    public isSingleAssociation: boolean
+    public isMultiAssociation: boolean
+    public as: string
+    public isAliased: boolean
+    public foreignKey: string
+    public identifier: string
+    public toInstanceArray(objs: any): Model[]
+    public inspect(): string
 }
 
 export interface SingleAssociationAccessors {
