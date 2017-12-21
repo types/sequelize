@@ -1,7 +1,7 @@
-
 _Start typing to search_
 
 ## API
+
 <ul class="tsd-index-list" style="list-style: none">
   <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_sequelize_d_.sequelize.html">Sequelize</a></li>
   <li class="tsd-kind-class"><a class="tsd-kind-icon" href="classes/_lib_model_d_.model.html">Model</a></li>
@@ -13,6 +13,7 @@ _Start typing to search_
 </ul>
 
 #### Associations
+
 <ul class="tsd-index-list" style="list-style: none">
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_belongs_to_many_d_.html">BelongsToMany</a></li>
   <li class="tsd-kind-module"><a class="tsd-kind-icon" href="modules/_lib_associations_belongs_to_d_.html">BelongsTo</a></li>
@@ -26,65 +27,66 @@ _User.ts_
 
 ```ts
 import {
-  Model,
-  FindOptions,
-  DataTypes,
-  BelongsTo,
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-  BelongsToCreateAssociationMixin
-} from 'sequelize';
-import {sequelize} from '../connection';
+    Model,
+    FindOptions,
+    DataTypes,
+    BelongsTo,
+    BelongsToGetAssociationMixin,
+    BelongsToSetAssociationMixin,
+    BelongsToCreateAssociationMixin,
+} from 'sequelize'
+import { sequelize } from '../connection'
 
 export class User extends Model {
+    static associations: {
+        group: BelongsTo
+    }
 
-  static associations: {
-    group: BelongsTo
-  };
+    id: number
+    username: string
+    firstName: string
+    lastName: string
+    createdAt: Date
+    updatedAt: Date
 
-  id: number;
-  username: string;
-  firstName: string;
-  lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
-
-  // mixins for association (optional)
-  groupId: number;
-  group: UserGroup;
-  getGroup: BelongsToGetAssociationMixin<UserGroup>;
-  setGroup: BelongsToSetAssociationMixin<UserGroup, number>;
-  createGroup: BelongsToCreateAssociationMixin<UserGroup>;
+    // mixins for association (optional)
+    groupId: number
+    group: UserGroup
+    getGroup: BelongsToGetAssociationMixin<UserGroup>
+    setGroup: BelongsToSetAssociationMixin<UserGroup, number>
+    createGroup: BelongsToCreateAssociationMixin<UserGroup>
 }
 
-User.init({
-  username: DataTypes.STRING,
-  firstName: DataTypes.STRING,
-  lastName: DataTypes.STRING
-}, {sequelize});
+User.init(
+    {
+        username: DataTypes.STRING,
+        firstName: DataTypes.STRING,
+        lastName: DataTypes.STRING,
+    },
+    { sequelize }
+)
 
 // associate
 // it is important to import _after_ the model above is already exported
 // so the circular dependency works.
-import {UserGroup} from './UserGroup';
-User.belongsTo(UserGroup, {as: 'group', foreignKey: 'groupId'});
+import { UserGroup } from './UserGroup'
+User.belongsTo(UserGroup, { as: 'group', foreignKey: 'groupId' })
 ```
 
 _app.ts_
 
 ```ts
-import {User, Group} from './models/User';
+import { User, Group } from './models/User'
 
 async function test() {
+    const user = await User.findOne({ include: [Group] })
+    user.firstName = 'John'
+    await user.save()
+    await user.setGroup(2)
 
-  const user = await User.findOne({include: [Group]});
-  user.firstName = 'John';
-  await user.save();
-  await user.setGroup(2);
+    new User()
+    new User({ firstName: 'John' })
 
-  new User();
-  new User({firstName: 'John'});
-
-  const user2 = await User.create({firstName: 'John', groupId: 1});
+    const user2 = await User.create({ firstName: 'John', groupId: 1 })
 }
 ```

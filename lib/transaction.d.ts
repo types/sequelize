@@ -1,7 +1,6 @@
-
-import {Promise} from './promise';
-import {Sequelize} from './sequelize';
-import {Logging} from './model';
+import { Promise } from './promise'
+import { Sequelize } from './sequelize'
+import { Logging } from './model'
 
 /**
  * The transaction object is used to identify a running transaction. It is created by calling
@@ -10,76 +9,75 @@ import {Logging} from './model';
  * To run a query under a transaction, you should pass the transaction in the options object.
  */
 export class Transaction {
+    constructor(sequelize: Sequelize, options: TransactionOptions)
 
-  constructor(sequelize: Sequelize, options: TransactionOptions);
+    /**
+     * Commit the transaction
+     */
+    commit(): Promise<void>
 
-  /**
-   * Commit the transaction
-   */
-  commit(): Promise<void>;
+    /**
+     * Rollback (abort) the transaction
+     */
+    rollback(): Promise<void>
 
-  /**
-   * Rollback (abort) the transaction
-   */
-  rollback(): Promise<void>;
+    /**
+     * Possible options for row locking. Used in conjunction with `find` calls:
+     *
+     * ```js
+     * t1 // is a transaction
+     * t1.LOCK.UPDATE,
+     * t1.LOCK.SHARE,
+     * t1.LOCK.KEY_SHARE, // Postgres 9.3+ only
+     * t1.LOCK.NO_KEY_UPDATE // Postgres 9.3+ only
+     * ```
+     *
+     * Usage:
+     * ```js
+     * t1 // is a transaction
+     * Model.findAll({
+     *   where: ...,
+     *   transaction: t1,
+     *   lock: t1.LOCK...
+     * });
+     * ```
+     *
+     * Postgres also supports specific locks while eager loading by using OF:
+     * ```js
+     * UserModel.findAll({
+     *   where: ...,
+     *   include: [TaskModel, ...],
+     *   transaction: t1,
+     *   lock: {
+     *     level: t1.LOCK...,
+     *     of: UserModel
+     *   }
+     * });
+     * ```
+     * UserModel will be locked but TaskModel won't!
+     *
+     * @property LOCK
+     */
+    static LOCK: TransactionLock
 
-  /**
-   * Possible options for row locking. Used in conjunction with `find` calls:
-   *
-   * ```js
-   * t1 // is a transaction
-   * t1.LOCK.UPDATE,
-   * t1.LOCK.SHARE,
-   * t1.LOCK.KEY_SHARE, // Postgres 9.3+ only
-   * t1.LOCK.NO_KEY_UPDATE // Postgres 9.3+ only
-   * ```
-   *
-   * Usage:
-   * ```js
-   * t1 // is a transaction
-   * Model.findAll({
-   *   where: ...,
-   *   transaction: t1,
-   *   lock: t1.LOCK...
-   * });
-   * ```
-   *
-   * Postgres also supports specific locks while eager loading by using OF:
-   * ```js
-   * UserModel.findAll({
-   *   where: ...,
-   *   include: [TaskModel, ...],
-   *   transaction: t1,
-   *   lock: {
-   *     level: t1.LOCK...,
-   *     of: UserModel
-   *   }
-   * });
-   * ```
-   * UserModel will be locked but TaskModel won't!
-   *
-   * @property LOCK
-   */
-  static LOCK: TransactionLock;
-
-  /**
-   * @see {@link Transaction.LOCK}
-   */
-  LOCK: TransactionLock;
+    /**
+     * @see {@link Transaction.LOCK}
+     */
+    LOCK: TransactionLock
 }
 
 export interface TransactionLock {
-  UPDATE: 'UPDATE';
-  SHARE: 'SHARE';
-  KEY_SHARE: 'KEY SHARE';
-  NO_KEY_UPDATE: 'NO KEY UPDATE';
+    UPDATE: 'UPDATE'
+    SHARE: 'SHARE'
+    KEY_SHARE: 'KEY SHARE'
+    NO_KEY_UPDATE: 'NO KEY UPDATE'
 }
 
-export type TransactionType = 'DEFERRED' | 'IMMEDIATE' | 'EXCLUSIVE';
+export type TransactionType = 'DEFERRED' | 'IMMEDIATE' | 'EXCLUSIVE'
 export const TYPES: {
-  DEFERRED: 'DEFERRED',
-  IMMEDIATE: 'IMMEDIATE',
-  EXCLUSIVE: 'EXCLUSIVE'
+    DEFERRED: 'DEFERRED'
+    IMMEDIATE: 'IMMEDIATE'
+    EXCLUSIVE: 'EXCLUSIVE'
 }
 
 /**
@@ -112,26 +110,25 @@ export const TYPES: {
  * ```
  */
 export const ISOLATION_LEVELS: {
-  READ_UNCOMMITTED: 'READ UNCOMMITTED',
-  READ_COMMITTED: 'READ COMMITTED',
-  REPEATABLE_READ: 'REPEATABLE READ',
-  SERIALIZABLE: 'SERIALIZABLE'
-};
+    READ_UNCOMMITTED: 'READ UNCOMMITTED'
+    READ_COMMITTED: 'READ COMMITTED'
+    REPEATABLE_READ: 'REPEATABLE READ'
+    SERIALIZABLE: 'SERIALIZABLE'
+}
 
 /**
  * Options provided when the transaction is created
  */
 export interface TransactionOptions extends Logging {
+    autocommit?: boolean
 
-  autocommit?: boolean;
+    /**
+     *  See `Sequelize.Transaction.ISOLATION_LEVELS` for possible options
+     */
+    isolationLevel?: string
 
-  /**
-   *  See `Sequelize.Transaction.ISOLATION_LEVELS` for possible options
-   */
-  isolationLevel?: string;
-
-  type?: TransactionType;
-  deferrable?: string;
+    type?: TransactionType
+    deferrable?: string
 }
 
-export default Transaction;
+export default Transaction

@@ -12,15 +12,18 @@
     "typescript": ">=2.0.0"
   },
   "devDependencies": {
-    "tslint": "^5.4.3",
+    "prettier": "^1.9.2",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.6.0",
     "typedoc": "^0.9.0",
     "typescript": "^2.5.3"
   },
   "scripts": {
     "build": "tsc -p .",
+    "prettier": "prettier --write --list-different '**/{*.{json,ts,md},.prettierrc}'",
     "test": "tsc -p test",
-    "typedoc": "typedoc --module es6 --target es6 --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib/sequelize.d.ts lib/model.d.ts lib/transaction.d.ts lib/errors.d.ts lib/data-types.d.ts lib/query-interface.d.ts lib/deferrable.d.ts lib/associations/base.d.ts lib/associations/belongs-to-many.d.ts lib/associations/belongs-to.d.ts lib/associations/has-many.d.ts lib/associations/has-one.d.ts",
-    "lint": "tslint -p tsconfig.json && tslint -p test/tsconfig.json"
+    "tslint": "tslint -p tsconfig.json && tslint -p test/tsconfig.json",
+    "typedoc": "typedoc --tsconfig tsconfig.json --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib"
   },
   "repository": {
     "type": "git",

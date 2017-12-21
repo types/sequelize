@@ -8,7 +8,8 @@ install:
   - npm install
 
 script:
-  - npm run lint
+  - npm run prettier
+  - npm run tslint
   - npm run build
   - npm test
   - npm run typedoc

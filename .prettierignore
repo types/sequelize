@@ -1,0 +1,5 @@
+node_modules/
+typedoc/
+package.json
+package-lock.json
+package-lock.json.*
