@@ -1,7 +1,5 @@
 node_modules/
-dist/
-*.js
-*.log
 typedoc/
+package.json
 package-lock.json
 package-lock.json.*

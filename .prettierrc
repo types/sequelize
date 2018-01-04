@@ -1,0 +1,16 @@
+{
+  "tabWidth": 4,
+  "printWidth": 120,
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "proseWrap": "preserve",
+  "overrides": [
+    {
+      "files": ["{*.json,.prettierrc}"],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}

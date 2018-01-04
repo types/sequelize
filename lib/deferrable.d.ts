@@ -1,4 +1,3 @@
-
 /**
  * Can be used to
  * make foreign key constraints deferrable and to set the constaints within a
@@ -35,68 +34,65 @@
  *
  */
 export interface AbstractDeferrableStatic {
-  new (): AbstractDeferrable;
-  (): AbstractDeferrable;
+    new (): AbstractDeferrable
+    (): AbstractDeferrable
 }
 export interface AbstractDeferrable {
-  toString(): string;
-  toSql(): string;
+    toString(): string
+    toSql(): string
 }
 
 export interface InitiallyDeferredDeferrableStatic extends AbstractDeferrableStatic {
-  new (): InitiallyDeferredDeferrable;
-  (): InitiallyDeferredDeferrable;
+    new (): InitiallyDeferredDeferrable
+    (): InitiallyDeferredDeferrable
 }
 export interface InitiallyDeferredDeferrable extends AbstractDeferrable {}
-export const INITIALLY_DEFERRED: InitiallyDeferredDeferrableStatic;
+export const INITIALLY_DEFERRED: InitiallyDeferredDeferrableStatic
 
 export interface InitiallyImmediateDeferrableStatic extends AbstractDeferrableStatic {
-  new (): InitiallyImmediateDeferrable;
-  (): InitiallyImmediateDeferrable;
+    new (): InitiallyImmediateDeferrable
+    (): InitiallyImmediateDeferrable
 }
 export interface InitiallyImmediateDeferrable extends AbstractDeferrable {}
-export const INITIALLY_IMMEDIATE: InitiallyImmediateDeferrableStatic;
-
+export const INITIALLY_IMMEDIATE: InitiallyImmediateDeferrableStatic
 
 export interface NotDeferrableStatic extends AbstractDeferrableStatic {
-  new (): NotDeferrable;
-  (): NotDeferrable;
+    new (): NotDeferrable
+    (): NotDeferrable
 }
 export interface NotDeferrable {}
 /**
  * Will set the constraints to not deferred. This is the default in PostgreSQL and it make
  * it impossible to dynamically defer the constraints within a transaction.
  */
-export const NOT: NotDeferrableStatic;
-
+export const NOT: NotDeferrableStatic
 
 export interface SetDeferredDeferrableStatic extends AbstractDeferrableStatic {
-  /**
-   * @param constraints An array of constraint names. Will defer all constraints by default.
-   */
-  new (constraints: string[]): SetDeferredDeferrable;
-  /**
-   * @param constraints An array of constraint names. Will defer all constraints by default.
-   */
-  (constraints: string[]): SetDeferredDeferrable;
+    /**
+     * @param constraints An array of constraint names. Will defer all constraints by default.
+     */
+    new (constraints: string[]): SetDeferredDeferrable
+    /**
+     * @param constraints An array of constraint names. Will defer all constraints by default.
+     */
+    (constraints: string[]): SetDeferredDeferrable
 }
 export interface SetDeferredDeferrable {}
 /**
  * Will trigger an additional query at the beginning of a
  * transaction which sets the constraints to deferred.
  */
-export const SET_DEFERRED: SetDeferredDeferrableStatic;
-
+export const SET_DEFERRED: SetDeferredDeferrableStatic
 
 export interface SetImmediateDeferrableStatic extends AbstractDeferrableStatic {
-  /**
-   * @param constraints An array of constraint names. Will defer all constraints by default.
-   */
-  new (constraints: string[]): SetImmediateDeferrable;
-  /**
-   * @param constraints An array of constraint names. Will defer all constraints by default.
-   */
-  (constraints: string[]): SetImmediateDeferrable;
+    /**
+     * @param constraints An array of constraint names. Will defer all constraints by default.
+     */
+    new (constraints: string[]): SetImmediateDeferrable
+    /**
+     * @param constraints An array of constraint names. Will defer all constraints by default.
+     */
+    (constraints: string[]): SetImmediateDeferrable
 }
 export interface SetImmediateDeferrable {}
 /**
@@ -105,4 +101,4 @@ export interface SetImmediateDeferrable {}
  *
  * @param constraints An array of constraint names. Will defer all constraints by default.
  */
-export const SET_IMMEDIATE: SetImmediateDeferrableStatic;
+export const SET_IMMEDIATE: SetImmediateDeferrableStatic

@@ -1,48 +1,49 @@
-
 import {
-  Model,
-  BelongsTo,
-  FindOptions,
-  DataTypes,
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-  BelongsToCreateAssociationMixin
-} from 'sequelize';
-import {sequelize} from '../connection';
+    BelongsTo,
+    BelongsToCreateAssociationMixin,
+    BelongsToGetAssociationMixin,
+    BelongsToSetAssociationMixin,
+    DataTypes,
+    FindOptions,
+    Model,
+} from 'sequelize'
+import { sequelize } from '../connection'
 
 export class User extends Model {
+    public static associations: {
+        group: BelongsTo
+    }
 
-  static associations: {
-    group: BelongsTo
-  };
+    public id: number
+    public username: string
+    public firstName: string
+    public lastName: string
+    public createdAt: Date
+    public updatedAt: Date
 
-  id: number;
-  username: string;
-  firstName: string;
-  lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
-
-  // mixins for association (optional)
-  groupId: number;
-  group: UserGroup;
-  getGroup: BelongsToGetAssociationMixin<UserGroup>;
-  setGroup: BelongsToSetAssociationMixin<UserGroup, number>;
-  createGroup: BelongsToCreateAssociationMixin<UserGroup>;
+    // mixins for association (optional)
+    public groupId: number
+    public group: UserGroup
+    public getGroup: BelongsToGetAssociationMixin<UserGroup>
+    public setGroup: BelongsToSetAssociationMixin<UserGroup, number>
+    public createGroup: BelongsToCreateAssociationMixin<UserGroup>
 }
 
-User.init({
-  username: DataTypes.STRING,
-  firstName: DataTypes.STRING,
-  lastName: DataTypes.STRING
-}, { sequelize });
+User.init(
+    {
+        username: DataTypes.STRING,
+        firstName: DataTypes.STRING,
+        lastName: DataTypes.STRING,
+    },
+    { sequelize }
+)
 
 // Hooks
 User.afterFind((users, options: FindOptions) => {
-  console.log('found');
-});
+    console.log('found')
+})
 
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
-import {UserGroup} from './UserGroup';
-export const Group = User.belongsTo(UserGroup, {as: 'group', foreignKey: 'groupId'});
+import { UserGroup } from './UserGroup'
+export const Group = User.belongsTo(UserGroup, { as: 'group', foreignKey: 'groupId' })
