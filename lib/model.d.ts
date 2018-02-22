@@ -256,6 +256,7 @@ export type WhereValue =
     | WhereOperators
     | WhereAttributeHash // for JSON columns
     | Col // reference another column
+    | Fn
     | OrOperator
     | AndOperator
     | WhereGeometryOptions
