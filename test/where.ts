@@ -1,4 +1,4 @@
-import { AndOperator, Model, Op, OrOperator, Sequelize, WhereOperators, WhereOptions } from 'sequelize'
+import { AndOperator, fn, Model, Op, OrOperator, Sequelize, WhereOperators, WhereOptions } from 'sequelize'
 
 class MyModel extends Model {
     public hi: number
@@ -236,4 +236,9 @@ where = {
 // Operator symbols
 where = {
     [Op.and]: [{ id: [1, 2, 3] }, { array: { [Op.contains]: [3, 4, 5] } }],
+}
+
+// Fn as value
+where = {
+    $gt: fn('NOW'),
 }
