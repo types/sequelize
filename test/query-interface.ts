@@ -39,6 +39,12 @@ queryInterface.createTable(
         engine: 'MYISAM', // default: 'InnoDB'
         charset: 'latin1', // default: null
     }
+  },
+  {
+    engine: 'MYISAM', // default: 'InnoDB'
+    collate: 'latin1_general_ci',
+    charset: 'latin1' // default: null
+  }
 )
 
 queryInterface.dropTable('nameOfTheExistingTable')
@@ -133,3 +139,10 @@ queryInterface.removeIndex('Person', 'SuperDuperIndex')
 // or
 
 queryInterface.removeIndex('Person', ['firstname', 'lastname'])
+
+queryInterface.addConstraint('Person', ['firstname', 'lastname'], {
+  type: 'unique',
+  name: 'firstnamexlastname'
+})
+
+queryInterface.removeConstraint('Person', 'firstnamexlastname')

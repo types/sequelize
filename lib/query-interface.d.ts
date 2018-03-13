@@ -1,5 +1,5 @@
 import { DataType } from './data-types'
-import { Logging, Model, ModelAttributeColumnOptions, ModelAttributes, Transactionable } from './model'
+import { Logging, Model, ModelAttributeColumnOptions, ModelAttributes, Transactionable, WhereOptions } from './model'
 import { Promise } from './promise'
 import QueryTypes = require('./query-types')
 import { Sequelize } from './sequelize'
@@ -77,6 +77,7 @@ export interface QueryOptionsWithType {
 export interface QueryInterfaceOptions extends Logging, Transactionable {}
 
 export interface QueryInterfaceCreateTableOptions extends QueryInterfaceOptions {
+    collate?: string
     engine?: string
     charset?: string
     /**
@@ -110,6 +111,41 @@ export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
     /** Set a type for the index, e.g. BTREE. See the documentation of the used dialect */
     indexType?: string
 }
+
+export interface AddUniqueConstraintOptions {
+  type: 'unique'
+  name?: string
+}
+
+export interface AddDefaultConstraintOptions {
+  type: 'default'
+  name?: string
+  defaultValue?: any
+}
+
+export interface AddCheckConstraintOptions {
+  type: 'check'
+  name?: string
+  where?: WhereOptions
+}
+
+export interface AddPrimaryKeyConstraintOptions {
+  type: 'primary key'
+  name?: string
+}
+
+export interface AddForeignKeyConstraintOptions {
+  type: 'foreign key'
+  name?: string
+  references?: {
+    table: string
+    field: string
+  }
+  onDelete: string
+  onUpdate: string
+}
+
+export type AddConstraintOptions = AddUniqueConstraintOptions | AddDefaultConstraintOptions | AddCheckConstraintOptions | AddPrimaryKeyConstraintOptions | AddForeignKeyConstraintOptions
 
 /**
  * The interface that Sequelize uses to talk to all databases.
@@ -275,6 +311,16 @@ export class QueryInterface {
      */
     public removeIndex(tableName: string, indexName: string, options?: QueryInterfaceIndexOptions): Promise<void>
     public removeIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions): Promise<void>
+                                                                                   
+    /**
+     * Adds constraints to a table
+     */
+    public addConstraint(tableName: string, attributes: string[], options?: AddConstraintOptions | QueryInterfaceOptions): Promise<void>
+
+    /**
+     * Removes constraints from a table
+     */
+    public removeConstraint(tableName: string, constraintName: string, options?: QueryInterfaceOptions): Promise<void>
 
     /**
      * Shows the index of a table
