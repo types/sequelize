@@ -113,39 +113,44 @@ export interface QueryInterfaceIndexOptions extends QueryInterfaceOptions {
 }
 
 export interface AddUniqueConstraintOptions {
-  type: 'unique'
-  name?: string
+    type: 'unique'
+    name?: string
 }
 
 export interface AddDefaultConstraintOptions {
-  type: 'default'
-  name?: string
-  defaultValue?: any
+    type: 'default'
+    name?: string
+    defaultValue?: any
 }
 
 export interface AddCheckConstraintOptions {
-  type: 'check'
-  name?: string
-  where?: WhereOptions
+    type: 'check'
+    name?: string
+    where?: WhereOptions
 }
 
 export interface AddPrimaryKeyConstraintOptions {
-  type: 'primary key'
-  name?: string
+    type: 'primary key'
+    name?: string
 }
 
 export interface AddForeignKeyConstraintOptions {
-  type: 'foreign key'
-  name?: string
-  references?: {
-    table: string
-    field: string
-  }
-  onDelete: string
-  onUpdate: string
+    type: 'foreign key'
+    name?: string
+    references?: {
+        table: string
+        field: string
+    }
+    onDelete: string
+    onUpdate: string
 }
 
-export type AddConstraintOptions = AddUniqueConstraintOptions | AddDefaultConstraintOptions | AddCheckConstraintOptions | AddPrimaryKeyConstraintOptions | AddForeignKeyConstraintOptions
+export type AddConstraintOptions =
+    | AddUniqueConstraintOptions
+    | AddDefaultConstraintOptions
+    | AddCheckConstraintOptions
+    | AddPrimaryKeyConstraintOptions
+    | AddForeignKeyConstraintOptions
 
 /**
  * The interface that Sequelize uses to talk to all databases.
@@ -311,11 +316,15 @@ export class QueryInterface {
      */
     public removeIndex(tableName: string, indexName: string, options?: QueryInterfaceIndexOptions): Promise<void>
     public removeIndex(tableName: string, attributes: string[], options?: QueryInterfaceIndexOptions): Promise<void>
-                                                                                   
+
     /**
      * Adds constraints to a table
      */
-    public addConstraint(tableName: string, attributes: string[], options?: AddConstraintOptions | QueryInterfaceOptions): Promise<void>
+    public addConstraint(
+        tableName: string,
+        attributes: string[],
+        options?: AddConstraintOptions | QueryInterfaceOptions
+    ): Promise<void>
 
     /**
      * Removes constraints from a table
