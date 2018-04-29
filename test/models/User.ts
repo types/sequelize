@@ -39,10 +39,14 @@ User.init(
 )
 
 // Hooks
-User.afterFind((users, options: FindOptions) => {
+User.afterFind((users, options) => {
     console.log('found')
 })
 
+// TODO: VSCode shows the typing being correctly narrowed but doesn't do it correctly
+User.addHook('beforeFind', 'test', (options: FindOptions) => {
+    return undefined
+})
 // associate
 // it is important to import _after_ the model above is already exported so the circular reference works.
 import { UserGroup } from './UserGroup'

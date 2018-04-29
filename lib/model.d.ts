@@ -10,11 +10,13 @@ import {
     HasOneOptions,
 } from './associations/index'
 import { DataType } from './data-types'
-import { AbstractDeferrable } from './deferrable'
+import { Deferrable } from './deferrable'
+import { AllModelHooks, Hooks, ModelHookOptions } from './hooks'
+import { ValidationOptions } from './instance-validator'
 import { ModelManager } from './model-manager'
 import { Promise } from './promise'
 import { QueryOptions } from './query-interface'
-import { SyncOptions } from './sequelize'
+import { Config,  Op, Options, SyncOptions } from './sequelize'
 import { Sequelize } from './sequelize'
 import { Transaction } from './transaction'
 import { Col, Fn, Literal, Where } from './utils'
@@ -107,17 +109,17 @@ export interface ScopeOptions {
 export type WhereOptions = WhereAttributeHash | AndOperator | OrOperator | Where
 
 /**
- * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+ * Example: `[Op.any]: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
  *
  * _PG only_
  */
 export interface AnyOperator {
-    $any: (string | number)[]
+    [Op.any]: (string | number)[]
 }
 
 /** Undocumented? */
 export interface AllOperator {
-    $all: (string | number)[]
+    [Op.all]: (string | number)[]
 }
 
 /**
@@ -127,113 +129,104 @@ export interface AllOperator {
  */
 export interface WhereOperators {
     /**
-     * Example: `$any: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
+     * Example: `[Op.any]: [2,3]` becomes `ANY ARRAY[2, 3]::INTEGER`
      *
      * _PG only_
      */
-    $any?: (string | number)[]
+    [Op.any]?: (string | number)[]
 
-    /** Example: `$gte: 6,` becomes `>= 6` */
-    $gte?: number | string | Date
+    /** Example: `[Op.gte]: 6,` becomes `>= 6` */
+    [Op.gte]?: number | string | Date
 
-    /** Example: `$lt: 10,` becomes `< 10` */
-    $lt?: number | string | Date
+    /** Example: `[Op.lt]: 10,` becomes `< 10` */
+    [Op.lt]?: number | string | Date
 
-    /** Example: `$lte: 10,` becomes `<= 10` */
-    $lte?: number | string | Date
+    /** Example: `[Op.lte]: 10,` becomes `<= 10` */
+    [Op.lte]?: number | string | Date
 
-    /** Example: `$ne: 20,` becomes `!= 20` */
-    $ne?: string | number | WhereOperators
+    /** Example: `[Op.ne]: 20,` becomes `!= 20` */
+    [Op.ne]?: string | number | WhereOperators
 
-    /** Example: `$not: true,` becomes `IS NOT TRUE` */
-    $not?: boolean | string | number | WhereOperators
+    /** Example: `[Op.not]: true,` becomes `IS NOT TRUE` */
+    [Op.not]?: boolean | string | number | WhereOperators
 
-    /** Example: `$between: [6, 10],` becomes `BETWEEN 6 AND 10` */
-    $between?: [number, number]
+    /** Example: `[Op.between]: [6, 10],` becomes `BETWEEN 6 AND 10` */
+    [Op.between]?: [number, number]
 
-    /** Example: `$in: [1, 2],` becomes `IN [1, 2]` */
-    $in?: (string | number)[] | Literal
+    /** Example: `[Op.in]: [1, 2],` becomes `IN [1, 2]` */
+    [Op.in]?: (string | number)[] | Literal
 
-    /** Example: `$notIn: [1, 2],` becomes `NOT IN [1, 2]` */
-    $notIn?: (string | number)[] | Literal
-
-    /**
-     * Examples:
-     *  - `$like: '%hat',` becomes `LIKE '%hat'`
-     *  - `$like: { $any: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
-     */
-    $like?: string | AnyOperator | AllOperator
+    /** Example: `[Op.notIn]: [1, 2],` becomes `NOT IN [1, 2]` */
+    [Op.notIn]?: (string | number)[] | Literal
 
     /**
      * Examples:
-     *  - `$notLike: '%hat'` becomes `NOT LIKE '%hat'`
-     *  - `$notLike: { $any: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
+     *  - `[Op.like]: '%hat',` becomes `LIKE '%hat'`
+     *  - `[Op.like]: { [Op.any]: ['cat', 'hat']}` becomes `LIKE ANY ARRAY['cat', 'hat']`
      */
-    $notLike?: string | AnyOperator | AllOperator
+    [Op.like]?: string | AnyOperator | AllOperator
 
     /**
-     * case insensitive PG only
-     *
      * Examples:
-     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
-     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+     *  - `[Op.notLike]: '%hat'` becomes `NOT LIKE '%hat'`
+     *  - `[Op.notLike]: { [Op.any]: ['cat', 'hat']}` becomes `NOT LIKE ANY ARRAY['cat', 'hat']`
      */
-    $ilike?: string | AnyOperator | AllOperator
+    [Op.notLike]?: string | AnyOperator | AllOperator
 
     /**
      * case insensitive PG only
      *
      * Examples:
-     *  - `$iLike: '%hat'` becomes `ILIKE '%hat'`
-     *  - `$iLike: { $any: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
+     *  - `[Op.iLike]: '%hat'` becomes `ILIKE '%hat'`
+     *  - `[Op.iLike]: { [Op.any]: ['cat', 'hat']}` becomes `ILIKE ANY ARRAY['cat', 'hat']`
      */
-    $iLike?: string | AnyOperator | AllOperator
+    [Op.iLike]?: string | AnyOperator | AllOperator
 
     /**
      * PG array overlap operator
      *
-     * Example: `$overlap: [1, 2]` becomes `&& [1, 2]`
+     * Example: `[Op.overlap]: [1, 2]` becomes `&& [1, 2]`
      */
-    $overlap?: [number, number]
+    [Op.overlap]?: [number, number]
 
     /**
      * PG array contains operator
      *
-     * Example: `$contains: [1, 2]` becomes `@> [1, 2]`
+     * Example: `[Op.contains]: [1, 2]` becomes `@> [1, 2]`
      */
-    $contains?: any[]
+    [Op.contains]?: any[]
 
     /**
      * PG array contained by operator
      *
-     * Example: `$contained: [1, 2]` becomes `<@ [1, 2]`
+     * Example: `[Op.contained]: [1, 2]` becomes `<@ [1, 2]`
      */
-    $contained?: any[]
+    [Op.contained]?: any[]
 
-    /** Example: `$gt: 6,` becomes `> 6` */
-    $gt?: number | string | Date
+    /** Example: `[Op.gt]: 6,` becomes `> 6` */
+    [Op.gt]?: number | string | Date
 
     /**
      * PG only
      *
      * Examples:
-     *  - `$notILike: '%hat'` becomes `NOT ILIKE '%hat'`
-     *  - `$notLike: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
+     *  - `[Op.notILike]: '%hat'` becomes `NOT ILIKE '%hat'`
+     *  - `[Op.notLike]: ['cat', 'hat']` becomes `LIKE ANY ARRAY['cat', 'hat']`
      */
-    $notILike?: string | AnyOperator | AllOperator
+    [Op.notILike]?: string | AnyOperator | AllOperator
 
-    /** Example: `$notBetween: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
-    $notBetween?: [number, number]
+    /** Example: `[Op.notBetween]: [11, 15],` becomes `NOT BETWEEN 11 AND 15` */
+    [Op.notBetween]?: [number, number]
 }
 
-/** Example: `$or: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
+/** Example: `[Op.or]: [{a: 5}, {a: 6}]` becomes `(a = 5 OR a = 6)` */
 export interface OrOperator {
-    $or: WhereOptions | WhereOptions[] | WhereValue | WhereValue[]
+    [Op.or]: WhereOptions | WhereOptions[] | WhereValue | WhereValue[]
 }
 
-/** Example: `$and: {a: 5}` becomes `AND (a = 5)` */
+/** Example: `[Op.and]: {a: 5}` becomes `AND (a = 5)` */
 export interface AndOperator {
-    $and: WhereOptions | WhereOptions[] | WhereValue | WhereValue[]
+    [Op.and]: WhereOptions | WhereOptions[] | WhereValue | WhereValue[]
 }
 
 /**
@@ -260,7 +253,7 @@ export type WhereValue =
     | OrOperator
     | AndOperator
     | WhereGeometryOptions
-    | (string | number | WhereAttributeHash)[] // implicit $or
+    | (string | number | WhereAttributeHash)[] // implicit [Op.or]
 
 /**
  * A hash of attributes to describe your search.
@@ -273,7 +266,7 @@ export interface WhereAttributeHash {
      *
      *       {
      *         "meta.audio.length": {
-     *           $gt: 20
+     *           [Op.gt]: 20
      *         }
      *       }
      */
@@ -416,7 +409,7 @@ export interface FindOptions extends Logging, Transactionable, Filterable, Proje
      * Postgres also supports transaction.LOCK.KEY_SHARE, transaction.LOCK.NO_KEY_UPDATE and specific model
      * locks with joins. See [transaction.LOCK for an example](transaction#lock)
      */
-    lock?: string | { level: string; of: typeof Model }
+    lock?: Transaction.LOCKS | { level: Transaction.LOCKS; of: typeof Model }
 
     /**
      * Return raw result. See sequelize.query for more information.
@@ -818,7 +811,7 @@ export interface SaveOptions extends Logging, Transactionable, Silent {
 export interface ModelValidateOptions {
     /**
      * is: ["^[a-z]+$",'i'] // will only allow letters
-     * is: /^[a-z]+$/i      // same as the previous example using real RegExp
+     * is: /^[a-z]+[Op./i]      // same as the previous example using real RegExp
      */
     is?: string | (string | RegExp)[] | RegExp | { msg: string; args: string | (string | RegExp)[] | RegExp }
 
@@ -1117,7 +1110,7 @@ export interface ModelAttributeColumnReferencesOptions {
      *
      * PostgreSQL only
      */
-    deferrable?: AbstractDeferrable
+    deferrable?: Deferrable
 }
 
 /**
@@ -1214,44 +1207,6 @@ export interface ModelAttributes {
      * The description of a database column
      */
     [name: string]: DataType | ModelAttributeColumnOptions
-}
-
-/**
- * Options for Model.init. We mostly duplicate the Hooks here, since there is no way to combine the two
- * interfaces.
- *
- * beforeValidate, afterValidate, beforeBulkCreate, beforeBulkDestroy, beforeBulkUpdate, beforeCreate,
- * beforeDestroy, beforeUpdate, afterCreate, afterDestroy, afterUpdate, afterBulkCreate, afterBulkDestroy and
- * afterBulkUpdate.
- */
-export interface HooksOptions<M extends Model> {
-    beforeValidate?: (instance: M, options: object) => any
-    afterValidate?: (instance: M, options: object) => any
-    beforeCreate?: (attributes: M, options: CreateOptions) => any
-    afterCreate?: (attributes: M, options: CreateOptions) => any
-    beforeDestroy?: (instance: M, options: InstanceDestroyOptions) => any
-    beforeDelete?: (instance: M, options: InstanceDestroyOptions) => any
-    afterDestroy?: (instance: M, options: InstanceDestroyOptions) => any
-    afterDelete?: (instance: M, options: InstanceDestroyOptions) => any
-    beforeUpdate?: (instance: M, options: InstanceUpdateOptions) => any
-    afterUpdate?: (instance: M, options: InstanceUpdateOptions) => any
-    beforeBulkCreate?: (instances: M[], options: BulkCreateOptions) => any
-    afterBulkCreate?: (instances: M[], options: BulkCreateOptions) => any
-    beforeBulkDestroy?: (options: DestroyOptions) => any
-    beforeBulkDelete?: (options: DestroyOptions) => any
-    afterBulkDestroy?: (options: DestroyOptions) => any
-    afterBulkDelete?: (options: DestroyOptions) => any
-    beforeBulkUpdate?: (options: UpdateOptions) => any
-    afterBulkUpdate?: (options: UpdateOptions) => any
-    beforeFind?: (options: FindOptions) => any
-    beforeCount?: (options: CountOptions) => any
-    beforeFindAfterExpandIncludeAll?: (options: FindOptions) => any
-    beforeFindAfterOptions?: (options: FindOptions) => any
-    afterFind?: (instancesOrInstance: Model[] | Model, options: FindOptions) => any
-    beforeSync?: (options: SyncOptions) => any
-    afterSync?: (options: SyncOptions) => any
-    beforeBulkSync?: (options: SyncOptions) => any
-    afterBulkSync?: (options: SyncOptions) => any
 }
 
 /**
@@ -1365,12 +1320,10 @@ export interface ModelOptions<M extends Model = Model> {
 
     /**
      * An object of hook function that are called before and after certain lifecycle events.
-     * The possible hooks are: beforeValidate, afterValidate, beforeBulkCreate, beforeBulkDestroy,
-     * beforeBulkUpdate, beforeCreate, beforeDestroy, beforeUpdate, afterCreate, afterDestroy, afterUpdate,
-     * afterBulkCreate, afterBulkDestory and afterBulkUpdate. See Hooks for more information about hook
+     * See Hooks for more information about hook
      * functions and their signatures. Each property can either be a function, or an array of functions.
      */
-    hooks?: HooksOptions<M>
+    hooks?: Partial<ModelHookOptions<M>>
 
     /**
      * An object of model wide validations. Validations have access to all model values via `this`. If the
@@ -1390,7 +1343,7 @@ export interface InitOptions extends ModelOptions<any> {
     sequelize: Sequelize
 }
 
-export abstract class Model {
+export abstract class Model extends Hooks {
     /** The name of the database table */
     public static tableName: string
 
@@ -1413,11 +1366,6 @@ export abstract class Model {
      * The attributes of the model
      */
     public static rawAttributes: { [attribute: string]: ModelAttributeColumnOptions }
-
-    /**
-     * The attributes of the model
-     */
-    public static attributes: { [attribute: string]: ModelAttributeColumnOptions }
 
     /**
      * Returns true if this instance has not yet been persisted to the database
@@ -1540,10 +1488,10 @@ export abstract class Model {
      *       return {
      *         where: {
      *           email: {
-     *             $like: email
+     *             [Op.like]: email
      *           },
      *           accesss_level {
-     *             $gte: accessLevel
+     *             [Op.gte]: accessLevel
      *           }
      *         }
      *       }
@@ -1611,8 +1559,8 @@ export abstract class Model {
      * ```sql
      * WHERE attr1 > 50 AND attr2 <= 45 AND attr3 IN (1,2,3) AND attr4 != 5
      * ```
-     * Possible options are: `$ne, $in, $not, $notIn, $gte, $gt, $lte, $lt, $like, $ilike/$iLike, $notLike,
-     * $notILike, '..'/$between, '!..'/$notBetween, '&&'/$overlap, '@>'/$contains, '<@'/$contained`
+     * Possible options are: `[Op.ne], [Op.in], [Op.not], [Op.notIn], [Op.gte], [Op.gt], [Op.lte], [Op.lt], [Op.like], [Op.ilike]/[Op.iLike], [Op.notLike],
+     * [Op.notILike], '..'/[Op.between], '!..'/[Op.notBetween], '&&'/[Op.overlap], '@>'/[Op.contains], '<@'/[Op.contained]`
      *
      * __Queries using OR__
      * ```js
@@ -1937,39 +1885,6 @@ export abstract class Model {
     public static unscoped<M extends typeof Model>(this: M): M
 
     /**
-     * Add a hook to the model
-     *
-     * @param hookType
-     * @param name Provide a name for the hook function. It can be used to remove the hook later or to order
-     *     hooks based on some sort of priority system in the future.
-     * @param fn The hook function
-     *
-     * @alias hook
-     */
-    public static addHook<C extends typeof Model>(this: C, hookType: string, name: string, fn: Function): C
-    public static addHook<C extends typeof Model>(this: C, hookType: string, fn: Function): C
-    public static hook<C extends typeof Model>(this: C, hookType: string, name: string, fn: Function): C
-    public static hook<C extends typeof Model>(this: C, hookType: string, fn: Function): C
-
-    /**
-     * Remove hook from the model
-     *
-     * @param hookType
-     * @param name
-     */
-    public static removeHook<C extends typeof Model>(this: C, hookType: string, name: string): C
-
-    /**
-     * Check whether the mode has any hooks of this type
-     *
-     * @param hookType
-     *
-     * @alias hasHooks
-     */
-    public static hasHook(hookType: string): boolean
-    public static hasHooks(hookType: string): boolean
-
-    /**
      * A hook that is run before validation
      *
      * @param name
@@ -1978,11 +1893,11 @@ export abstract class Model {
     public static beforeValidate<M extends Model>(
         this: { new (): M } & typeof Model,
         name: string,
-        fn: (instance: M, options: object) => void
+        fn: (instance: M, options: ValidationOptions) => void
     ): void
     public static beforeValidate<M extends Model>(
         this: { new (): M } & typeof Model,
-        fn: (instance: M, options: object) => void
+        fn: (instance: M, options: ValidationOptions) => void
     ): void
 
     /**
@@ -2277,8 +2192,8 @@ export abstract class Model {
      * @param name
      * @param fn   A callback function that is called with config, options
      */
-    public static beforeInit(name: string, fn: (config: object, options: object) => void): void
-    public static beforeInit(fn: (config: object, options: object) => void): void
+    public static beforeInit(name: string, fn: (config: Config, options: Options) => void): void
+    public static beforeInit(fn: (config: Config, options: Options) => void): void
 
     /**
      * A hook that is run after Sequelize() call
@@ -2291,8 +2206,7 @@ export abstract class Model {
 
     /**
      * A hook that is run before sequelize.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @param fn   A callback function that is called with options passed to sequelize.sync
      * @name beforeBulkSync
      */
     public static beforeBulkSync(name: string, fn: (options: SyncOptions) => any): void
@@ -2300,8 +2214,7 @@ export abstract class Model {
 
     /**
      * A hook that is run after sequelize.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to sequelize.sync
+     * @param fn   A callback function that is called with options passed to sequelize.sync
      * @name afterBulkSync
      */
     public static afterBulkSync(name: string, fn: (options: SyncOptions) => any): void
@@ -2309,8 +2222,7 @@ export abstract class Model {
 
     /**
      * A hook that is run before Model.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @param fn   A callback function that is called with options passed to Model.sync
      * @name beforeSync
      */
     public static beforeSync(name: string, fn: (options: SyncOptions) => any): void
@@ -2318,8 +2230,7 @@ export abstract class Model {
 
     /**
      * A hook that is run after Model.sync call
-     * @param {String}   name
-     * @param {Function} fn   A callback function that is called with options passed to Model.sync
+     * @param fn   A callback function that is called with options passed to Model.sync
      * @name afterSync
      */
     public static afterSync(name: string, fn: (options: SyncOptions) => any): void
@@ -2557,7 +2468,7 @@ export abstract class Model {
      *
      * @param options.skip An array of strings. All properties that are in this array will not be validated
      */
-    public validate(options?: { skip?: string[] }): Promise<void>
+    public validate(options?: ValidationOptions): Promise<void>
 
     /**
      * This is the same as calling `set` and then calling `save`.

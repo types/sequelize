@@ -11,36 +11,36 @@ let where: WhereOptions
 // Operators
 
 const and: AndOperator = {
-    $and: { a: 5 }, // AND (a = 5)
+    [Op.and]: { a: 5 }, // AND (a = 5)
 }
 
 const or: OrOperator = {
-    $or: [{ a: 5 }, { a: 6 }], // (a = 5 OR a = 6)
+    [Op.or]: [{ a: 5 }, { a: 6 }], // (a = 5 OR a = 6)
 }
 
 let operators: WhereOperators = {
-    $gt: 6, // > 6
-    $gte: 6, // >= 6
-    $lt: 10, // < 10
-    $lte: 10, // <= 10
-    $ne: 20, // != 20
-    $not: true, // IS NOT TRUE
-    $between: [6, 10], // BETWEEN 6 AND 10
-    $notBetween: [11, 15], // NOT BETWEEN 11 AND 15
-    $in: [1, 2], // IN [1, 2]
-    $notIn: [1, 2], // NOT IN [1, 2]
-    $like: '%hat', // LIKE '%hat'
-    $notLike: '%hat', // NOT LIKE '%hat'
-    $iLike: '%hat', // ILIKE '%hat' (case insensitive) (PG only)
-    $notILike: '%hat', // NOT ILIKE '%hat'  (PG only)
-    $overlap: [1, 2], // && [1, 2] (PG array overlap operator)
-    $contains: [1, 2], // @> [1, 2] (PG array contains operator)
-    $contained: [1, 2], // <@ [1, 2] (PG array contained by operator)
-    $any: [2, 3], // ANY ARRAY[2, 3]::INTEGER (PG only)
+    [Op.gt]: 6, // > 6
+    [Op.gte]: 6, // >= 6
+    [Op.lt]: 10, // < 10
+    [Op.lte]: 10, // <= 10
+    [Op.ne]: 20, // != 20
+    [Op.not]: true, // IS NOT TRUE
+    [Op.between]: [6, 10], // BETWEEN 6 AND 10
+    [Op.notBetween]: [11, 15], // NOT BETWEEN 11 AND 15
+    [Op.in]: [1, 2], // IN [1, 2]
+    [Op.notIn]: [1, 2], // NOT IN [1, 2]
+    [Op.like]: '%hat', // LIKE '%hat'
+    [Op.notLike]: '%hat', // NOT LIKE '%hat'
+    [Op.iLike]: '%hat', // ILIKE '%hat' (case insensitive) (PG only)
+    [Op.notILike]: '%hat', // NOT ILIKE '%hat'  (PG only)
+    [Op.overlap]: [1, 2], // && [1, 2] (PG array overlap operator)
+    [Op.contains]: [1, 2], // @> [1, 2] (PG array contains operator)
+    [Op.contained]: [1, 2], // <@ [1, 2] (PG array contained by operator)
+    [Op.any]: [2, 3], // ANY ARRAY[2, 3]::INTEGER (PG only)
 }
 
 operators = {
-    $like: { $any: ['cat', 'hat'] }, // LIKE ANY ARRAY['cat', 'hat'] - also works for iLike and notLike
+    [Op.like]: { [Op.any]: ['cat', 'hat'] }, // LIKE ANY ARRAY['cat', 'hat'] - also works for iLike and notLike
 }
 
 // Combinations
@@ -52,21 +52,21 @@ where = Sequelize.and()
 
 where = Sequelize.or()
 
-where = { $and: [] }
+where = { [Op.and]: [] }
 
 where = {
-    rank: Sequelize.and({ $lt: 1000 }, { $eq: null }),
+    rank: Sequelize.and({ [Op.lt]: 1000 }, { [Op.eq]: null }),
 }
 
 where = {
-    rank: Sequelize.or({ $lt: 1000 }, { $eq: null }),
+    rank: Sequelize.or({ [Op.lt]: 1000 }, { [Op.eq]: null }),
 }
 
 where = {
     rank: {
-        $or: {
-            $lt: 1000,
-            $eq: null,
+        [Op.or]: {
+            [Op.lt]: 1000,
+            [Op.eq]: null,
         },
     },
 }
@@ -74,22 +74,22 @@ where = {
 
 where = {
     createdAt: {
-        $lt: new Date(),
-        $gt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        [Op.lt]: new Date(),
+        [Op.gt]: new Date(Date.now() - 24 * 60 * 60 * 1000),
     },
 }
 // createdAt < [timestamp] AND createdAt > [timestamp]
 
 where = {
-    $or: [
+    [Op.or]: [
         {
             title: {
-                $like: 'Boat%',
+                [Op.like]: 'Boat%',
             },
         },
         {
             description: {
-                $like: '%boat%',
+                [Op.like]: '%boat%',
             },
         },
     ],
@@ -100,7 +100,7 @@ where = {
 
 where = {
     meta: {
-        $contains: {
+        [Op.contains]: {
             site: {
                 url: 'http://google.com',
             },
@@ -159,28 +159,28 @@ MyModel.findAll({
     where: {
         id: {
             // casting here to check a missing operator is not accepted as field name
-            $and: { a: 5 }, // AND (a = 5)
-            $or: [{ a: 5 }, { a: 6 }], // (a = 5 OR a = 6)
-            $gt: 6, // id > 6
-            $gte: 6, // id >= 6
-            $lt: 10, // id < 10
-            $lte: 10, // id <= 10
-            $ne: 20, // id != 20
-            $between: [6, 10], // BETWEEN 6 AND 10
-            $notBetween: [11, 15], // NOT BETWEEN 11 AND 15
-            $in: [1, 2], // IN [1, 2]
-            $notIn: [1, 2], // NOT IN [1, 2]
-            $like: '%hat', // LIKE '%hat'
-            $notLike: '%hat', // NOT LIKE '%hat'
-            $iLike: '%hat', // ILIKE '%hat' (case insensitive)  (PG only)
-            $notILike: '%hat', // NOT ILIKE '%hat'  (PG only)
-            $overlap: [1, 2], // && [1, 2] (PG array overlap operator)
-            $contains: [1, 2], // @> [1, 2] (PG array contains operator)
-            $contained: [1, 2], // <@ [1, 2] (PG array contained by operator)
-            $any: [2, 3], // ANY ARRAY[2, 3]::INTEGER (PG only)
+            [Op.and]: { a: 5 }, // AND (a = 5)
+            [Op.or]: [{ a: 5 }, { a: 6 }], // (a = 5 OR a = 6)
+            [Op.gt]: 6, // id > 6
+            [Op.gte]: 6, // id >= 6
+            [Op.lt]: 10, // id < 10
+            [Op.lte]: 10, // id <= 10
+            [Op.ne]: 20, // id != 20
+            [Op.between]: [6, 10], // BETWEEN 6 AND 10
+            [Op.notBetween]: [11, 15], // NOT BETWEEN 11 AND 15
+            [Op.in]: [1, 2], // IN [1, 2]
+            [Op.notIn]: [1, 2], // NOT IN [1, 2]
+            [Op.like]: '%hat', // LIKE '%hat'
+            [Op.notLike]: '%hat', // NOT LIKE '%hat'
+            [Op.iLike]: '%hat', // ILIKE '%hat' (case insensitive)  (PG only)
+            [Op.notILike]: '%hat', // NOT ILIKE '%hat'  (PG only)
+            [Op.overlap]: [1, 2], // && [1, 2] (PG array overlap operator)
+            [Op.contains]: [1, 2], // @> [1, 2] (PG array contains operator)
+            [Op.contained]: [1, 2], // <@ [1, 2] (PG array contained by operator)
+            [Op.any]: [2, 3], // ANY ARRAY[2, 3]::INTEGER (PG only)
         } as WhereOperators,
         status: {
-            $not: false, // status NOT FALSE
+            [Op.not]: false, // status NOT FALSE
         },
     },
 })
@@ -189,27 +189,27 @@ MyModel.findAll({
 
 where = {
     name: 'a project',
-    $or: [{ id: [1, 2, 3] }, { id: { $gt: 10 } }],
+    [Op.or]: [{ id: [1, 2, 3] }, { id: { [Op.gt]: 10 } }],
 }
 
 where = {
     name: 'a project',
     id: {
-        $or: [[1, 2, 3], { $gt: 10 }],
+        [Op.or]: [[1, 2, 3], { [Op.gt]: 10 }],
     },
 }
 
 where = {
     name: 'a project',
     type: {
-        $and: [['a', 'b'], { $notLike: '%z' }],
+        [Op.and]: [['a', 'b'], { [Op.notLike]: '%z' }],
     },
 }
 
-// $not example:
+// [Op.not] example:
 where = {
     name: 'a project',
-    $not: [{ id: [1, 2, 3] }, { array: { $contains: [3, 4, 5] } }],
+    [Op.not]: [{ id: [1, 2, 3] }, { array: { [Op.contains]: [3, 4, 5] } }],
 }
 
 // JSONB
@@ -220,7 +220,7 @@ where = {
     meta: {
         video: {
             url: {
-                $ne: null,
+                [Op.ne]: null,
             },
         },
     },
@@ -229,7 +229,7 @@ where = {
 // Nested key
 where = {
     'meta.audio.length': {
-        $gt: 20,
+        [Op.gt]: 20,
     },
 }
 
@@ -240,5 +240,5 @@ where = {
 
 // Fn as value
 where = {
-    $gt: fn('NOW'),
+    [Op.gt]: fn('NOW'),
 }

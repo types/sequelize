@@ -11,7 +11,6 @@ export interface Extensions {
     notIn(str: string, values: string[]): boolean
     regex(str: string, pattern: string, modifiers: string): boolean
     notRegex(str: string, pattern: string, modifiers: string): boolean
-    isDecimal(str: string): boolean
     min(str: string, val: number): boolean
     max(str: string, val: number): boolean
     not(str: string, pattern: string, modifiers: string): boolean

@@ -43,8 +43,7 @@ export function toDefaultValue(value: any): any
  * Determine if the default value provided exists and can be described
  * in a db schema using the DEFAULT directive.
  *
- * @param  {*} value Any default value.
- * @return {boolean} yes / no.
+ * @param value Any default value.
  */
 export function defaultValueSchemable(value: any): boolean
 
