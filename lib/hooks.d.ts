@@ -9,14 +9,7 @@ import Model, {
     InstanceUpdateOptions,
     UpdateOptions,
 } from './model'
-import {
-  Config,
-  ModelAttributes,
-  ModelOptions,
-  Options,
-  Sequelize,
-  SyncOptions,
-} from './sequelize'
+import { Config, ModelAttributes, ModelOptions, Options, Sequelize, SyncOptions } from './sequelize'
 
 export type HookReturn = Promise<void> | void
 
