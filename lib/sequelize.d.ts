@@ -1335,7 +1335,11 @@ export function cast(val: any, type: string): Cast
  * @param val
  */
 export function literal(val: any): Literal
-export function asIs(val: any): Literal
+
+/**
+ * Alias of `literal`
+ */
+export const asIs: typeof literal
 
 /**
  * An AND query
@@ -1384,7 +1388,11 @@ export type LogicType = Fn | Col | Literal | OrOperator | AndOperator | string
  */
 export function where(attr: AttributeType, comparator: string, logic: LogicType): Where
 export function where(attr: AttributeType, logic: LogicType): Where
-export function condition(attr: AttributeType, logic: LogicType): Where
+
+/**
+ * Alias of `where`
+ */
+export const condition: typeof where
 
 export { DataTypes }
 export * from './model'
