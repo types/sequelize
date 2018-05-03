@@ -2,7 +2,7 @@ import { Logging } from './model'
 import { Promise } from './promise'
 import { Deferrable, Sequelize } from './sequelize'
 
-// tslint:disable-next-line
+// tslint:disable-next-line no-namespace
 export namespace Transaction {
     /**
      * Isolations levels can be set per-transaction by passing `options.isolationLevel` to `sequelize.transaction`.
