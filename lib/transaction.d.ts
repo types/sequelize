@@ -1,25 +1,50 @@
 import { Logging } from './model'
 import { Promise } from './promise'
-import { Sequelize } from './sequelize'
+import { Deferrable, Sequelize } from './sequelize'
 
-/**
- * The transaction object is used to identify a running transaction. It is created by calling
- * `Sequelize.transaction()`.
- *
- * To run a query under a transaction, you should pass the transaction in the options object.
- */
-export class Transaction {
-    constructor(sequelize: Sequelize, options: TransactionOptions)
-
+// tslint:disable-next-line no-namespace
+export namespace Transaction {
     /**
-     * Commit the transaction
+     * Isolations levels can be set per-transaction by passing `options.isolationLevel` to `sequelize.transaction`.
+     * Default to `REPEATABLE_READ` but you can override the default isolation level by passing `options.isolationLevel` in `new Sequelize`.
+     *
+     * The possible isolations levels to use when starting a transaction:
+     *
+     * ```js
+     * {
+     *   READ_UNCOMMITTED: "READ UNCOMMITTED",
+     *   READ_COMMITTED: "READ COMMITTED",
+     *   REPEATABLE_READ: "REPEATABLE READ",
+     *   SERIALIZABLE: "SERIALIZABLE"
+     * }
+     * ```
+     *
+     * Pass in the desired level as the first argument:
+     *
+     * ```js
+     * return sequelize.transaction({isolationLevel: Sequelize.Transaction.SERIALIZABLE}, transaction => {
+     *
+     *  // your transactions
+     *
+     * }).then(result => {
+     *   // transaction has been committed. Do something after the commit if required.
+     * }).catch(err => {
+     *   // do something with the err.
+     * });
+     * ```
      */
-    public commit(): Promise<void>
+    const enum ISOLATION_LEVELS {
+        READ_UNCOMMITTED = 'READ UNCOMMITTED',
+        READ_COMMITTED = 'READ COMMITTED',
+        REPEATABLE_READ = 'REPEATABLE READ',
+        SERIALIZABLE = 'SERIALIZABLE',
+    }
 
-    /**
-     * Rollback (abort) the transaction
-     */
-    public rollback(): Promise<void>
+    const enum TYPES {
+        DEFERRED = 'DEFERRED',
+        IMMEDIATE = 'IMMEDIATE',
+        EXCLUSIVE = 'EXCLUSIVE',
+    }
 
     /**
      * Possible options for row locking. Used in conjunction with `find` calls:
@@ -58,62 +83,37 @@ export class Transaction {
      *
      * @property LOCK
      */
-    public static LOCK: TransactionLock
-
-    /**
-     * @see {@link Transaction.LOCK}
-     */
-    public LOCK: TransactionLock
-}
-
-export interface TransactionLock {
-    UPDATE: 'UPDATE'
-    SHARE: 'SHARE'
-    KEY_SHARE: 'KEY SHARE'
-    NO_KEY_UPDATE: 'NO KEY UPDATE'
-}
-
-export type TransactionType = 'DEFERRED' | 'IMMEDIATE' | 'EXCLUSIVE'
-export const TYPES: {
-    DEFERRED: 'DEFERRED'
-    IMMEDIATE: 'IMMEDIATE'
-    EXCLUSIVE: 'EXCLUSIVE'
+    const enum LOCKS {
+        UPDATE = 'UPDATE',
+        SHARE = 'SHARE',
+        KEY_SHARE = 'KEY SHARE',
+        NO_KEY_UPDATE = 'NO KEY UPDATE',
+    }
 }
 
 /**
- * Isolations levels can be set per-transaction by passing `options.isolationLevel` to `sequelize.transaction`.
- * Default to `REPEATABLE_READ` but you can override the default isolation level by passing `options.isolationLevel` in `new Sequelize`.
+ * The transaction object is used to identify a running transaction. It is created by calling
+ * `Sequelize.transaction()`.
  *
- * The possible isolations levels to use when starting a transaction:
- *
- * ```js
- * {
- *   READ_UNCOMMITTED: "READ UNCOMMITTED",
- *   READ_COMMITTED: "READ COMMITTED",
- *   REPEATABLE_READ: "REPEATABLE READ",
- *   SERIALIZABLE: "SERIALIZABLE"
- * }
- * ```
- *
- * Pass in the desired level as the first argument:
- *
- * ```js
- * return sequelize.transaction({isolationLevel: Sequelize.Transaction.SERIALIZABLE}, transaction => {
- *
- *  // your transactions
- *
- * }).then(result => {
- *   // transaction has been committed. Do something after the commit if required.
- * }).catch(err => {
- *   // do something with the err.
- * });
- * ```
+ * To run a query under a transaction, you should pass the transaction in the options object.
  */
-export const ISOLATION_LEVELS: {
-    READ_UNCOMMITTED: 'READ UNCOMMITTED'
-    READ_COMMITTED: 'READ COMMITTED'
-    REPEATABLE_READ: 'REPEATABLE READ'
-    SERIALIZABLE: 'SERIALIZABLE'
+export class Transaction {
+    constructor(sequelize: Sequelize, options: TransactionOptions)
+
+    /**
+     * Commit the transaction
+     */
+    public commit(): Promise<void>
+
+    /**
+     * Rollback (abort) the transaction
+     */
+    public rollback(): Promise<void>
+
+    /**
+     * Adds hook that is run after a transaction is committed
+     */
+    public afterCommit(fn: (transaction: this) => void | Promise<void>): void
 }
 
 /**
@@ -121,14 +121,9 @@ export const ISOLATION_LEVELS: {
  */
 export interface TransactionOptions extends Logging {
     autocommit?: boolean
-
-    /**
-     *  See `Sequelize.Transaction.ISOLATION_LEVELS` for possible options
-     */
-    isolationLevel?: string
-
-    type?: TransactionType
-    deferrable?: string
+    isolationLevel?: Transaction.ISOLATION_LEVELS
+    type?: Transaction.TYPES
+    deferrable?: string | Deferrable.Deferrable
 }
 
 export default Transaction

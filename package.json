@@ -5,26 +5,26 @@
   "description": "Typescript Typings for Sequelize",
   "typings": "index.d.ts",
   "dependencies": {
-    "@types/validator": "^6.3.0",
-    "@types/bluebird": "^3.5.5"
+    "@types/bluebird": "^3.5.20",
+    "@types/validator": "^9.4.1"
   },
   "peerDependencies": {
-    "typescript": ">=2.0.0"
+    "typescript": ">=2.7.0"
   },
   "devDependencies": {
     "prettier": "^1.9.2",
-    "tslint": "^5.8.0",
+    "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
     "typedoc": "^0.10.0",
-    "typescript": "^2.5.3"
+    "typescript": "^2.8.3"
   },
   "scripts": {
     "build": "tsc -p .",
     "prettier": "prettier --write --list-different '**/{*.{json,ts,md},.prettierrc}'",
     "test": "tsc -p test",
     "tslint": "npm run tslint-types && npm run tslint-test",
-    "tslint-types": "tslint -p tsconfig.json -c tslint.json '**/*.d.ts' -e 'node_modules/**'",
-    "tslint-test": "tslint -p test/tsconfig.json -c tslint.json 'test/**/*.ts'",
+    "tslint-types": "tslint -p tsconfig.json -c tslint.json -t verbose '**/*.d.ts' -e 'node_modules/**'",
+    "tslint-test": "tslint -p test/tsconfig.json -c tslint.json -t verbose 'test/**/*.ts'",
     "typedoc": "typedoc --tsconfig tsconfig.json --includeDeclarations --excludeExternals --readme docs_index.md --name \"TypeScript definitions for Sequelize\" --mode modules --out typedoc lib"
   },
   "repository": {

@@ -11,7 +11,8 @@
     "paths": {
       "sequelize": ["../"],
       "sequelize/*": ["../"]
-    }
+    },
+    "lib": ["es2016"]
   },
   "include": ["../index.d.ts", "./**/sequelize.d.ts", "./**/*.ts"]
 }

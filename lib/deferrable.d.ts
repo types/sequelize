@@ -34,10 +34,10 @@
  *
  */
 export interface AbstractDeferrableStatic {
-    new (): AbstractDeferrable
-    (): AbstractDeferrable
+    new (): Deferrable
+    (): Deferrable
 }
-export interface AbstractDeferrable {
+export interface Deferrable {
     toString(): string
     toSql(): string
 }
@@ -46,21 +46,21 @@ export interface InitiallyDeferredDeferrableStatic extends AbstractDeferrableSta
     new (): InitiallyDeferredDeferrable
     (): InitiallyDeferredDeferrable
 }
-export interface InitiallyDeferredDeferrable extends AbstractDeferrable {}
+export interface InitiallyDeferredDeferrable extends Deferrable {}
 export const INITIALLY_DEFERRED: InitiallyDeferredDeferrableStatic
 
 export interface InitiallyImmediateDeferrableStatic extends AbstractDeferrableStatic {
     new (): InitiallyImmediateDeferrable
     (): InitiallyImmediateDeferrable
 }
-export interface InitiallyImmediateDeferrable extends AbstractDeferrable {}
+export interface InitiallyImmediateDeferrable extends Deferrable {}
 export const INITIALLY_IMMEDIATE: InitiallyImmediateDeferrableStatic
 
 export interface NotDeferrableStatic extends AbstractDeferrableStatic {
     new (): NotDeferrable
     (): NotDeferrable
 }
-export interface NotDeferrable {}
+export interface NotDeferrable extends Deferrable {}
 /**
  * Will set the constraints to not deferred. This is the default in PostgreSQL and it make
  * it impossible to dynamically defer the constraints within a transaction.
@@ -77,7 +77,7 @@ export interface SetDeferredDeferrableStatic extends AbstractDeferrableStatic {
      */
     (constraints: string[]): SetDeferredDeferrable
 }
-export interface SetDeferredDeferrable {}
+export interface SetDeferredDeferrable extends Deferrable {}
 /**
  * Will trigger an additional query at the beginning of a
  * transaction which sets the constraints to deferred.
@@ -94,7 +94,7 @@ export interface SetImmediateDeferrableStatic extends AbstractDeferrableStatic {
      */
     (constraints: string[]): SetImmediateDeferrable
 }
-export interface SetImmediateDeferrable {}
+export interface SetImmediateDeferrable extends Deferrable {}
 /**
  * Will trigger an additional query at the beginning of a
  * transaction which sets the constraints to immediately.
