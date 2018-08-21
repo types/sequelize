@@ -145,6 +145,28 @@ export interface OperatorsAliases {
 }
 
 /**
+ * Type to use in "dialect" option. 
+ * If you want use a var as parameter in "dialect" option, you can use DialectType, like this
+ * 
+ * var myDialect: DialectType = 'mysql'
+ * const sequelize = new Sequelize({
+ *  ...
+ *  dialect: myDialect
+ *  ...
+ * })
+ * 
+ * If you have a string as dialect, you can make a cast
+ * 
+ * var myDialect: string = 'mysql'
+ * const sequelize = new Sequelize({
+ *  ...
+ *  dialect: myDialect as DialectType
+ *  ...
+ * })
+ */
+export type DialectType = 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql'
+
+/**
  * Options for the constructor of Sequelize main class
  */
 export interface Options extends Logging {
@@ -153,7 +175,7 @@ export interface Options extends Logging {
      *
      * Defaults to 'mysql'
      */
-    dialect?: 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql'
+    dialect?: DialectType
 
     /**
      * If specified, load the dialect library from this path. For example, if you want to use pg.js instead of
