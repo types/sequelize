@@ -960,12 +960,12 @@ export interface ModelValidateOptions {
     /**
      * only allow values
      */
-    max?: number | { msg: string; args: number }
+    max?: number | { msg: string; args: number[] }
 
     /**
      * only allow values >= 23
      */
-    min?: number | { msg: string; args: number }
+    min?: number | { msg: string; args: number[] }
 
     /**
      * only allow arrays
