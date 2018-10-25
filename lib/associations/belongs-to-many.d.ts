@@ -2,6 +2,7 @@ import {
     BulkCreateOptions,
     CreateOptions,
     Filterable,
+    FindAttributeOptions,
     FindOptions,
     InstanceDestroyOptions,
     InstanceUpdateOptions,
@@ -83,6 +84,7 @@ export interface BelongsToManyGetAssociationsMixinOptions extends FindOptions {
      * Apply a scope on the related model, or remove its default scope by passing false.
      */
     scope?: string | boolean
+    joinTableAttributes?: FindAttributeOptions
 }
 
 /**
