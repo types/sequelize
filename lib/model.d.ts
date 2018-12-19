@@ -1661,6 +1661,16 @@ export abstract class Model {
         identifier: number | string,
         options: NonNullFindOptions
     ): Promise<M>
+    public static findByPk<M extends Model>(
+        this: { new (): M } & typeof Model,
+        identifier?: number | string,
+        options?: FindOptions
+    ): Promise<M | null>
+    public static findByPk<M extends Model>(
+        this: { new (): M } & typeof Model,
+        identifier: number | string,
+        options: NonNullFindOptions
+    ): Promise<M>
 
     /**
      * Search for a single instance. This applies LIMIT 1, so the listener will always be called with a single

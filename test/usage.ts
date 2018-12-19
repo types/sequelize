@@ -17,4 +17,5 @@ async function test(): Promise<void> {
 
     const user2 = await User.create({ firstName: 'John', groupId: 1 })
     await User.findAndCountAll({ distinct: true })
+    await User.findByPk(1)
 }
