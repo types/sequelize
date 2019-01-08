@@ -74,8 +74,9 @@ export interface PoolOptions {
      * object, and that its state is not disconnected
      */
     validate?: (client?: any) => boolean
+    
     /**
-    Controls if pool should handle connection disconnect automatically without throwing errors
+     * Controls if pool should handle connection disconnect automatically without throwing errors
      */
     handleDisconnects?: boolean
 }
