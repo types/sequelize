@@ -22,6 +22,13 @@ export class Transaction {
     public rollback(): Promise<void>
 
     /**
+     * A hook that is run after a transaction is committed
+     *
+     * @param fn A callback function that is called with the committed transaction
+     */
+    public afterCommit(fn: () => Promise<void> | void): void
+
+    /**
      * Possible options for row locking. Used in conjunction with `find` calls:
      *
      * ```js
