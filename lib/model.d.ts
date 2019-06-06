@@ -2187,7 +2187,7 @@ export abstract class Model {
     public static afterBulkDelete(fn: (options: DestroyOptions) => void): void
 
     /**
-     * A hook that is run after updating instances in bulk
+     * A hook that is run before updating instances in bulk
      *
      * @param name
      * @param fn   A callback function that is called with options
