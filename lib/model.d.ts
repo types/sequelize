@@ -444,7 +444,7 @@ export interface NonNullFindOptions extends FindOptions {
 /**
  * Options for Model.count method
  */
-export interface CountOptions extends Logging, Transactionable, Filterable, Projectable {
+export interface CountOptions extends Logging, Transactionable, Filterable, Projectable, Paranoid {
     /**
      * Include options. See `find` for details
      */
