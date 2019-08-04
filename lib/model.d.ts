@@ -461,6 +461,8 @@ export interface CountOptions extends Logging, Transactionable, Filterable, Proj
      * @see Projectable
      */
     group?: GroupOption
+
+    paranoid?: boolean
 }
 
 export interface FindAndCountOptions extends CountOptions, FindOptions {}
