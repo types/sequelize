@@ -1643,22 +1643,22 @@ export abstract class Model {
      */
     public static findById<M extends Model>(
         this: { new (): M } & typeof Model,
-        identifier?: number | string,
+        identifier?: number | string | Buffer,
         options?: FindOptions
     ): Promise<M | null>
     public static findById<M extends Model>(
         this: { new (): M } & typeof Model,
-        identifier: number | string,
+        identifier: number | string | Buffer,
         options: NonNullFindOptions
     ): Promise<M>
     public static findByPrimary<M extends Model>(
         this: { new (): M } & typeof Model,
-        identifier?: number | string,
+        identifier?: number | string | Buffer,
         options?: FindOptions
     ): Promise<M | null>
     public static findByPrimary<M extends Model>(
         this: { new (): M } & typeof Model,
-        identifier: number | string,
+        identifier: number | string | Buffer,
         options: NonNullFindOptions
     ): Promise<M>
     public static findByPk<M extends Model>(
