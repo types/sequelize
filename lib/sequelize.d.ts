@@ -1417,7 +1417,7 @@ export function json(conditionsOrPath: string | object, value?: string | number 
  * @param logic The condition. Can be both a simply type, or a further condition (`.or`, `.and`, `.literal`
  *     etc.)
  */
-export function where(attr: object, comparator: string, logic: string | object): Where
+export function where(attr: object, comparator: string | symbol, logic: string | object): Where
 export function where(attr: object, logic: string | object): Where
 export function condition(attr: object, logic: string | object): Where
 
