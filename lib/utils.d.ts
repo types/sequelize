@@ -100,10 +100,10 @@ export class Json {
 
 export class Where {
     public attribute: object
-    public comparator: string
+    public comparator: string | symbol
     public logic: string | object
     private _isSequelizeMethod: boolean
-    constructor(attr: object, comparator: string, logic: string | object)
+    constructor(attr: object, comparator: string | symbol, logic: string | object)
     constructor(attr: object, logic: string | object)
 }
 
