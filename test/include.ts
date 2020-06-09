@@ -19,3 +19,7 @@ MyModel.findAll({
 MyModel.findAll({
     include: [{ all: true }],
 })
+
+MyModel.findAll({
+    include: [{ all: true, nested: true }],
+})
