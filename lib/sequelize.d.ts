@@ -32,6 +32,11 @@ export interface SyncOptions extends Logging {
     force?: boolean
 
     /**
+     * This checks what is the current state of the table in the database (which columns it has, what are their data types, etc), and then performs the necessary changes in the table to make it match the model.
+     */
+    alter?: boolean
+
+    /**
      * Match a regex against the database name before syncing, a safety check for cases where force: true is
      * used in tests but not live code
      */
